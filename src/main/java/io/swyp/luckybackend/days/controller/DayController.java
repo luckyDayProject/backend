@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DayController {
     @GetMapping("/")
     public String mainP(){
-        return "Hello World Main Page";
+        return "Hello!! this is LuckyDay's Main Page!!";
     }
 }
