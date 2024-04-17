@@ -2,11 +2,13 @@ spring:
   application:
     name: lucky-backend
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://223.130.131.239:23306/lucky?characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: luckyDay
+    driver-class-name: ${db.driver-class-name}
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
 
+  config:
+    import: db.yml
   jpa:
     hibernate:
       ddl-auto: update
