@@ -19,8 +19,10 @@ spring:
             authorization-grant-type: authorization_code
             client-name: kakao
             scope:
-              - profile
+              - profile_nickname
               - account_email
+              - birthyear
+              - talk_message
 
   datasource:
     driver-class-name: ${db.driver-class-name}
