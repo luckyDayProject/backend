@@ -31,4 +31,13 @@ public class UserController {
         response.sendRedirect("/oauth2/authorization/kakao");
         return "로그인 API";
     }
+
+    @Operation(
+            summary = "로그인 API"
+    )
+    @GetMapping("/test")
+    public String test(HttpServletResponse response) throws Exception {
+        log.info("로그인 API 진입");
+        return "로그인 API";
+    }
 }

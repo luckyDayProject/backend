@@ -12,8 +12,12 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 @Configuration
 @EnableMethodSecurity
@@ -25,18 +29,30 @@ public class SecurityConfig {
 //        this.oauth2UserService = oauth2UserService;
 //    }
 
+    CorsConfigurationSource corsConfigurationSource() {
+        return request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOriginPatterns(Collections.singletonList("*")); // ⭐️ 허용할 origin
+            config.setAllowedHeaders(Collections.singletonList("*"));
+            config.setAllowedMethods(Collections.singletonList("*"));
+            config.setAllowCredentials(true);
+            return config;
+        };
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
-                    .loginPage("/login")
+                    .loginPage("/users/login")
                     .successHandler(successHandler())
                     .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                             .userService(oauth2UserService)))
 //                .authorizeHttpRequests(config -> config.anyRequest().permitAll())
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-//                                .requestMatchers("/", "/login/**").permitAll()
+                                .requestMatchers("/", "/users/login").permitAll()
                                 .requestMatchers("/posts/**", "/api/v1/posts/**").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
