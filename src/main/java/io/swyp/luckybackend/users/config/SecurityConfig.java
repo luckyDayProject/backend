@@ -52,7 +52,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/", "/users/login", "api/*").permitAll()
                                 .requestMatchers("/posts/**", "/api/v1/posts/**").hasRole("USER")
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
 //                .headers((headerConfig) ->
