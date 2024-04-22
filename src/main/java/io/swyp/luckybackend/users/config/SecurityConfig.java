@@ -50,7 +50,7 @@ public class SecurityConfig {
 //                .authorizeHttpRequests(config -> config.anyRequest().permitAll())
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-                                .requestMatchers("/", "/users/login").permitAll()
+                                .requestMatchers("/", "/users/login", "api/*").permitAll()
                                 .requestMatchers("/posts/**", "/api/v1/posts/**").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
