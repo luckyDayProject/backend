@@ -30,6 +30,19 @@ spring:
     username: ${db.username}
     password: ${db.password}
 
+  mail:
+    host: ${mail.host}
+    port: ${mail.port}
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: ${mail.auth}
+          starttls:
+            enable: ${mail.enable}
+
   config:
     import: db.yml
   jpa:
