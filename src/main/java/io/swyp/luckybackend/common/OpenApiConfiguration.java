@@ -17,8 +17,8 @@ public class OpenApiConfiguration {
 
 	private Info apiInfo() {
 		return new Info()
-				.title("MBTIgram Springdoc")
-				.description("Springdoc을 사용한 MBTIgram Swagger UI")
-				.version("1.0.0");
+				.title("LUCKY DAY!!")
+				.description("Lucky Day Backend API Swagger UI")
+				.version("0.0.1");
 	}
 }
