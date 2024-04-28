@@ -45,7 +45,7 @@ public class LcDayCycleEntity {
     @Column(name = "RESET", length = 1, nullable = false, columnDefinition = "CHAR DEFAULT 'N'")
     private char reset;
 
-    @OneToMany(mappedBy = "LC_DAY_DTL")
+    @OneToMany(mappedBy = "cycl")
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
     @Builder

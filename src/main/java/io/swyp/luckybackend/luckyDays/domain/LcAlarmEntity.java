@@ -26,7 +26,7 @@ public class LcAlarmEntity {
     private UserEntity user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DTL_NO")
+    @JoinColumn(name = "alarm")
     private LcDayDtlEntity dtl;
 
     @Column(name = "SJ", length = 50)

@@ -48,7 +48,7 @@ public class LcDayDtlEntity {
     @Column(name = "ORDER")
     private Integer order;
 
-    @OneToOne(mappedBy = "lcDayDtl", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "dtl", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private LcAlarmEntity alarm;
 
     @Builder

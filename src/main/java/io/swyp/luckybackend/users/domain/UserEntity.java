@@ -44,13 +44,13 @@ public class UserEntity {
     @Column(name = "PRF_ICON_NO")
     private int profileIconNo;
 
-    @OneToMany(mappedBy = "LC_DAY_CYCL")
+    @OneToMany(mappedBy = "user")
     private List<LcDayCycleEntity> cycles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "LC_DAY_DTL")
+    @OneToMany(mappedBy = "user")
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
-    @OneToMany(mappedBy = "LC_ALARM")
+    @OneToMany(mappedBy = "user")
     private List<LcAlarmEntity> alarms = new ArrayList<>();
 
 
