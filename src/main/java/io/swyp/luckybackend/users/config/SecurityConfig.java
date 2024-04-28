@@ -1,5 +1,6 @@
 package io.swyp.luckybackend.users.config;
 
+import io.swyp.luckybackend.users.domain.LuckyOAuth2User;
 import io.swyp.luckybackend.users.service.Oauth2UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -65,19 +66,20 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return ((request, response, authentication) -> {
-            DefaultOAuth2User defaultOAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
+            LuckyOAuth2User oAuth2User = (LuckyOAuth2User) authentication.getPrincipal();
 
-            String id = defaultOAuth2User.getAttributes().get("id").toString();
-            String profile_nickname = defaultOAuth2User.getAttributes().get("profile_nickname").toString();
-            String account_email = defaultOAuth2User.getAttributes().get("account_email").toString();
-            String birthyear = defaultOAuth2User.getAttributes().get("birthyear").toString();
-            String talk_message = defaultOAuth2User.getAttributes().get("talk_message").toString();
+            String id = oAuth2User.getAttributes().get("id").toString();
+            System.out.println(oAuth2User.toString());
+            String nickname = oAuth2User.getAttributes().get("nickname").toString();
+            String email = oAuth2User.getAttributes().get("email").toString();
+            String birthyear = oAuth2User.getAttributes().get("birthyear").toString();
+//            String talk_message = oAuth2User.getAttributes().get("talk_message").toString();
 
             log.info("id: " + id);
-            log.info("profile_nickname: "+profile_nickname);
-            log.info("account_email: "+account_email);
+            log.info("nickname: "+nickname);
+            log.info("email: "+email);
             log.info("birthyear: "+birthyear);
-            log.info("talk_message: "+talk_message);
+//            log.info("talk_message: "+talk_message);
 
         });
     }
