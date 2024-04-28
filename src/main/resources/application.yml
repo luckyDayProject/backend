@@ -48,7 +48,7 @@ spring:
     import: db.yml
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     #create : Delete an existing table and recreate it
     #create-drop : Same as 'create' but table drop at the end of the session
     #update : Reflect changes only

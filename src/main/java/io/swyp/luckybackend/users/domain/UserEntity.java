@@ -44,15 +44,12 @@ public class UserEntity {
     @Column(name = "PRF_ICON_NO")
     private int profileIconNo;
 
-    @Builder.Default
     @OneToMany(mappedBy = "LC_DAY_CYCL")
     private List<LcDayCycleEntity> cycles = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "LC_DAY_DTL")
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "LC_ALARM")
     private List<LcAlarmEntity> alarms = new ArrayList<>();
 
