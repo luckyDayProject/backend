@@ -45,14 +45,14 @@ public class LcDayDtlEntity {
     @Temporal(TemporalType.DATE)
     private Date dDay;
 
-    @Column(name = "ORDER")
-    private Integer order;
+    @Column(name = "DTL_ORDER")
+    private Integer dtlOrder;
 
     @OneToOne(mappedBy = "dtl", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private LcAlarmEntity alarm;
 
     @Builder
-    public LcDayDtlEntity(Long dtlNo, LcDayCycleEntity cycl, UserEntity user, LcActivityEntity activity, String activityNm, String review, String image, Date dDay, Integer order) {
+    public LcDayDtlEntity(Long dtlNo, LcDayCycleEntity cycl, UserEntity user, LcActivityEntity activity, String activityNm, String review, String image, Date dDay, Integer dtlOrder) {
         this.dtlNo = dtlNo;
         this.cycl = cycl;
         this.user = user;
@@ -61,6 +61,6 @@ public class LcDayDtlEntity {
         this.review = review;
         this.image = image;
         this.dDay = dDay;
-        this.order = order;
+        this.dtlOrder = dtlOrder;
     }
 }

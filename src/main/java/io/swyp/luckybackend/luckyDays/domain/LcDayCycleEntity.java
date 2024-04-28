@@ -17,7 +17,7 @@ import java.util.List;
 public class LcDayCycleEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "CYCL_NO", nullable = false)
     private Long cyclNo;
 
