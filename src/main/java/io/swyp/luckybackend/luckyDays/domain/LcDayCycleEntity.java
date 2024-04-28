@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -42,6 +44,10 @@ public class LcDayCycleEntity {
 
     @Column(name = "RESET", length = 1, nullable = false, columnDefinition = "CHAR DEFAULT 'N'")
     private char reset;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "LC_DAY_DTL")
+    private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
     @Builder
     public LcDayCycleEntity(Long cyclNo, UserEntity user, Integer count, Integer period, Date startDt, Date endDt, String exptDt, char reset) {
