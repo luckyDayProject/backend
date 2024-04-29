@@ -1,6 +1,8 @@
 package io.swyp.luckybackend.users.controller;
 
-import io.swyp.luckybackend.users.service.UserServiceImpl;
+import io.swyp.luckybackend.users.dto.SignInRequestDto;
+import io.swyp.luckybackend.users.dto.SignInResponseDto;
+import io.swyp.luckybackend.users.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +26,18 @@ import org.springframework.web.client.RestTemplate;
 @Tag(name = "User API", description = "사용자 API")
 @Slf4j
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userServiceImpl;
 
     @Operation(
             summary = "로그인 API"
     )
     @GetMapping("/login")
-    public String login(HttpServletResponse response) throws Exception {
+    public ResponseEntity<? super SignInResponseDto> login(HttpServletResponse response) throws Exception {
         log.info("로그인 API 진입");
         response.sendRedirect("/oauth2/authorization/kakao");
-        return "로그인 API";
+        SignInRequestDto requestDto = new SignInRequestDto();
+        ResponseEntity<? super SignInResponseDto> responseEntity = userServiceImpl.signIn(requestDto);
+        return responseEntity;
     }
 
     @Operation(

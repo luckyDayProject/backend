@@ -67,6 +67,7 @@ public class UserEntity {
         this.profileIconNo = profileIconNo;
     }
 
+
     public void changeNickname(String nickname) {
         this.nickname = nickname;
     }
