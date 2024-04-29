@@ -11,10 +11,20 @@ import org.springframework.http.ResponseEntity;
 public class ResponseDTO {
     private String code;
     private String message;
+    private Object resData;
 
     public ResponseDTO(){
         this.code = ResponseCode.SUCCESS;
         this.message = ResponseMessage.SUCCESS;
+    }
+
+    public ResponseDTO(Object resData){
+        this.code = ResponseCode.SUCCESS;
+        this.message = ResponseMessage.SUCCESS;
+        this.resData = resData;
+    }
+
+    public ResponseDTO(String databaseError, String databaseError1) {
     }
 
     public static ResponseEntity<ResponseDTO> databaseError(){
@@ -25,5 +35,10 @@ public class ResponseDTO {
     public static ResponseEntity<ResponseDTO> validationFail(){
         ResponseDTO responseBody = new ResponseDTO(ResponseCode.VALIDATION_FAIL, ResponseMessage.VALIDATION_FAIL);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseDTO> success(Object resData) {
+        ResponseDTO responseBody = new ResponseDTO(resData);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
 }
