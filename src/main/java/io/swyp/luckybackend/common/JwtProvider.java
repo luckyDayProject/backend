@@ -18,13 +18,13 @@ public class JwtProvider {
     @Value("${secret-key}")
     private String secretKey;
 
-    public String create(String userNo) {
+    public String create(long userNo) {
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
-                .setSubject(userNo).setIssuedAt(new Date()).setExpiration(expiredDate)
+                .setSubject(String.valueOf(userNo)).setIssuedAt(new Date()).setExpiration(expiredDate)
                 .compact();
     }
 

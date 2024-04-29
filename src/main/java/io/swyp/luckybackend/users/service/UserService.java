@@ -1,7 +1,9 @@
 package io.swyp.luckybackend.users.service;
 
-import org.springframework.stereotype.Service;
+import io.swyp.luckybackend.users.dto.SignInRequestDto;
+import io.swyp.luckybackend.users.dto.SignInResponseDto;
+import org.springframework.http.ResponseEntity;
 
-@Service
-public class UserService {
+public interface UserService {
+    ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto requestDto);
 }

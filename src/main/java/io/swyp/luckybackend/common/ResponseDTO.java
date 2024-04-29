@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 public class ResponseDTO {
     private String code;
     private String message;
-//    private Object resData;
 
     public ResponseDTO(){
         this.code = ResponseCode.SUCCESS;
