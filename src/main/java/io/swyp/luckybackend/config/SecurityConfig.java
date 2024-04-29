@@ -1,8 +1,9 @@
 package io.swyp.luckybackend.config;
 
 import io.swyp.luckybackend.common.JwtAuthenticationFilter;
+import io.swyp.luckybackend.common.OAuth2SuccessHandler;
 import io.swyp.luckybackend.users.domain.LuckyOAuth2User;
-import io.swyp.luckybackend.users.service.Oauth2UserService;
+import io.swyp.luckybackend.users.service.Oauth2UserServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,12 +15,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -29,7 +29,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
-import java.util.Collections;
 
 @Configuration
 @Configurable
@@ -38,12 +37,9 @@ import java.util.Collections;
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfig {
-    private final Oauth2UserService oauth2UserService;
+    private final DefaultOAuth2UserService oauth2UserService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-//    public SecurityConfig(Oauth2UserService oauth2UserService) {
-//        this.oauth2UserService = oauth2UserService;
-//    }
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
 
     @Bean
@@ -56,7 +52,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/users/login", "/api/*").permitAll()
+                        .requestMatchers("/", "/users/login", "/api/*", "/oauth2/**").permitAll()
 //                        .requestMatchers("/api/v1/user/**").hasRole("USER") // ROLE_은 제외하고 적는다.
 //                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // ROLE_은 제외하고 적는다.
 //                        .anyRequest().authenticated()
@@ -67,14 +63,11 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
-//                    .loginPage("/login")
-                        .successHandler(successHandler())
-                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(oauth2UserService)))
-//                .authorizeHttpRequests(config -> config.anyRequest().permitAll())
-//                .headers((headerConfig) ->
-//                        headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-//                .logout((logoutConfig) ->logoutConfig.logoutSuccessUrl("/"))
+//                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/login"))
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oauth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
+                )
         ;
         return httpSecurity.build();
     }
@@ -92,27 +85,6 @@ public class SecurityConfig {
 //        source.registerCorsConfiguration("/**", config2);
 
         return source;
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return ((request, response, authentication) -> {
-            LuckyOAuth2User oAuth2User = (LuckyOAuth2User) authentication.getPrincipal();
-
-            String id = oAuth2User.getAttributes().get("id").toString();
-            System.out.println(oAuth2User.toString());
-            String nickname = oAuth2User.getAttributes().get("nickname").toString();
-            String email = oAuth2User.getAttributes().get("email").toString();
-            String birthyear = oAuth2User.getAttributes().get("birthyear").toString();
-//            String talk_message = oAuth2User.getAttributes().get("talk_message").toString();
-
-            log.info("id: " + id);
-            log.info("nickname: " + nickname);
-            log.info("email: " + email);
-            log.info("birthyear: " + birthyear);
-//            log.info("talk_message: "+talk_message);
-
-        });
     }
 }
 
