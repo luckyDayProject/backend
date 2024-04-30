@@ -21,7 +21,6 @@ import java.util.List;
 public class UserEntity {
 
     @Id
-    @GeneratedValue
     @Column(name = "USER_NO")
     private Long userNo;
 
