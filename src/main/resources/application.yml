@@ -65,7 +65,9 @@ spring:
 
 secret-key: ${secret-key}
 
-redirect-lucky-url: "http://localhost:3000/auth/oauth-response/"
+redirect-lucky-url: "http://localhost:3000/luckyBoard"
+logout-redirect-uri: "http://localhost:3000"
+expiration-time: "3600"
 
 springdoc:
 #  api-docs:

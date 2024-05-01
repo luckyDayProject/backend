@@ -16,22 +16,8 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-
-    @Override
-    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto requestDto) {
-        String token = null;
-
-        try {
-            long userNo = requestDto.getUserNo();
-            UserEntity userEntity = userRepository.findByUserNo(userNo);
-            if (userEntity ==null) return SignInResponseDto.signInFail();
-
-            token = jwtProvider.create(userNo);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseDTO.databaseError();
-        }
-
-        return SignInResponseDto.success(token);
+    public UserEntity getUserEntityByUserNo(long userNo){
+        return userRepository.findByUserNo(userNo);
     }
+
 }

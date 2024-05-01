@@ -29,7 +29,7 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
 
         UserEntity userEntity = null;
         long userNo = 0l;
-        String email = "a@b.com";
+        String email = "";
 
         if (oauthClientName.equals("kakao")){
             userNo = (long) oAuth2User.getAttributes().get("id");

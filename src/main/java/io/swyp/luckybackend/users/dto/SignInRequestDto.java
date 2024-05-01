@@ -10,4 +10,12 @@ import lombok.Setter;
 public class SignInRequestDto {
     private long userNo;
     private String password;
+
+    @Override
+    public String toString() {
+        return "SignInRequestDto{" +
+                "userNo=" + userNo +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

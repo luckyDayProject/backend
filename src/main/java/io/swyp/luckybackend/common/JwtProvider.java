@@ -28,6 +28,18 @@ public class JwtProvider {
                 .compact();
     }
 
+    public String getNickname(String token){
+        // 토큰에서 클레임을 추출
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        // 'nickname' 클레임을 반환
+        return claims.get("sub", String.class);
+    }
+
     public long validate(String jwt) {
         long subject = 0L;
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));

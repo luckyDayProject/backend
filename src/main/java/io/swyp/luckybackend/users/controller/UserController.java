@@ -1,21 +1,23 @@
 package io.swyp.luckybackend.users.controller;
 
+import io.jsonwebtoken.Jwts;
+import io.swyp.luckybackend.common.JwtProvider;
+import io.swyp.luckybackend.common.ResponseDTO;
+import io.swyp.luckybackend.users.domain.UserEntity;
 import io.swyp.luckybackend.users.dto.SignInRequestDto;
 import io.swyp.luckybackend.users.dto.SignInResponseDto;
 import io.swyp.luckybackend.users.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.client.RestTemplate;
@@ -27,28 +29,34 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class UserController {
     private final UserService userServiceImpl;
+    private final JwtProvider jwtProvider;
 
     @Operation(
             summary = "로그인 API"
     )
-    @GetMapping("/login")
-    public ResponseEntity<? super SignInResponseDto> login(HttpServletResponse response) throws Exception {
+    @GetMapping("/sign-in")
+    public void login(HttpServletResponse response) throws Exception {
         log.info("로그인 API 진입");
         response.sendRedirect("/oauth2/authorization/kakao");
-        SignInRequestDto requestDto = new SignInRequestDto();
-        ResponseEntity<? super SignInResponseDto> responseEntity = userServiceImpl.signIn(requestDto);
-        return responseEntity;
     }
 
+    @Value("${kakao.client-id}")
+    private String clientId;
+
+    @Value(("${logout-redirect-uri}"))
+    private String logoutRedirectUri;
     @Operation(
             summary = "로그아웃 API"
     )
-    @GetMapping("/logout")
-    public String logout(HttpServletResponse response) throws Exception {
+    @GetMapping("/sign-out")
+    public void logout(HttpServletResponse response) throws Exception {
         log.info("로그아웃 API 진입");
-        response.sendRedirect("/v1/user/logout");
-        return "로그아웃 API";
+        String url = String.format("https://kauth.kakao.com/oauth/logout?client_id=%s&logout_redirect_uri=%s"
+        , clientId, logoutRedirectUri);
+        response.sendRedirect(url);
     }
+
+
 
     @GetMapping("/getToken")
     public @ResponseBody String kakaoCallback(String code) { // Data를 리턴해주는 컨트롤러 함수
@@ -66,8 +74,8 @@ public class UserController {
         // body는 보통 key, value의 쌍으로 이루어지기 때문에 자바에서 제공해주는 MultiValueMap 타입을 사용한다.
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "e054053c94984f87d0f21b0abe71d10e");
-        params.add("redirect_uri", "http://localhost:8090/auth/kakao/callback");
+        params.add("client_id", "d6a322a67b89972c512e37af8d4f3769");
+        params.add("redirect_uri", "http://localhost:8080/auth/kakao/callback");
         params.add("code", code);
 
         // 요청하기 위해 헤더(Header)와 데이터(Body)를 합친다.
@@ -81,7 +89,7 @@ public class UserController {
                 kakaoTokenRequest, // 요청할 때 보낼 데이터
                 String.class // 요청 시 반환되는 데이터 타입
         );
-        return "카카오 토큰 요청 완료 : 토큰 요청에 대한 응답 : "+response;
+        return "카카오 토큰 요청 완료 : 토큰 요청에 대한 응답 : " + response;
     }
 
     @Operation(
