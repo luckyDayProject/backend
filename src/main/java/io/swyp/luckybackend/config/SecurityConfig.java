@@ -52,11 +52,11 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/users/login", "/api/*", "/oauth2/**").permitAll()
+                        .requestMatchers("/", "/users/sign-in", "/users/sign-out", "/api/*", "/oauth2/**").permitAll()
 //                        .requestMatchers("/api/v1/user/**").hasRole("USER") // ROLE_은 제외하고 적는다.
 //                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // ROLE_은 제외하고 적는다.
-//                        .anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
+//                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 //                인증에 실패하면 아래 만든 FailedAuthenticationEntryPoint class를 실행

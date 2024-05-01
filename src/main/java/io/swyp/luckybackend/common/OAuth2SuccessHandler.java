@@ -34,13 +34,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                         Authentication authentication) throws IOException, ServletException {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         long userNo = oAuth2User.getUserNo();
-//        Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
-//        Map<String, String> profile = (Map<String, String>) kakaoAccount.get("profile");
-//        String nickname = profile.get("nickname");
         String token = jwtProvider.create(userNo);
         UserEntity userEntity = userServiceImpl.getUserEntityByUserNo(userNo);
         String nickname = URLEncoder.encode(userEntity.getNickname(), StandardCharsets.UTF_8.name());
         response.sendRedirect(String.format("%s/%s/%s/%s", redirectUrl, token, expirationTime, nickname));
-//        response.sendRedirect(String.format("%s/%s/3600", redirectUrl, token));
     }
 }
