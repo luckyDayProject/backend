@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,12 +38,20 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
             if (isExist) return new CustomOAuth2User(userNo);
             Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
             email = (String) kakaoAccount.get("email");
-            int ageGroup = Integer.parseInt((((String) kakaoAccount.get("age_range")).substring(0,1)));
-            String gender_str = (String) kakaoAccount.get("gender");
-            char gender = gender_str.equals("male") ? 'M': 'F';
+            String ageRange = (String) kakaoAccount.get("age_range");
+            int ageGroup = Optional.ofNullable(ageRange)
+                    .map(a -> Integer.parseInt(a.substring(0, 1)))
+                    .orElse(-1); // 미동의로 값이 없으면 -1 적재
+            String genderStr = (String) kakaoAccount.get("gender");
+            char gender = Optional.ofNullable(genderStr)
+                    .map(g -> g.equals("male") ? 'M' : 'F')
+                    .orElse('U'); // 'U'는 Unknown의 의미
 //            System.out.println((Map<String, Object>) kakaoAccount.get("profile").get(""));
             int profileIconNo = (int) (Math.random() * 168) + 1;
-            int birthYear = Integer.parseInt((String) kakaoAccount.get("birthyear"));
+            String birthYearStr = (String) kakaoAccount.get("birthyear");
+            int birthYear = Optional.ofNullable(birthYearStr)
+                    .map(Integer::parseInt)
+                    .orElse(-1); // 미동의 -1 적재
             Map<String, String> profile = (Map<String, String>) kakaoAccount.get("profile");
             String nickname = profile.get("nickname");
             userEntity = UserEntity.builder()
