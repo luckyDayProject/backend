@@ -80,7 +80,7 @@ public class UserController {
     public ResponseEntity<ResponseDTO> withdrawUser(@RequestHeader("Authorization") String token) throws Exception {
         log.info("회원 탈퇴 API 진입");
         long userNo = userServiceImpl.deleteUser(token);
-        return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey));
+        return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey).block());
     }
 
 
@@ -88,7 +88,7 @@ public class UserController {
     public ResponseEntity<ResponseDTO> test(@RequestHeader("Authorization") String token) throws Exception {
         log.info("TEST API 진입");
         long userNo = userServiceImpl.deleteUser(token);
-        return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey));
+        return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey).block());
     }
 
 }
