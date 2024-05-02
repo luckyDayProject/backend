@@ -49,8 +49,6 @@ public class UserController {
     @PutMapping("")
     public ResponseEntity<ResponseDTO> modifyUserInfo(@RequestHeader("Authorization") String token, @RequestBody ModifyUserRequestDto requestDto) throws Exception {
         log.info("회원 정보 수정 API 진입");
-        System.out.println(requestDto.getEmail());
-        System.out.println(requestDto.getNickname());
         userServiceImpl.modifyUserInfo(token, requestDto.modifyDto2Entity(requestDto.getNickname(), requestDto.getEmail()));
         return ResponseDTO.success("ok");
     }
