@@ -28,7 +28,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getNickname(String token){
+    public long getUserNo(String token){
         // 토큰에서 클레임을 추출
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
@@ -36,8 +36,8 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        // 'nickname' 클레임을 반환
-        return claims.get("sub", String.class);
+        // 'userNo' 클레임을 반환
+        return Long.parseLong(claims.get("sub", String.class));
     }
 
     public long validate(String jwt) {

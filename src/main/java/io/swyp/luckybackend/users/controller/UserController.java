@@ -1,10 +1,13 @@
 package io.swyp.luckybackend.users.controller;
 
+import io.swyp.luckybackend.common.ResponseDTO;
+import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import io.swyp.luckybackend.users.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,15 +34,17 @@ public class UserController {
     @Operation(
             summary = "회원 정보 조회 API"
     )
-    @GetMapping("/")
-    public void getUserInfo(HttpHeaders headers) throws Exception {
+    @GetMapping("")
+    public ResponseEntity<ResponseDTO> getUserInfo(@RequestHeader("Authorization") String token) throws Exception {
         log.info("회원 정보 조회 API 진입");
+        return userServiceImpl.getUserInfo(token);
+
     }
 
     @Operation(
             summary = "회원 정보 수정 API"
     )
-    @PutMapping("/")
+    @PutMapping("")
     public void modifyUserInfo(HttpHeaders headers) throws Exception {
         log.info("회원 정보 수정 API 진입");
     }
@@ -66,6 +71,14 @@ public class UserController {
     @DeleteMapping("/")
     public void withdrawUser(HttpHeaders headers) throws Exception {
         log.info("회원 탈퇴 API 진입");
+    }
+
+    @PutMapping("/test")
+    public ResponseEntity<ResponseDTO> test(@RequestHeader("Authorization") String token, @RequestBody ModifyUserRequestDto requestDto) throws Exception {
+        log.info("TEST API 진입");
+        System.out.println(requestDto.getEmail());
+        System.out.println(requestDto.getNickname());
+        return null;
     }
 
 
