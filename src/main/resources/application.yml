@@ -64,6 +64,7 @@ spring:
         show_sql: true #show sql
 
 secret-key: ${secret-key}
+kakao-admin-key: ${kakao.admin-key}
 
 redirect-lucky-url: "http://localhost:3000/luckyBoard"
 logout-redirect-uri: "http://localhost:3000"

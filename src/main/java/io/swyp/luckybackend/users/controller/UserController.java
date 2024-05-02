@@ -2,6 +2,7 @@ package io.swyp.luckybackend.users.controller;
 
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
+import io.swyp.luckybackend.users.service.KakaoService;
 import io.swyp.luckybackend.users.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.net.http.HttpHeaders;
 @Slf4j
 public class UserController {
     private final UserService userServiceImpl;
+    private final KakaoService kakaoService;
 
     @Operation(
             summary = "로그인 API"
@@ -45,8 +47,12 @@ public class UserController {
             summary = "회원 정보 수정 API"
     )
     @PutMapping("")
-    public void modifyUserInfo(HttpHeaders headers) throws Exception {
+    public ResponseEntity<ResponseDTO> modifyUserInfo(@RequestHeader("Authorization") String token, @RequestBody ModifyUserRequestDto requestDto) throws Exception {
         log.info("회원 정보 수정 API 진입");
+        System.out.println(requestDto.getEmail());
+        System.out.println(requestDto.getNickname());
+        userServiceImpl.modifyUserInfo(token, requestDto.modifyDto2Entity(requestDto.getNickname(), requestDto.getEmail()));
+        return ResponseDTO.success("ok");
     }
 
     @Value("${kakao.client-id}")
@@ -65,21 +71,24 @@ public class UserController {
         response.sendRedirect(url);
     }
 
+    @Value("${kakao-admin-key}")
+    private String adminKey;
     @Operation(
             summary = "회원 탈퇴 API"
     )
-    @DeleteMapping("/")
-    public void withdrawUser(HttpHeaders headers) throws Exception {
+    @DeleteMapping("")
+    public ResponseEntity<ResponseDTO> withdrawUser(@RequestHeader("Authorization") String token) throws Exception {
         log.info("회원 탈퇴 API 진입");
+        long userNo = userServiceImpl.deleteUser(token);
+        return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey));
     }
 
-    @PutMapping("/test")
-    public ResponseEntity<ResponseDTO> test(@RequestHeader("Authorization") String token, @RequestBody ModifyUserRequestDto requestDto) throws Exception {
+
+    @DeleteMapping("/test")
+    public ResponseEntity<ResponseDTO> test(@RequestHeader("Authorization") String token) throws Exception {
         log.info("TEST API 진입");
-        System.out.println(requestDto.getEmail());
-        System.out.println(requestDto.getNickname());
-        return null;
+        long userNo = userServiceImpl.deleteUser(token);
+        return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey));
     }
-
 
 }

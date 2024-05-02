@@ -1,5 +1,6 @@
 package io.swyp.luckybackend.users.dto;
 
+import io.swyp.luckybackend.users.domain.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,4 +15,7 @@ public class ModifyUserRequestDto {
         this.email = email;
     }
 
+    public UserEntity modifyDto2Entity(String nickname, String email){
+        return UserEntity.builder().nickname(nickname).email(email).build();
+    }
 }
