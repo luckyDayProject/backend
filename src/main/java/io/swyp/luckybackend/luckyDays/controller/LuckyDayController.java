@@ -18,4 +18,6 @@ public class LuckyDayController {
         return luckyDayService.getActivityList();
     }
 
+
+
 }

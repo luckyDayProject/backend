@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/users/sign-in", "/users/sign-out", "/users/test", "/luckydays/activity").permitAll()
+                        .requestMatchers("/", "/users/sign-in", "/users/sign-out", "/users/test", "/luckydays/activity", "/api", "/swagger-ui/*").permitAll()
 //                        .requestMatchers("/", "/users/sign-in", "/users/sign-out", "/users/test", "/oauth2/**").permitAll()
 //                        .requestMatchers("/api/v1/user/**").hasRole("USER") // ROLE_은 제외하고 적는다.
 //                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // ROLE_은 제외하고 적는다.
