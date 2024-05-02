@@ -1,5 +1,7 @@
 package io.swyp.luckybackend.users.controller;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import io.swyp.luckybackend.users.service.KakaoService;
@@ -43,9 +45,7 @@ public class UserController {
 
     }
 
-    @Operation(
-            summary = "회원 정보 수정 API"
-    )
+    @Operation(summary = "회원 정보 수정 API")
     @PutMapping("")
     public ResponseEntity<ResponseDTO> modifyUserInfo(@RequestHeader("Authorization") String token, @RequestBody ModifyUserRequestDto requestDto) throws Exception {
         log.info("회원 정보 수정 API 진입");
