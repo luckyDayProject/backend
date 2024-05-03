@@ -1,4 +1,4 @@
-package io.swyp.luckybackend.users.dto;
+package io.swyp.luckybackend.luckyDays.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

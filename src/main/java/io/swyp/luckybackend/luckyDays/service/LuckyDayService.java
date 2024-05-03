@@ -1,23 +1,15 @@
 package io.swyp.luckybackend.luckyDays.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.gson.JsonArray;
-import com.nimbusds.jose.shaded.gson.JsonObject;
 import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
-import io.swyp.luckybackend.luckyDays.domain.LcActivityEntity;
-import io.swyp.luckybackend.luckyDays.dto.ActivityDTO;
-import io.swyp.luckybackend.luckyDays.dto.CategoryActivitiesDTO;
-import io.swyp.luckybackend.luckyDays.dto.CreateLcDayRequestDto;
+import io.swyp.luckybackend.luckyDays.dto.*;
 import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
-import io.swyp.luckybackend.users.dto.GetActivityListDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,5 +70,23 @@ public class LuckyDayService {
         long userNo = getUserNo(token);
 
         return ResponseDTO.success("생성완료");
+    }
+
+    public ResponseEntity<ResponseDTO> getLcDayList(String token, int isCurrent) {
+        long userNo = getUserNo(token);
+        List<GetLcDayListDto> lcDayList;
+        if(isCurrent == 0) {
+            lcDayList = lcActivityRepository.getLcDayListByHist(userNo);
+        } else {
+            lcDayList = lcActivityRepository.getLcDayList(userNo);
+            for(GetLcDayListDto list : lcDayList) {
+                if(list.getDDay() > 3) {
+                    list.setDate(null);
+                    list.setDDay(null);
+                }
+            }
+        }
+
+        return ResponseDTO.success(lcDayList);
     }
 }

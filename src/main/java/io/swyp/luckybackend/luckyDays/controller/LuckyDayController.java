@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class LuckyDayController {
     private final LuckyDayService luckyDayService;
 
-    @Operation(summary = "활동 목록 조회 API")
+    @Operation(summary = "활동 목록 조회")
     @GetMapping("/activity")
     public ResponseEntity<ResponseDTO> activityList(){
         return luckyDayService.getActivityList();
@@ -27,6 +27,12 @@ public class LuckyDayController {
     @PostMapping("")
     public ResponseEntity<ResponseDTO> createLcDay(@RequestHeader("Authorization") String token, @RequestBody CreateLcDayRequestDto requestDto){
         return luckyDayService.createLcDay(token, requestDto);
+    }
+
+    @Operation(summary = "유저 럭키데이 목록 조회")
+    @GetMapping("")
+    public ResponseEntity<ResponseDTO> getLcDayList(@RequestHeader("Authorization") String token, @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
+        return luckyDayService.getLcDayList(token, isCurrent);
     }
 
 
