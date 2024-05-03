@@ -5,6 +5,7 @@ import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.luckyDays.dto.CreateLcDayRequestDto;
 import io.swyp.luckybackend.luckyDays.service.LuckyDayService;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +26,15 @@ public class LuckyDayController {
 
     @Operation(summary = "럭키데이 생성 API")
     @PostMapping("")
-    public ResponseEntity<ResponseDTO> createLcDay(@RequestHeader("Authorization") String token, @RequestBody CreateLcDayRequestDto requestDto){
+    public ResponseEntity<ResponseDTO> createLcDay(HttpServletRequest request, @RequestBody CreateLcDayRequestDto requestDto){
+        String token = request.getHeader("Authorization");
         return luckyDayService.createLcDay(token, requestDto);
     }
 
     @Operation(summary = "유저 럭키데이 목록 조회")
     @GetMapping("")
-    public ResponseEntity<ResponseDTO> getLcDayList(@RequestHeader("Authorization") String token, @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
+    public ResponseEntity<ResponseDTO> getLcDayList(HttpServletRequest request, @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
+        String token = request.getHeader("Authorization");
         return luckyDayService.getLcDayList(token, isCurrent);
     }
 
