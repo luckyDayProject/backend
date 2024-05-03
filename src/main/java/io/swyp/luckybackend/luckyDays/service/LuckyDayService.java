@@ -89,4 +89,10 @@ public class LuckyDayService {
 
         return ResponseDTO.success(lcDayList);
     }
+
+    public ResponseEntity<ResponseDTO> getLcDayDetail(String token, int dtlNo) {
+        long userNo = getUserNo(token);
+        GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo);
+        return ResponseDTO.success(lcDetail);
+    }
 }
