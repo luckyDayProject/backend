@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -43,7 +44,7 @@ public class LcDayDtlEntity {
 
     @Column(name = "D_DAY")
     @Temporal(TemporalType.DATE)
-    private Date dDay;
+    private LocalDate dDay;
 
     @Column(name = "DTL_ORDER")
     private Integer dtlOrder;
@@ -52,7 +53,7 @@ public class LcDayDtlEntity {
     private LcAlarmEntity alarm;
 
     @Builder
-    public LcDayDtlEntity(Long dtlNo, LcDayCycleEntity cycl, UserEntity user, LcActivityEntity activity, String activityNm, String review, String image, Date dDay, Integer dtlOrder) {
+    public LcDayDtlEntity(Long dtlNo, LcDayCycleEntity cycl, UserEntity user, LcActivityEntity activity, String activityNm, String review, String image, LocalDate dDay, Integer dtlOrder) {
         this.dtlNo = dtlNo;
         this.cycl = cycl;
         this.user = user;

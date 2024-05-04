@@ -10,6 +10,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -82,11 +84,12 @@ public class LuckyDayService {
             1. 생성된 싸이클이 없을 경우
         */
         long userNo = getUserNo(token);
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<GetLcDayListDto> lcDayList;
         if(isCurrent == 0) {
-            lcDayList = lcActivityRepository.getLcDayListByHist(userNo);
+            lcDayList = lcActivityRepository.getLcDayListByHist(userNo, today);
         } else {
-            lcDayList = lcActivityRepository.getLcDayList(userNo);
+            lcDayList = lcActivityRepository.getLcDayList(userNo, today);
             for(GetLcDayListDto list : lcDayList) {
                 if(list.getDDay() > 3) {
                     list.setDate(null);
