@@ -18,10 +18,12 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetActivityListDto(a.category, a.activityNo, a.keyword) FROM LcActivityEntity a")
     List<GetActivityListDto> getActivityList();
 
-    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto(a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, FUNCTION('CURDATE')), a.dDay, a.dtlOrder) " +
+    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto(a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, CURRENT_DATE()), a.dDay, a.dtlOrder) " +
             "FROM LcDayDtlEntity a " +
-            "WHERE a.dDay >= FUNCTION('CURDATE')" +
-            "AND a.user.userNo = :userNo")
+            "JOIN a.cycl b " +
+            "WHERE a.dDay >= CURRENT_DATE() " +
+            "AND a.user.userNo = :userNo " +
+            "AND b.reset = 'N'")
     List<GetLcDayListDto> getLcDayList(long userNo);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto( a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, FUNCTION('CURDATE')), a.dDay, a.dtlOrder) " +
