@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class GetLcDayListDto {
     private long dtlNo;
+    private long cyclNo;
     @Nullable
     private Integer dDay;
     @Nullable

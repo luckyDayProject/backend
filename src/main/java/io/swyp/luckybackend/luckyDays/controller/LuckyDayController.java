@@ -45,5 +45,12 @@ public class LuckyDayController {
         return luckyDayService.getLcDayDetail(token, dtlNo);
     }
 
+    @Operation(summary = "유저 럭키데이 싸이클 정보 조회")
+    @GetMapping("/info/{cyclNo}")
+    public ResponseEntity<ResponseDTO> getLcDayCyclInfo(HttpServletRequest request, @PathVariable int cyclNo) {
+        String token = request.getHeader("Authorization");
+        return luckyDayService.getLcDayCyclInfo(token, cyclNo);
+    }
+
 
 }
