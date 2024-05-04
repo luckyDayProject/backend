@@ -52,5 +52,12 @@ public class LuckyDayController {
         return luckyDayService.getLcDayCyclInfo(token, cyclNo);
     }
 
+    @Operation(summary = "유저 럭키데이 리셋")
+    @DeleteMapping("")
+    public ResponseEntity<ResponseDTO> deleteLcDayCycl(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        return luckyDayService.deleteLcDayCycl(token);
+    }
+
 
 }

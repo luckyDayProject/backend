@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,12 +67,20 @@ public class LuckyDayService {
      *        회고록, 이미지명, 럭키데이 날짜(1. 날짜 랜덤 선택에서 나온 날짜), 럭키데이 순서(화면에 뿌려질 랜덤값)
      * */
     public ResponseEntity<ResponseDTO> createLcDay(String token, CreateLcDayRequestDto requestDto){
+        /*
+            에러코드 처리
+            1. 이미 생성된 싸이클이 있을경우 (이미 싸이클이 있으면 생성 버튼을 누를수가 없는데 굳이 처리를 해야하나?)
+        */
         long userNo = getUserNo(token);
 
         return ResponseDTO.success("생성완료");
     }
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, int isCurrent) {
+        /*
+            에러코드 처리
+            1. 생성된 싸이클이 없을 경우
+        */
         long userNo = getUserNo(token);
         List<GetLcDayListDto> lcDayList;
         if(isCurrent == 0) {
@@ -100,5 +108,17 @@ public class LuckyDayService {
         long userNo = getUserNo(token);
         GetLcDayCyclDto lcCycl = lcActivityRepository.getLcDayCyclInfo(cyclNo);
         return ResponseDTO.success(lcCycl);
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseDTO> deleteLcDayCycl(String token) {
+        /*
+            에러코드 처리
+            1. 이미 리셋처리된 경우
+            2. 생성된 싸이클이 없을 경우
+        */
+        long userNo = getUserNo(token);
+        lcActivityRepository.deleteLcDayCycl(userNo);
+        return ResponseDTO.success();
     }
 }

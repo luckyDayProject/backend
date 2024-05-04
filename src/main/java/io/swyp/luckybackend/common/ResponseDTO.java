@@ -42,4 +42,9 @@ public class ResponseDTO {
         ResponseDTO responseBody = new ResponseDTO(resData);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
+
+    public static ResponseEntity<ResponseDTO> success() {
+        ResponseDTO responseBody = new ResponseDTO();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+    }
 }

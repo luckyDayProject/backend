@@ -43,13 +43,13 @@ public class LcDayCycleEntity {
     private String exptDt;
 
     @Column(name = "RESET", length = 1, nullable = false, columnDefinition = "CHAR DEFAULT 'N'")
-    private char reset;
+    private String reset;
 
     @OneToMany(mappedBy = "cycl")
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
     @Builder
-    public LcDayCycleEntity(Long cyclNo, UserEntity user, Integer count, Integer period, Date startDt, Date endDt, String exptDt, char reset) {
+    public LcDayCycleEntity(Long cyclNo, UserEntity user, Integer count, Integer period, Date startDt, Date endDt, String exptDt, String reset) {
         this.cyclNo = cyclNo;
         this.user = user;
         this.count = count;
