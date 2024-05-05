@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -111,7 +113,21 @@ public class LuckyDayService {
     public ResponseEntity<ResponseDTO> getLcDayDetail(String token, int dtlNo) {
         long userNo = getUserNo(token);
         GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo);
-        return ResponseDTO.success(lcDetail);
+        // 클라이언트용 이미지 URL 설정
+        String imageUrl = lcDetail.getImageName() != null ? "/images/" + encodeUrl(lcDetail.getImageName()) : null;
+
+        // 빌더를 사용하여 객체 생성
+        GetLcDayDtlResDto lcDayDtlResDto = GetLcDayDtlResDto.builder()
+                .dDay(lcDetail.getDDay())
+                .actNm(lcDetail.getActNm())
+                .actInfo(lcDetail.getActInfo())
+                .review(lcDetail.getReview())
+                .imageName(lcDetail.getImageName())
+                .imagePath(lcDetail.getImagePath())
+                .imageUrl(imageUrl)
+                .build();
+
+        return ResponseDTO.success(lcDayDtlResDto);
     }
 
     public ResponseEntity<ResponseDTO> getLcDayCyclInfo(String token, int cyclNo) {
@@ -135,6 +151,13 @@ public class LuckyDayService {
     public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
         Long userNo = getUserNo(token);
         String imagePath = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "luckyImage";
+//        String imagePath = "/Documents/luckyImage";
+        File imageDirectory = new File(imagePath);
+
+        // 디렉토리가 없으면 생성
+        if (!imageDirectory.exists()) {
+            imageDirectory.mkdirs();
+        }
 
         UUID uuid = UUID.randomUUID();
         String imageName = uuid + "_" + image.getOriginalFilename();
@@ -142,10 +165,17 @@ public class LuckyDayService {
 
         image.transferTo(saveFile);
         requestDto.setImageName(imageName);
-        requestDto.setImagePath("/luckyImage/" + imageName);
+
+        requestDto.setImagePath("/Documents/luckyImage/" + imageName);
+
+        String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
 
         lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), requestDto.getImageName(), requestDto.getImagePath());
 
-        return ResponseDTO.success();
+        return ResponseDTO.success(imageUrl);
+    }
+
+    private String encodeUrl(String url) {
+        return URLEncoder.encode(url, StandardCharsets.UTF_8);
     }
 }
