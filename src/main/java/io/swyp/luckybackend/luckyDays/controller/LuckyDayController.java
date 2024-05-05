@@ -1,8 +1,10 @@
 package io.swyp.luckybackend.luckyDays.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.luckyDays.dto.CreateLcDayRequestDto;
+import io.swyp.luckybackend.luckyDays.dto.ReviewReqDto;
 import io.swyp.luckybackend.luckyDays.service.LuckyDayService;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,5 +64,15 @@ public class LuckyDayController {
         return luckyDayService.deleteLcDayCycl(token);
     }
 
+    @Operation(summary = "럭키데이 회고록 작성")
+    @PostMapping(value = "/review", consumes = {"multipart/form-data"})
+    public ResponseEntity<ResponseDTO> insertReview(HttpServletRequest request,
+                                                    @Parameter(description = "Review data", required = true)
+                                                    @RequestPart(name = "reviewReqDto") ReviewReqDto requestDto,
+                                                    @RequestPart(required = false, name = "image") MultipartFile image) throws IOException {
+        String token = request.getHeader("Authorization");
+        return luckyDayService.insertReview(token, requestDto, image);
+
+    }
 
 }

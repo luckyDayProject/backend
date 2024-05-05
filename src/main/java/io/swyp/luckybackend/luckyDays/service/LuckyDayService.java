@@ -2,24 +2,31 @@ package io.swyp.luckybackend.luckyDays.service;
 
 import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
+import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
 import io.swyp.luckybackend.luckyDays.dto.*;
 import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
+import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class LuckyDayService {
     private final LcActivityRepository lcActivityRepository;
+    private final LcDayDtlRepository lcDayDtlRepository;
     private final JwtProvider jwtProvider;
 
     private final MappingJackson2HttpMessageConverter converter;
@@ -122,6 +129,23 @@ public class LuckyDayService {
         */
         long userNo = getUserNo(token);
         lcActivityRepository.deleteLcDayCycl(userNo);
+        return ResponseDTO.success();
+    }
+
+    public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
+        Long userNo = getUserNo(token);
+        String imagePath = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "luckyImage";
+
+        UUID uuid = UUID.randomUUID();
+        String imageName = uuid + "_" + image.getOriginalFilename();
+        File saveFile = new File(imagePath, imageName);
+
+        image.transferTo(saveFile);
+        requestDto.setImageName(imageName);
+        requestDto.setImagePath("/luckyImage/" + imageName);
+
+        lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), requestDto.getImageName(), requestDto.getImagePath());
+
         return ResponseDTO.success();
     }
 }

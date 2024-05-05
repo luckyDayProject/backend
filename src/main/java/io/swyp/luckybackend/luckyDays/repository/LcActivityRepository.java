@@ -1,10 +1,7 @@
 package io.swyp.luckybackend.luckyDays.repository;
 
 import io.swyp.luckybackend.luckyDays.domain.LcActivityEntity;
-import io.swyp.luckybackend.luckyDays.dto.GetActivityListDto;
-import io.swyp.luckybackend.luckyDays.dto.GetLcDayCyclDto;
-import io.swyp.luckybackend.luckyDays.dto.GetLcDayDtlDto;
-import io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto;
+import io.swyp.luckybackend.luckyDays.dto.*;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -38,7 +35,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "AND b.reset = 'N'")
     List<GetLcDayListDto> getLcDayListByHist(long userNo, LocalDate today);
 
-    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayDtlDto(a.dDay, a.activityNm, b.activityInfo, a.review, a.image) " +
+    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayDtlDto(a.dDay, a.activityNm, b.activityInfo, a.review, a.imageName, a.imagePath) " +
             "FROM LcDayDtlEntity a " +
             "JOIN a.activity b " +
             "WHERE a.dtlNo = :dtlNo")

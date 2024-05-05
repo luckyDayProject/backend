@@ -4,23 +4,20 @@ import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetLcDayDtlDto {
-    private LocalDate dDay;
-    private String actNm;
-    private String actInfo;
+public class ReviewReqDto {
+    private Long dtlNo;
     @Nullable
     private String review;
     @Nullable
     private String imageName;
     @Nullable
     private String imagePath;
-
-
 }
+
+

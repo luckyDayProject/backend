@@ -39,8 +39,11 @@ public class LcDayDtlEntity {
     @Column(name = "REVIEW")
     private String review;
 
-    @Column(name = "IMAGE", length = 200)
-    private String image;
+    @Column(name = "IMAGE_NAME", length = 200)
+    private String imageName;
+
+    @Column(name = "IMAGE_PATH", length = 200)
+    private String imagePath;
 
     @Column(name = "D_DAY")
     @Temporal(TemporalType.DATE)
@@ -53,14 +56,15 @@ public class LcDayDtlEntity {
     private LcAlarmEntity alarm;
 
     @Builder
-    public LcDayDtlEntity(Long dtlNo, LcDayCycleEntity cycl, UserEntity user, LcActivityEntity activity, String activityNm, String review, String image, LocalDate dDay, Integer dtlOrder) {
+    public LcDayDtlEntity(Long dtlNo, LcDayCycleEntity cycl, UserEntity user, LcActivityEntity activity, String activityNm, String review, String imageName, String imagePath, LocalDate dDay, Integer dtlOrder) {
         this.dtlNo = dtlNo;
         this.cycl = cycl;
         this.user = user;
         this.activity = activity;
         this.activityNm = activityNm;
         this.review = review;
-        this.image = image;
+        this.imageName = imageName;
+        this.imagePath = imagePath;
         this.dDay = dDay;
         this.dtlOrder = dtlOrder;
     }
