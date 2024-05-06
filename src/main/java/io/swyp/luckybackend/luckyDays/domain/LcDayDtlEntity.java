@@ -16,7 +16,7 @@ import java.util.Date;
 public class LcDayDtlEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DTL_NO", nullable = false)
     private Long dtlNo;
 

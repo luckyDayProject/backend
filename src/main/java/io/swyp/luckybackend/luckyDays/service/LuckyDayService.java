@@ -104,7 +104,7 @@ public class LuckyDayService {
         return ResponseDTO.success("생성완료");
     }
 
-    public ResponseEntity<ResponseDTO> getLcDayList(String token, int isCurrent) {
+    public ResponseEntity<ResponseDTO> getLcDayList(String token, long cyclNo, int isCurrent) {
         /*
             에러코드 처리
             1. 생성된 싸이클이 없을 경우
@@ -113,9 +113,9 @@ public class LuckyDayService {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<GetLcDayListDto> lcDayList;
         if(isCurrent == 0) {
-            lcDayList = lcActivityRepository.getLcDayListByHist(userNo, today);
+            lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
         } else {
-            lcDayList = lcActivityRepository.getLcDayList(userNo, today);
+            lcDayList = lcActivityRepository.getLcDayList(userNo, cyclNo, today);
             for(GetLcDayListDto list : lcDayList) {
                 if(list.getDDay() > 3) {
                     list.setDate(null);

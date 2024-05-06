@@ -37,10 +37,10 @@ public class LuckyDayController {
     }
 
     @Operation(summary = "유저 럭키데이 목록 조회")
-    @GetMapping("")
-    public ResponseEntity<ResponseDTO> getLcDayList(HttpServletRequest request, @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
+    @GetMapping("/cycl/{cyclNo}")
+    public ResponseEntity<ResponseDTO> getLcDayList(HttpServletRequest request, @PathVariable long cyclNo, @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
         String token = request.getHeader("Authorization");
-        return luckyDayService.getLcDayList(token, isCurrent);
+        return luckyDayService.getLcDayList(token, cyclNo, isCurrent);
     }
 
     @Operation(summary = "유저 럭키데이 상세 조회")

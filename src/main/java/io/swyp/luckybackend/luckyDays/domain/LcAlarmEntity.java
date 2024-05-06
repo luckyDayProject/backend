@@ -15,6 +15,7 @@ import java.util.Date;
 public class LcAlarmEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ALARM_NO", nullable = false)
     private Long alarmNo;
 
