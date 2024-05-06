@@ -150,8 +150,8 @@ public class LuckyDayService {
 
     public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
         Long userNo = getUserNo(token);
-        String imagePath = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "luckyImage";
-//        String imagePath = "/Documents/luckyImage";
+//        String imagePath = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "luckyImage";
+        String imagePath = "/root/lucky/luckyImage";
         File imageDirectory = new File(imagePath);
 
         // 디렉토리가 없으면 생성
@@ -166,7 +166,7 @@ public class LuckyDayService {
         image.transferTo(saveFile);
         requestDto.setImageName(imageName);
 
-        requestDto.setImagePath("/Documents/luckyImage/" + imageName);
+        requestDto.setImagePath("/root/lucky/luckyImage/" + imageName);
 
         String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
 
