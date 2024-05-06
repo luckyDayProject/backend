@@ -170,35 +170,19 @@ public class LuckyDayService {
 
         lcDayDtlRepository.insertImage(dtlNo, imageName, imagePath);
 
-        return ResponseDTO.success(imageUrl);
+        ReviewImageDto reviewImageDto = new ReviewImageDto();
+        reviewImageDto.setImgaeUrl(imageUrl);
+
+        return ResponseDTO.success(reviewImageDto);
 
     }
 
-    public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
+    public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto) throws IOException {
         Long userNo = getUserNo(token);
-//        String imagePath = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "luckyImage";
-        String imagePath = "/root/lucky/luckyImage";
-        File imageDirectory = new File(imagePath);
 
-        // 디렉토리가 없으면 생성
-        if (!imageDirectory.exists()) {
-            imageDirectory.mkdirs();
-        }
+        lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview());
 
-        UUID uuid = UUID.randomUUID();
-        String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
-        File saveFile = new File(imagePath, imageName);
-
-        image.transferTo(saveFile);
-        requestDto.setImageName(imageName);
-
-        requestDto.setImagePath("/root/lucky/luckyImage/" + imageName);
-
-        String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
-
-        lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), requestDto.getImageName(), requestDto.getImagePath());
-
-        return ResponseDTO.success(imageUrl);
+        return ResponseDTO.success();
     }
 
     private String encodeUrl(String url) {

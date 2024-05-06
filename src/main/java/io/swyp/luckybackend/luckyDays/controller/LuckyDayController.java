@@ -74,13 +74,11 @@ public class LuckyDayController {
     }
 
     @Operation(summary = "럭키데이 회고록 작성")
-    @PostMapping(value = "/review", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/review")
     public ResponseEntity<ResponseDTO> insertReview(HttpServletRequest request,
-                                                    @Parameter(description = "Review data", required = true)
-                                                    @RequestPart(name = "reviewReqDto") ReviewReqDto requestDto,
-                                                    @RequestPart(required = false, name = "image") MultipartFile image) throws IOException {
+                                                    @RequestBody ReviewReqDto requestDto) throws IOException {
         String token = request.getHeader("Authorization");
-        return luckyDayService.insertReview(token, requestDto, image);
+        return luckyDayService.insertReview(token, requestDto);
 
     }
 

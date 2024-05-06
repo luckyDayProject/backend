@@ -14,10 +14,6 @@ public class ReviewReqDto {
     private Long dtlNo;
     @Nullable
     private String review;
-    @Nullable
-    private String imageName;
-    @Nullable
-    private String imagePath;
 }
 
 
