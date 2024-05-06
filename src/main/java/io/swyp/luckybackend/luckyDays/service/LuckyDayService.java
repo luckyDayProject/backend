@@ -19,9 +19,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,10 +42,29 @@ public class LuckyDayService {
         Map<String, List<GetActivityListDto>> groupedActivities = activities.stream()
                 .collect(Collectors.groupingBy(GetActivityListDto::getCategory));
 
+        // '직접 입력' 카테고리 처리
+        String directInputCategoryName = "직접 입력";
+        List<GetActivityListDto> directInputActivities = groupedActivities.getOrDefault(directInputCategoryName, Collections.emptyList());
+
+        // '직접 입력'에서 하나 랜덤 선택
+        GetActivityListDto randomDirectInputActivity = null;
+        if (!directInputActivities.isEmpty()) {
+            Random random = new Random();
+            randomDirectInputActivity = directInputActivities.get(random.nextInt(directInputActivities.size()));
+        }
+
         // 결과를 원하는 JSON 형식으로 변환
         List<CategoryActivitiesDTO> categoryActivities = groupedActivities.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals(directInputCategoryName))
                 .map(entry -> new CategoryActivitiesDTO(entry.getKey(), mapActivities(entry.getValue())))
                 .collect(Collectors.toList());
+
+        // '직접 입력' 카테고리 추가
+        if (randomDirectInputActivity != null) {
+            List<ActivityDTO> directInputList = List.of(new ActivityDTO(randomDirectInputActivity.getActivityNo(), randomDirectInputActivity.getKeyword()));
+            categoryActivities.add(new CategoryActivitiesDTO(directInputCategoryName, directInputList));
+        }
+
         return ResponseDTO.success(categoryActivities);
 
     }

@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CategoryActivitiesDTO {
     private String category;
     private List<ActivityDTO> actList;
