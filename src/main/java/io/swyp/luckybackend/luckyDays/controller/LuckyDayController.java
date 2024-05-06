@@ -64,6 +64,15 @@ public class LuckyDayController {
         return luckyDayService.deleteLcDayCycl(token);
     }
 
+    @Operation(summary = "회고록 이미지 첨부")
+    @PostMapping(value = "/review/image", consumes = {"multipart/form-data"})
+    public ResponseEntity<ResponseDTO> insertReview(HttpServletRequest request,
+                                                    @RequestPart("dtlNo") int dtlNo,
+                                                    @RequestPart(required = false, name = "image") MultipartFile image) throws IOException {
+        String token = request.getHeader("Authorization");
+        return luckyDayService.insertImage(token, dtlNo, image);
+    }
+
     @Operation(summary = "럭키데이 회고록 작성")
     @PostMapping(value = "/review", consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO> insertReview(HttpServletRequest request,

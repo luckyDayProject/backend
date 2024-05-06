@@ -148,6 +148,32 @@ public class LuckyDayService {
         return ResponseDTO.success();
     }
 
+    public ResponseEntity<ResponseDTO> insertImage(String token, int dtlNo, MultipartFile image) throws IOException {
+        long userNo = getUserNo(token);
+
+        String imagePath = "/root/lucky/luckyImage";
+        File imageDirectory = new File(imagePath);
+
+        // 디렉토리가 없으면 생성
+        if (!imageDirectory.exists()) {
+            imageDirectory.mkdirs();
+        }
+
+        UUID uuid = UUID.randomUUID();
+        String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
+        File saveFile = new File(imagePath, imageName);
+
+        image.transferTo(saveFile);
+        imagePath = imagePath + imageName;
+
+        String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
+
+        lcDayDtlRepository.insertImage(dtlNo, imageName, imagePath);
+
+        return ResponseDTO.success(imageUrl);
+
+    }
+
     public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
         Long userNo = getUserNo(token);
 //        String imagePath = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "luckyImage";
