@@ -160,7 +160,7 @@ public class LuckyDayService {
         }
 
         UUID uuid = UUID.randomUUID();
-        String imageName = uuid + "_" + image.getOriginalFilename();
+        String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
         File saveFile = new File(imagePath, imageName);
 
         image.transferTo(saveFile);
