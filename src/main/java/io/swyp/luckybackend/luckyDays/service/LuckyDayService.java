@@ -205,4 +205,8 @@ public class LuckyDayService {
     private String encodeUrl(String url) {
         return URLEncoder.encode(url, StandardCharsets.UTF_8);
     }
+
+    public void getLcDay(LocalDate today) {
+//        lcActivityRepository.getLcDay(today);
+    }
 }

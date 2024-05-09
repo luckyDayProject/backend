@@ -52,4 +52,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     @Transactional
     @Query("UPDATE LcDayCycleEntity SET reset = 'Y' WHERE cyclNo = (SELECT MAX(cyclNo) FROM LcDayCycleEntity WHERE user.userNo = :userNo)")
     void deleteLcDayCycl(@Param("userNo") long userNo);
+
+//    void getLcDay(LocalDate today);
+
 }
