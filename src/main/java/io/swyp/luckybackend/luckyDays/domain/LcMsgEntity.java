@@ -20,7 +20,7 @@ public class LcMsgEntity {
     private String sj;
 
     @Lob
-    @Column(name = "CONTENT")
+    @Column(name = "CONTENT", columnDefinition = "MEDIUMTEXT")
     private String content;
 
     @Column(name = "VRIABL_WORDS", length = 50)
