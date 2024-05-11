@@ -42,15 +42,14 @@ public class LcDayCycleEntity {
     @Column(name = "EXPT_DT", length = 200)
     private String exptDt;
 
-    @Column(name = "RESET", length = 1, nullable = false, columnDefinition = "CHAR DEFAULT 'N'")
+    @Column(name = "RESET", length = 1, columnDefinition = "CHAR DEFAULT 'N'")
     private String reset;
 
     @OneToMany(mappedBy = "cycl")
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
     @Builder
-    public LcDayCycleEntity(Long cyclNo, UserEntity user, Integer count, Integer period, Date startDt, Date endDt, String exptDt, String reset) {
-        this.cyclNo = cyclNo;
+    public LcDayCycleEntity(UserEntity user, Integer count, Integer period, Date startDt, Date endDt, String exptDt, String reset) {
         this.user = user;
         this.count = count;
         this.period = period;
@@ -58,5 +57,20 @@ public class LcDayCycleEntity {
         this.endDt = endDt;
         this.exptDt = exptDt;
         this.reset = reset;
+    }
+
+    @Override
+    public String toString() {
+        return "LcDayCycleEntity{" +
+                "cyclNo=" + cyclNo +
+                ", user=" + user.getUserNo() +
+                ", count=" + count +
+                ", period=" + period +
+                ", startDt=" + startDt +
+                ", endDt=" + endDt +
+                ", exptDt='" + exptDt + '\'' +
+                ", reset='" + reset + '\'' +
+                ", dtls=" + dtls +
+                '}';
     }
 }

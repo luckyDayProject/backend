@@ -23,8 +23,9 @@ public class GetLcDayListDto {
     private int order;
 
     public String getDate() {
-        assert date != null;
+        if (date != null)
         return formatIsoDate(date.toString());
+        return null;
     }
 
     private String formatIsoDate(String isoDate) {

@@ -6,7 +6,9 @@ import io.swyp.luckybackend.luckyDays.domain.LcDayCycleEntity;
 import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
 import io.swyp.luckybackend.luckyDays.dto.*;
 import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
+import io.swyp.luckybackend.luckyDays.repository.LcDayCycleRepository;
 import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
+import io.swyp.luckybackend.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,8 @@ public class LuckyDayService {
     private static final Logger log = LoggerFactory.getLogger(LuckyDayService.class);
     private final LcActivityRepository lcActivityRepository;
     private final LcDayDtlRepository lcDayDtlRepository;
+    private final LcDayCycleRepository lcDayCycleRepository;
+    private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
     private final MappingJackson2HttpMessageConverter converter;
@@ -94,15 +98,16 @@ public class LuckyDayService {
             에러코드 처리
             1. 이미 생성된 싸이클이 있을경우 (이미 싸이클이 있으면 생성 버튼을 누를수가 없는데 굳이 처리를 해야하나?)
         */
-
+        System.out.println("럭키데이 생성중");
         long userNo = getUserNo(token);
         int cnt = requestDto.getCnt();
         List<LocalDate> dateList = pickDate(requestDto);
         for (LocalDate date : dateList) {
             System.out.println(date);
         }
-//        List<ActDTO4Create> actList = pickAct(requestDto);
-//        LcDayCycleEntity lcDayCycle = createLcDayCycle(userNo, requestDto);
+        List<ActDTO4Create> actList = pickAct(requestDto);
+        LcDayCycleEntity lcDayCycle = createLcDayCycle(userNo, requestDto);
+        lcDayCycleRepository.save(lcDayCycle);
 //        for (int i = 0; i < cnt; i++) {
 //            LcDayDtlEntity lcDayDtl = LcDayDtl(userNo, requestDto);
 //            assert lcDayDtl != null;
@@ -119,31 +124,87 @@ public class LuckyDayService {
      */
     private List<LocalDate> pickDate(CreateLcDayRequestDto requestDto) {
         LocalDate startDate = LocalDate.now().plusDays(4);
-        LocalDate endDate = startDate.plusDays(requestDto.getPeriod());
-        HashSet<LocalDate> dateSet = new HashSet<>(requestDto.getExpDTList()); // 제외할 날짜 HashSet으로 변환
+        LocalDate endDate = LocalDate.now().plusDays(requestDto.getPeriod());
+        HashSet<LocalDate> dateSet = new HashSet<>(requestDto.getExpDTList());
 
-        List<LocalDate> availableDates = new ArrayList<>();
+        List<LocalDate> originalAvailableDates = new ArrayList<>();
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             if (!dateSet.contains(date)) {
-                availableDates.add(date);
+                originalAvailableDates.add(date);
             }
         }
 
         List<LocalDate> randomDates = new ArrayList<>();
+        List<LocalDate> availableDates = new ArrayList<>(originalAvailableDates); // 복사본 사용
         Random random = new Random();
-        while (randomDates.size() < requestDto.getCnt() && !availableDates.isEmpty()) {
-            int index = random.nextInt(availableDates.size());
-            randomDates.add(availableDates.remove(index));
-        }
+        boolean valid;
+        do {
+            randomDates.clear(); // 이전에 선택된 날짜들을 지웁니다.
+            availableDates = new ArrayList<>(originalAvailableDates); // 제거된 날짜들을 다시 복원합니다.
+            while (randomDates.size() < requestDto.getCnt() && !availableDates.isEmpty()) {
+                int index = random.nextInt(availableDates.size());
+                randomDates.add(availableDates.remove(index));
+            }
+            valid = !hasThreeConsecutiveDays(randomDates); // 연속된 3일을 검사합니다.
+        } while (!valid); // 유효하지 않으면 다시 시도합니다.
 
         return randomDates;
+    }
+
+    //    3일 연속 배정 체크
+    private boolean hasThreeConsecutiveDays(List<LocalDate> dates) {
+        List<LocalDate> sortedDates = new ArrayList<>(dates);
+        Collections.sort(sortedDates);
+        for (int i = 2; i < sortedDates.size(); i++) {
+            if (sortedDates.get(i).minusDays(1).equals(sortedDates.get(i - 1)) &&
+                    sortedDates.get(i - 1).minusDays(1).equals(sortedDates.get(i - 2))) {
+                return true; // 연속된 3일을 찾으면 true 반환
+            }
+        }
+        return false; // 연속된 3일이 없으면 false 반환
     }
 
     /* 2. 활동 선택
      *      - cnt만큼, 입력한 활동(활동 목록 + 사용자입력 목록) 중에서 랜덤 선택
      */
     private List<ActDTO4Create> pickAct(CreateLcDayRequestDto requestDto) {
-        return null;
+        List<Integer> actList = new ArrayList<>(requestDto.getActList());
+        Collections.sort(actList);
+        List<Integer> actNoList = new ArrayList<>(actList);
+
+        List<String> combinedActNameList = new ArrayList<>();
+        List<String> actNameList = extractActivityNames(actNoList);
+        combinedActNameList.addAll(requestDto.getCustomActList());
+        combinedActNameList.addAll(actNameList);
+
+        List<ActDTO4Create> selectedActivities = new ArrayList<>();
+        Random random = new Random();
+        int count = requestDto.getCnt();
+
+        // combinedList에서 중복 없이 랜덤하게 count 만큼 선택
+        while (selectedActivities.size() < count && !combinedActNameList.isEmpty()) {
+            int index = random.nextInt(combinedActNameList.size());
+            ActDTO4Create act = ActDTO4Create.builder()
+                    .actNo(Long.valueOf(actNoList.remove(index)))
+                    .activityName(combinedActNameList.remove(index))
+                    .build();
+            selectedActivities.add(act);
+        }
+
+        return selectedActivities;
+    }
+
+    private List<String> extractActivityNames(List<Integer> activityNos) {
+        List<String> actNameList = new ArrayList<>();  // 활동 이름을 저장할 리스트
+
+        // 각 ID에 대해 이름을 조회하고 리스트에 추가
+        for (Integer activityNo : activityNos) {
+            String activityName = lcActivityRepository.findActivityNameByActivityNo(Long.valueOf(activityNo));
+            if (activityName != null) {  // null 체크를 통해 유효한 이름만 추가
+                actNameList.add(activityName);
+            }
+        }
+        return actNameList;
     }
 
     /* 3. 럭키데이 싸이클 생성
@@ -151,7 +212,14 @@ public class LuckyDayService {
      *        럭키데이 제외 날짜(리스트), 초기화 여부("N")
      */
     private LcDayCycleEntity createLcDayCycle(long userNo, CreateLcDayRequestDto requestDto) {
-        return null;
+        return LcDayCycleEntity.builder()
+                .user(userRepository.findByUserNo(userNo))
+                .count(requestDto.getCnt())
+                .period(requestDto.getPeriod())
+                .startDt(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
+                .endDt(java.sql.Date.valueOf(LocalDate.now().plusDays(requestDto.getPeriod())))
+                .exptDt(requestDto.getExpDTList().toString())
+                .build();
     }
 
     /* 4. 럭키데이 디테일 생성

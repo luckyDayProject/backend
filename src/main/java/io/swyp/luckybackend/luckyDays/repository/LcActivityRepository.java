@@ -26,7 +26,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "AND a.user.userNo = :userNo " +
             "AND a.cycl.cyclNo = :cyclNo " +
             "AND b.reset = 'N'")
-    List<GetLcDayListDto> getLcDayList(long userNo, long cyclNo, LocalDate today);
+    List<GetLcDayListDto> getLcDayList(@Param("userNo")long userNo, @Param("cyclNo")long cyclNo, @Param("today")LocalDate today);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto( a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
             "FROM LcDayDtlEntity a " +
@@ -35,7 +35,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "AND a.user.userNo = :userNo " +
             "AND a.cycl.cyclNo = :cyclNo " +
             "AND b.reset = 'N'")
-    List<GetLcDayListDto> getLcDayListByHist(long userNo, long cyclNo, LocalDate today);
+    List<GetLcDayListDto> getLcDayListByHist(@Param("userNo")long userNo, @Param("cyclNo")long cyclNo, @Param("today")LocalDate today);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayDtlDto(a.dDay, a.activityNm, b.activityInfo, a.review, a.imageName, a.imagePath) " +
             "FROM LcDayDtlEntity a " +
@@ -61,5 +61,6 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "WHERE a.user.userNo = :userNo")
     List<GetCyclListDto> getLcDayCyclList(long userNo);
 
-
+    @Query("SELECT a.activityName FROM LcActivityEntity a WHERE a.activityNo = :activityNo")
+    String findActivityNameByActivityNo(@Param("activityNo") long activityNo);
 }
