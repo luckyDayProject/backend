@@ -93,6 +93,7 @@ public class LuckyDayController {
 
     }
 
+    @Operation(summary = "유저 럭키데이 싸이클 리스트")
     @GetMapping(value = "/cycl/list")
     public ResponseEntity<ResponseDTO> getLcDayCyclList(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
