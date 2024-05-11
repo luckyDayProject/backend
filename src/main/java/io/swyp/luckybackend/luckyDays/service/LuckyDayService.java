@@ -39,7 +39,7 @@ public class LuckyDayService {
     }
 
     public ResponseEntity<ResponseDTO> getActivityList() {
-        List<GetActivityListDto> activities  = lcActivityRepository.getActivityList();
+        List<GetActivityListDto> activities = lcActivityRepository.getActivityList();
 
         // 카테고리별로 그룹화
         Map<String, List<GetActivityListDto>> groupedActivities = activities.stream()
@@ -47,14 +47,6 @@ public class LuckyDayService {
 
         // '직접 입력' 카테고리 처리
         String directInputCategoryName = "직접 입력";
-        List<GetActivityListDto> directInputActivities = groupedActivities.getOrDefault(directInputCategoryName, Collections.emptyList());
-
-        // '직접 입력'에서 하나 랜덤 선택
-        GetActivityListDto randomDirectInputActivity = null;
-        if (!directInputActivities.isEmpty()) {
-            Random random = new Random();
-            randomDirectInputActivity = directInputActivities.get(random.nextInt(directInputActivities.size()));
-        }
 
         // 결과를 원하는 JSON 형식으로 변환
         List<CategoryActivitiesDTO> categoryActivities = groupedActivities.entrySet().stream()
@@ -63,10 +55,8 @@ public class LuckyDayService {
                 .collect(Collectors.toList());
 
         // '직접 입력' 카테고리 추가
-        if (randomDirectInputActivity != null) {
-            List<ActivityDTO> directInputList = List.of(new ActivityDTO(randomDirectInputActivity.getActivityNo(), randomDirectInputActivity.getKeyword()));
+            List<ActivityDTO> directInputList = List.of(new ActivityDTO(0l, null));
             categoryActivities.add(new CategoryActivitiesDTO(directInputCategoryName, directInputList));
-        }
 
         return ResponseDTO.success(categoryActivities);
 
