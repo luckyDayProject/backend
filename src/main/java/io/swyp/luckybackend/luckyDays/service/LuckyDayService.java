@@ -7,6 +7,8 @@ import io.swyp.luckybackend.luckyDays.dto.*;
 import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
 import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class LuckyDayService {
+    private static final Logger log = LoggerFactory.getLogger(LuckyDayService.class);
     private final LcActivityRepository lcActivityRepository;
     private final LcDayDtlRepository lcDayDtlRepository;
     private final JwtProvider jwtProvider;
@@ -165,7 +168,7 @@ public class LuckyDayService {
         return ResponseDTO.success();
     }
 
-    public ResponseEntity<ResponseDTO> insertImage(String token, int dtlNo, MultipartFile image) throws IOException {
+    /*public ResponseEntity<ResponseDTO> insertImage(String token, int dtlNo, MultipartFile image) throws IOException {
         long userNo = getUserNo(token);
 
         String imagePath = "/root/lucky/luckyImage";
@@ -187,17 +190,35 @@ public class LuckyDayService {
 
         lcDayDtlRepository.insertImage(dtlNo, imageName, imagePath);
 
-        ReviewImageDto reviewImageDto = new ReviewImageDto();
-        reviewImageDto.setImgaeUrl(imageUrl);
 
         return ResponseDTO.success(reviewImageDto);
 
-    }
+    }*/
 
-    public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto) throws IOException {
+    public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
         Long userNo = getUserNo(token);
 
-        lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview());
+        String imagePath = "/root/lucky/luckyImage";
+        File imageDirectory = new File(imagePath);
+
+        // 디렉토리가 없으면 생성
+        if (!imageDirectory.exists()) {
+            imageDirectory.mkdirs();
+        }
+
+        UUID uuid = UUID.randomUUID();
+        String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
+        File saveFile = new File(imagePath, imageName);
+
+        image.transferTo(saveFile);
+        imagePath = imagePath + imageName;
+
+        String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
+
+        log.info("imageUrl === ", imageUrl);
+
+
+        lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath);
 
         return ResponseDTO.success();
     }

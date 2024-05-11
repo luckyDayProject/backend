@@ -13,14 +13,14 @@ public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> 
     @Modifying
     @Transactional
     @Query("UPDATE LcDayDtlEntity e " +
-            "SET e.review = :review " +
+            "SET e.imageName = :imageName, e.imagePath = :imagePath " +
             "WHERE e.dtlNo = :dtlNo")
-    void insertReview(@Param("dtlNo") Long dtlNo, @Param("review") String review);
+    void insertImage(int dtlNo, String imageName, String imagePath);
 
     @Modifying
     @Transactional
     @Query("UPDATE LcDayDtlEntity e " +
-            "SET e.imageName = :imageName, e.imagePath = :imagePath " +
+            "SET e.review = :review, e.imageName = :imageName, e.imagePath = :imagePath " +
             "WHERE e.dtlNo = :dtlNo")
-    void insertImage(int dtlNo, String imageName, String imagePath);
+    void insertReview(@Param("dtlNo") Long dtlNo, @Param("review") String review, @Param("imageName") String imageName, @Param("imagePath") String imagePath);
 }
