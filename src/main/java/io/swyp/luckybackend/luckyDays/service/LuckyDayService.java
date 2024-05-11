@@ -2,7 +2,6 @@ package io.swyp.luckybackend.luckyDays.service;
 
 import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
-import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
 import io.swyp.luckybackend.luckyDays.dto.*;
 import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
 import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
@@ -219,5 +218,14 @@ public class LuckyDayService {
 
     public void getLcDay(LocalDate today) {
 //        lcActivityRepository.getLcDay(today);
+    }
+
+    public ResponseEntity<ResponseDTO> getLcDayCyclList(String token) {
+        long userNo = getUserNo(token);
+        List<GetCyclListDto> cyclList = lcActivityRepository.getLcDayCyclList(userNo);
+        System.out.println("cyclList === " + cyclList);
+
+
+        return ResponseDTO.success(cyclList);
     }
 }

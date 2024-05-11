@@ -93,4 +93,10 @@ public class LuckyDayController {
 
     }
 
+    @GetMapping(value = "/cycl/list")
+    public ResponseEntity<ResponseDTO> getLcDayCyclList(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        return luckyDayService.getLcDayCyclList(token);
+    }
+
 }
