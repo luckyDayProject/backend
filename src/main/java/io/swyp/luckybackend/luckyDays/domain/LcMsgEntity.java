@@ -16,7 +16,7 @@ public class LcMsgEntity {
     @Column(name = "MSG_NO", nullable = false)
     private Long msgNo;
 
-    @Column(name = "SJ", length = 50)
+    @Column(name = "SJ", length = 100)
     private String sj;
 
     @Lob

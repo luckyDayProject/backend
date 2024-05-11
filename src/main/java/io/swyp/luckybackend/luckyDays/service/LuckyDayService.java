@@ -2,6 +2,8 @@ package io.swyp.luckybackend.luckyDays.service;
 
 import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
+import io.swyp.luckybackend.luckyDays.domain.LcDayCycleEntity;
+import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
 import io.swyp.luckybackend.luckyDays.dto.*;
 import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
 import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
@@ -54,8 +56,8 @@ public class LuckyDayService {
                 .collect(Collectors.toList());
 
         // '직접 입력' 카테고리 추가
-            List<ActivityDTO> directInputList = List.of(new ActivityDTO(0l, null));
-            categoryActivities.add(new CategoryActivitiesDTO(directInputCategoryName, directInputList));
+        List<ActivityDTO> directInputList = List.of(new ActivityDTO(0l, null));
+        categoryActivities.add(new CategoryActivitiesDTO(directInputCategoryName, directInputList));
 
         return ResponseDTO.success(categoryActivities);
 
@@ -86,14 +88,79 @@ public class LuckyDayService {
      *        유저번호(토큰에서 추출), 활동 번호(2. 활동 선택에서 나온 활동), 활동명(직접 입력때문에 활동목록에 있더라도 입력)
      *        회고록, 이미지명, 럭키데이 날짜(1. 날짜 랜덤 선택에서 나온 날짜), 럭키데이 순서(화면에 뿌려질 랜덤값)
      * */
-    public ResponseEntity<ResponseDTO> createLcDay(String token, CreateLcDayRequestDto requestDto){
+    @Transactional
+    public ResponseEntity<ResponseDTO> createLcDay(String token, CreateLcDayRequestDto requestDto) {
         /*
             에러코드 처리
             1. 이미 생성된 싸이클이 있을경우 (이미 싸이클이 있으면 생성 버튼을 누를수가 없는데 굳이 처리를 해야하나?)
         */
+
         long userNo = getUserNo(token);
+        int cnt = requestDto.getCnt();
+        List<LocalDate> dateList = pickDate(requestDto);
+        for (LocalDate date : dateList) {
+            System.out.println(date);
+        }
+//        List<ActDTO4Create> actList = pickAct(requestDto);
+//        LcDayCycleEntity lcDayCycle = createLcDayCycle(userNo, requestDto);
+//        for (int i = 0; i < cnt; i++) {
+//            LcDayDtlEntity lcDayDtl = LcDayDtl(userNo, requestDto);
+//            assert lcDayDtl != null;
+//            lcDayDtlRepository.save(lcDayDtl);
+//        }
 
         return ResponseDTO.success("생성완료");
+    }
+
+    /* 1. 날짜 랜덤 선택
+     *      - 제외 날짜는 기간 풀에서 제외
+     *      - 첫 럭키데이는 생성일 기준 4일 후 부터 배정
+     *      - 3개 이상의 럭키데이가 연달아 배정되면 안됨
+     */
+    private List<LocalDate> pickDate(CreateLcDayRequestDto requestDto) {
+        LocalDate startDate = LocalDate.now().plusDays(4);
+        LocalDate endDate = startDate.plusDays(requestDto.getPeriod());
+        HashSet<LocalDate> dateSet = new HashSet<>(requestDto.getExpDTList()); // 제외할 날짜 HashSet으로 변환
+
+        List<LocalDate> availableDates = new ArrayList<>();
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            if (!dateSet.contains(date)) {
+                availableDates.add(date);
+            }
+        }
+
+        List<LocalDate> randomDates = new ArrayList<>();
+        Random random = new Random();
+        while (randomDates.size() < requestDto.getCnt() && !availableDates.isEmpty()) {
+            int index = random.nextInt(availableDates.size());
+            randomDates.add(availableDates.remove(index));
+        }
+
+        return randomDates;
+    }
+
+    /* 2. 활동 선택
+     *      - cnt만큼, 입력한 활동(활동 목록 + 사용자입력 목록) 중에서 랜덤 선택
+     */
+    private List<ActDTO4Create> pickAct(CreateLcDayRequestDto requestDto) {
+        return null;
+    }
+
+    /* 3. 럭키데이 싸이클 생성
+     *      - 회원번호, 럭키데이 갯수, 럭키데이 일수, 시작날짜(오늘), 끝 날짜(오늘 + 럭키데이 일수),
+     *        럭키데이 제외 날짜(리스트), 초기화 여부("N")
+     */
+    private LcDayCycleEntity createLcDayCycle(long userNo, CreateLcDayRequestDto requestDto) {
+        return null;
+    }
+
+    /* 4. 럭키데이 디테일 생성
+     *      - 방금 만든 럭키데이 싸이클 NO FK로 받음
+     *        유저번호(토큰에서 추출), 활동 번호(2. 활동 선택에서 나온 활동), 활동명(직접 입력때문에 활동목록에 있더라도 입력)
+     *        회고록, 이미지명, 럭키데이 날짜(1. 날짜 랜덤 선택에서 나온 날짜), 럭키데이 순서(화면에 뿌려질 랜덤값)
+     * */
+    private LcDayDtlEntity LcDayDtl(long userNo, CreateLcDayRequestDto requestDto) {
+        return null;
     }
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, long cyclNo, int isCurrent) {
@@ -104,12 +171,12 @@ public class LuckyDayService {
         long userNo = getUserNo(token);
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<GetLcDayListDto> lcDayList;
-        if(isCurrent == 0) {
+        if (isCurrent == 0) {
             lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
         } else {
             lcDayList = lcActivityRepository.getLcDayList(userNo, cyclNo, today);
-            for(GetLcDayListDto list : lcDayList) {
-                if(list.getDDay() > 3) {
+            for (GetLcDayListDto list : lcDayList) {
+                if (list.getDDay() > 3) {
                     list.setDate(null);
                     list.setDDay(null);
                 }
@@ -223,9 +290,6 @@ public class LuckyDayService {
     public ResponseEntity<ResponseDTO> getLcDayCyclList(String token) {
         long userNo = getUserNo(token);
         List<GetCyclListDto> cyclList = lcActivityRepository.getLcDayCyclList(userNo);
-        System.out.println("cyclList === " + cyclList);
-
-
         return ResponseDTO.success(cyclList);
     }
 }
