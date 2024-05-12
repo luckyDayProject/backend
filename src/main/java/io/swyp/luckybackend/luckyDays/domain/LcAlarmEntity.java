@@ -34,7 +34,7 @@ public class LcAlarmEntity {
     private String sj;
 
     @Lob
-    @Column(name = "CONTENT")
+    @Column(name = "CONTENT", columnDefinition = "MEDIUMTEXT")
     private String content;
 
     @Column(name = "SEND_YN", length = 1, nullable = false, columnDefinition = "CHAR DEFAULT 'N'")
