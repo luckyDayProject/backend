@@ -28,7 +28,7 @@ public class LcDayDtlEntity {
     @JoinColumn(name = "USER_NO", referencedColumnName = "USER_NO", nullable = false)
     private UserEntity user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACTIVITY_NO", referencedColumnName = "ACTIVITY_NO", nullable = false)
     private LcActivityEntity activity;
 

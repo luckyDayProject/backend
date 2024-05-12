@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -43,17 +46,22 @@ public class LcAlarmEntity {
     @Column(name = "SEND_STATUS", length = 10)
     private String sendStatus;
 
+
+    @Column(name = "D_DAY")
+    private LocalDate dDay;
+
     @Column(name = "REG_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date regDate;
 
     @Column(name = "UPD_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
     private Date updDate;
 
     @Builder
-    public LcAlarmEntity(Long alarmNo, String alarmTyCode, UserEntity user, LcDayDtlEntity dtl, String sj, String content, char sendYn, String sendStatus, Date regDate, Date updDate) {
-        this.alarmNo = alarmNo;
+    public LcAlarmEntity(String alarmTyCode, UserEntity user, LcDayDtlEntity dtl, String sj, String content, char sendYn, String sendStatus, LocalDate dDay) {
         this.alarmTyCode = alarmTyCode;
         this.user = user;
         this.dtl = dtl;
@@ -61,8 +69,7 @@ public class LcAlarmEntity {
         this.content = content;
         this.sendYn = sendYn;
         this.sendStatus = sendStatus;
-        this.regDate = regDate;
-        this.updDate = updDate;
+        this.dDay = dDay;
 
     }
 }

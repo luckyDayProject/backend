@@ -2,18 +2,17 @@ package io.swyp.luckybackend.luckyDays.service;
 
 import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
-import io.swyp.luckybackend.luckyDays.domain.LcDayCycleEntity;
-import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
+import io.swyp.luckybackend.luckyDays.domain.*;
 import io.swyp.luckybackend.luckyDays.dto.*;
-import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
-import io.swyp.luckybackend.luckyDays.repository.LcDayCycleRepository;
-import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
+import io.swyp.luckybackend.luckyDays.repository.*;
+import io.swyp.luckybackend.users.domain.UserEntity;
 import io.swyp.luckybackend.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +33,8 @@ public class LuckyDayService {
     private final LcActivityRepository lcActivityRepository;
     private final LcDayDtlRepository lcDayDtlRepository;
     private final LcDayCycleRepository lcDayCycleRepository;
+    private final LCAlarmRepository lcAlarmRepository;
+    private final LcMsgRepository lcMsgRepository;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
@@ -106,13 +107,26 @@ public class LuckyDayService {
             System.out.println(date);
         }
         List<ActDTO4Create> actList = pickAct(requestDto);
-        LcDayCycleEntity lcDayCycle = createLcDayCycle(userNo, requestDto);
+        UserEntity user = userRepository.findByUserNo(userNo);
+        LcDayCycleEntity lcDayCycle = createLcDayCycle(user, requestDto);
         lcDayCycleRepository.save(lcDayCycle);
-//        for (int i = 0; i < cnt; i++) {
-//            LcDayDtlEntity lcDayDtl = LcDayDtl(userNo, requestDto);
-//            assert lcDayDtl != null;
-//            lcDayDtlRepository.save(lcDayDtl);
-//        }
+        List<Integer> dtlOrders = createDtlOrder(cnt);
+        LcMsgEntity msg = lcMsgRepository.findById(1L).orElseThrow();
+        for (int i = 0; i < cnt; i++) {
+            LcDayDtlEntity lcDayDtl = LcDayDtl(user, requestDto, lcDayCycle, dateList.get(i), actList.get(i), dtlOrders.get(i));
+            assert lcDayDtl != null;
+            lcDayDtlRepository.save(lcDayDtl);
+            String content = user.getNickname() + msg.getContent();
+            String sj = user.getNickname() + msg.getSj();
+            lcAlarmRepository.save(LcAlarmEntity.builder()
+                    .alarmTyCode("email")
+                    .user(user)
+                    .dtl(lcDayDtl)
+                    .sj(sj)
+                    .content(content)
+                    .sendYn('N')
+                    .dDay(lcDayDtl.getDDay()).build());
+        }
 
         return ResponseDTO.success("생성완료");
     }
@@ -211,17 +225,28 @@ public class LuckyDayService {
      *      - 회원번호, 럭키데이 갯수, 럭키데이 일수, 시작날짜(오늘), 끝 날짜(오늘 + 럭키데이 일수),
      *        럭키데이 제외 날짜(리스트), 초기화 여부("N")
      */
-    private LcDayCycleEntity createLcDayCycle(long userNo, CreateLcDayRequestDto requestDto) {
+    private LcDayCycleEntity createLcDayCycle(UserEntity user, CreateLcDayRequestDto requestDto) {
         String exptDt = requestDto.getExpDTList().toString();
         return LcDayCycleEntity.builder()
-                .user(userRepository.findByUserNo(userNo))
+                .user(user)
                 .count(requestDto.getCnt())
                 .period(requestDto.getPeriod())
                 .startDt(java.sql.Date.valueOf(LocalDate.now()))
-                .endDt(java.sql.Date.valueOf(LocalDate.now().plusDays(requestDto.getPeriod()-1)))
-                .exptDt(exptDt.substring(1, exptDt.length()-1))
+                .endDt(java.sql.Date.valueOf(LocalDate.now().plusDays(requestDto.getPeriod() - 1)))
+                .exptDt(exptDt.substring(1, exptDt.length() - 1))
                 .reset("N")
                 .build();
+    }
+
+    private List<Integer> createDtlOrder(int cnt) {
+        List<Integer> numbers = new ArrayList<>();
+
+        for (int i = 0; i < cnt; i++) {
+            numbers.add(i);
+        }
+
+        Collections.shuffle(numbers);
+        return numbers;
     }
 
     /* 4. 럭키데이 디테일 생성
@@ -229,8 +254,24 @@ public class LuckyDayService {
      *        유저번호(토큰에서 추출), 활동 번호(2. 활동 선택에서 나온 활동), 활동명(직접 입력때문에 활동목록에 있더라도 입력)
      *        회고록, 이미지명, 럭키데이 날짜(1. 날짜 랜덤 선택에서 나온 날짜), 럭키데이 순서(화면에 뿌려질 랜덤값)
      * */
-    private LcDayDtlEntity LcDayDtl(long userNo, CreateLcDayRequestDto requestDto) {
-        return null;
+    private LcDayDtlEntity LcDayDtl(UserEntity user, CreateLcDayRequestDto requestDto, LcDayCycleEntity lcDayCycle, LocalDate date, ActDTO4Create actDTO4Create, Integer dtlOrder) {
+        LcActivityEntity lcActivityEntity;
+
+        if (actDTO4Create.getActNo() == 0) {
+            Random random = new Random();
+            int randomNumber = 53 + random.nextInt(5);
+            lcActivityEntity = lcActivityRepository.findById((long) randomNumber).orElseThrow();
+        } else {
+            lcActivityEntity = lcActivityRepository.findById(actDTO4Create.getActNo()).orElseThrow();
+        }
+        return LcDayDtlEntity.builder()
+                .cycl(lcDayCycle)
+                .user(user)
+                .activity(lcActivityEntity)
+                .activityNm(actDTO4Create.getActivityName())
+                .dDay(date)
+                .dtlOrder(dtlOrder)
+                .build();
     }
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, Long cyclNo, int isCurrent) {
