@@ -1,7 +1,6 @@
 package io.swyp.luckybackend.luckyDays.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,13 +31,7 @@ public class LcMsgEntity {
     @Column(name = "VRIABL_SYMBOL", length = 50)
     private String variableSymbol;
 
-    @Builder
-    public LcMsgEntity(Long msgNo, String sj, String content, String variableWords, Integer variableCnt, String variableSymbol) {
-        this.msgNo = msgNo;
-        this.sj = sj;
-        this.content = content;
-        this.variableWords = variableWords;
-        this.variableCnt = variableCnt;
-        this.variableSymbol = variableSymbol;
-    }
+    @Column(name = "IMG", length = 200)
+    private String img;
+
 }

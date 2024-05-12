@@ -111,19 +111,22 @@ public class LuckyDayService {
         LcDayCycleEntity lcDayCycle = createLcDayCycle(user, requestDto);
         lcDayCycleRepository.save(lcDayCycle);
         List<Integer> dtlOrders = createDtlOrder(cnt);
-        LcMsgEntity msg = lcMsgRepository.findById(1L).orElseThrow();
         for (int i = 0; i < cnt; i++) {
+            int no = (int) (Math.random() * 2) + 1;
+            LcMsgEntity msg = lcMsgRepository.findById((long) no).orElseThrow();
             LcDayDtlEntity lcDayDtl = LcDayDtl(user, requestDto, lcDayCycle, dateList.get(i), actList.get(i), dtlOrders.get(i));
             assert lcDayDtl != null;
             lcDayDtlRepository.save(lcDayDtl);
             String content = user.getNickname() + msg.getContent();
+            String createContent = createContent(content, lcDayDtl.getDtlNo(), msg.getImg());
+
             String sj = user.getNickname() + msg.getSj();
             lcAlarmRepository.save(LcAlarmEntity.builder()
                     .alarmTyCode("email")
                     .user(user)
                     .dtl(lcDayDtl)
                     .sj(sj)
-                    .content(content)
+                    .content(createContent)
                     .sendYn('N')
                     .dDay(lcDayDtl.getDDay()).build());
         }
@@ -272,6 +275,13 @@ public class LuckyDayService {
                 .dDay(date)
                 .dtlOrder(dtlOrder)
                 .build();
+    }
+
+    private String createContent(String content, long dtnNo, String imageName) {
+        String[] parts = content.split("\\[|\\]");
+        String imageBaseUrl = "http://223.130.131.239:28080/images/msg/";
+        String url = "<a href=\"https://www.naver.com\">";
+        return "<img src=\""+imageBaseUrl + imageName +"\"/>" + "<br><br>" + parts[0] + url + "[" + parts[1] + "]" + "</a>" + parts[2];
     }
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, Long cyclNo, int isCurrent) {
