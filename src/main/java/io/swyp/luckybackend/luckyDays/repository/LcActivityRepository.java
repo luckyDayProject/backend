@@ -46,7 +46,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayCyclDto(a.startDt, a.endDt, a.period, a.count, a.exptDt)" +
             "FROM LcDayCycleEntity a " +
             "WHERE a.cyclNo = :cyclNo")
-    GetLcDayCyclDto getLcDayCyclInfo(int cyclNo);
+    GetLcDayCyclDto getLcDayCyclInfo(@Param("cyclNo") int cyclNo);
 
     @Modifying
     @Transactional
@@ -59,7 +59,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetCyclListDto(a.cyclNo, a.startDt, a.endDt) " +
             "FROM LcDayCycleEntity a " +
             "WHERE a.user.userNo = :userNo")
-    List<GetCyclListDto> getLcDayCyclList(long userNo);
+    List<GetCyclListDto> getLcDayCyclList(@Param("userNo") long userNo);
 
     @Query("SELECT a.activityName FROM LcActivityEntity a WHERE a.activityNo = :activityNo")
     String findActivityNameByActivityNo(@Param("activityNo") long activityNo);

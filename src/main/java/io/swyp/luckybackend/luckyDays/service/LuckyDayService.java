@@ -212,13 +212,15 @@ public class LuckyDayService {
      *        럭키데이 제외 날짜(리스트), 초기화 여부("N")
      */
     private LcDayCycleEntity createLcDayCycle(long userNo, CreateLcDayRequestDto requestDto) {
+        String exptDt = requestDto.getExpDTList().toString();
         return LcDayCycleEntity.builder()
                 .user(userRepository.findByUserNo(userNo))
                 .count(requestDto.getCnt())
                 .period(requestDto.getPeriod())
-                .startDt(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
-                .endDt(java.sql.Date.valueOf(LocalDate.now().plusDays(requestDto.getPeriod())))
-                .exptDt(requestDto.getExpDTList().toString())
+                .startDt(java.sql.Date.valueOf(LocalDate.now()))
+                .endDt(java.sql.Date.valueOf(LocalDate.now().plusDays(requestDto.getPeriod()-1)))
+                .exptDt(exptDt.substring(1, exptDt.length()-1))
+                .reset("N")
                 .build();
     }
 
