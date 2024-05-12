@@ -24,9 +24,18 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "JOIN a.cycl b " +
             "WHERE a.dDay >= :today " +
             "AND a.user.userNo = :userNo " +
-            "AND a.cycl.cyclNo = :cyclNo " +
+            "AND a.cycl.cyclNo = (SELECT MAX(c.cycl.cyclNo) FROM LcDayDtlEntity c WHERE c.user.userNo = :userNo) " +
             "AND b.reset = 'N'")
-    List<GetLcDayListDto> getLcDayList(@Param("userNo")long userNo, @Param("cyclNo")long cyclNo, @Param("today")LocalDate today);
+    List<GetLcDayListDto> getLcDayList(@Param("userNo")long userNo, @Param("today")LocalDate today);
+
+    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto(a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
+            "FROM LcDayDtlEntity a " +
+            "JOIN a.cycl b " +
+            "WHERE a.dDay < :today " +
+            "AND a.user.userNo = :userNo " +
+            "AND a.cycl.cyclNo = (SELECT MAX(c.cycl.cyclNo) FROM LcDayDtlEntity c WHERE c.user.userNo = :userNo) " +
+            "AND b.reset = 'N'")
+    List<GetLcDayListDto> getPastLcDayList(@Param("userNo")long userNo, @Param("today")LocalDate today);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto( a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
             "FROM LcDayDtlEntity a " +

@@ -233,27 +233,40 @@ public class LuckyDayService {
         return null;
     }
 
-    public ResponseEntity<ResponseDTO> getLcDayList(String token, long cyclNo, int isCurrent) {
-        /*
-            에러코드 처리
-            1. 생성된 싸이클이 없을 경우
-        */
+    public ResponseEntity<ResponseDTO> getLcDayList(String token, Long cyclNo, int isCurrent) {
+    /*
+        에러코드 처리 필요:
+        1. 생성된 싸이클이 없을 경우 에러 처리
+        2. 현재 싸이클에 아직 지난 럭키데이가 없을 경우 에러 처리
+    */
         long userNo = getUserNo(token);
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<GetLcDayListDto> lcDayList;
+
         if (isCurrent == 0) {
-            lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
-        } else {
-            lcDayList = lcActivityRepository.getLcDayList(userNo, cyclNo, today);
-            for (GetLcDayListDto list : lcDayList) {
-                if (list.getDDay() > 3) {
-                    list.setDate(null);
-                    list.setDDay(null);
-                }
+            if (cyclNo != null) {
+                // 이력 조회 (럭키데이 보관함)
+                lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
+            } else {
+                // 현재 싸이클 이면서 지난 럭키데이 조회
+                lcDayList = lcActivityRepository.getPastLcDayList(userNo, today);
             }
+        } else {
+            // 현재 싸이클에서 오늘 이후의 럭키데이 조회
+            lcDayList = lcActivityRepository.getLcDayList(userNo, today);
+            clearFutureLcDays(lcDayList);
         }
 
         return ResponseDTO.success(lcDayList);
+    }
+
+    private void clearFutureLcDays(List<GetLcDayListDto> lcDayList) {
+        for (GetLcDayListDto list : lcDayList) {
+            if (list.getDDay() > 3) {
+                list.setDate(null);
+                list.setDDay(null);
+            }
+        }
     }
 
     public ResponseEntity<ResponseDTO> getLcDayDetail(String token, int dtlNo) {
