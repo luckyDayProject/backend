@@ -407,8 +407,8 @@ public class LuckyDayService {
         return URLEncoder.encode(url, StandardCharsets.UTF_8);
     }
 
-    public void getLcDay(LocalDate today) {
-//        lcActivityRepository.getLcDay(today);
+    public List<SendMailDto> getLcDay(LocalDate today) {
+        return lcActivityRepository.getLcDay(today);
     }
 
     public ResponseEntity<ResponseDTO> getLcDayCyclList(String token) {

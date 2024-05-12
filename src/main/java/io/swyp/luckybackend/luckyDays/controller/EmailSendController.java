@@ -14,7 +14,7 @@ public class EmailSendController {
 
     @GetMapping("/sendEmail")
     public String sendEmail() throws MessagingException {
-        emailSendService.sendEmail();
+//        emailSendService.sendEmail();
         return "Email sent successfully!";
     }
 }
