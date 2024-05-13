@@ -98,6 +98,8 @@ public class LuckyDayService {
         /*
             에러코드 처리
             1. 이미 생성된 싸이클이 있을경우 (이미 싸이클이 있으면 생성 버튼을 누를수가 없는데 굳이 처리를 해야하나?)
+            2. 선택한 활동의 수가 cnt보다 적은 경우
+            3. 0(직접입력)을 선택하였으나 직접입력을 하지 않았을 경우
         */
         System.out.println("럭키데이 생성중");
         long userNo = getUserNo(token);
