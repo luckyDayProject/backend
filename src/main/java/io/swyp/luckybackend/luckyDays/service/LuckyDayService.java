@@ -279,13 +279,13 @@ public class LuckyDayService {
     }
 
     private String createContent(String userName, String content, long dtnNo, String imageName) {
-        System.out.println(content);
-        String style = "<p>&emsp;&emsp;&emsp;&emsp;";
+        String style = "님을";
         String[] contentStyle = content.split(style);
-        String[] parts = contentStyle[1].split("\\[|\\]");
+        String buttonPhrase = "럭키 데이 확인하러 가기 🍀";
+        String[] parts = contentStyle[1].split(buttonPhrase);
         String imageBaseUrl = "http://223.130.131.239:28080/images/msg/";
-        String url = "<a href=\"https://www.naver.com\">";
-        return "<img src=\"" + imageBaseUrl + imageName + "\"/>" + "<br><br>" + contentStyle[0] + style + userName + parts[0] + url + "[" + parts[1] + "]" + "</a>" + parts[2];
+        String url = "<a href=\"https://www.naver.com\" style=\"background-color: #FFD700; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
+        return contentStyle[0] + "<img src=\"" + imageBaseUrl + imageName + "\" style=\"width: 100%; max-width: 600px; height: auto;\"/>" + userName + style + parts[0] + url + buttonPhrase + "</a>" + parts[1];
     }
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, Long cyclNo, int isCurrent) {
