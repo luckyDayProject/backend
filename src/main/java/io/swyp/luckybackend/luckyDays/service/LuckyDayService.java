@@ -119,8 +119,7 @@ public class LuckyDayService {
             LcDayDtlEntity lcDayDtl = LcDayDtl(user, requestDto, lcDayCycle, dateList.get(i), actList.get(i), dtlOrders.get(i));
             assert lcDayDtl != null;
             lcDayDtlRepository.save(lcDayDtl);
-            String content = user.getNickname() + msg.getContent();
-            String createContent = createContent(content, lcDayDtl.getDtlNo(), msg.getImg());
+            String createContent = createContent(user.getNickname(), msg.getContent(), lcDayDtl.getDtlNo(), msg.getImg());
 
             String sj = user.getNickname() + msg.getSj();
             lcAlarmRepository.save(LcAlarmEntity.builder()
@@ -279,11 +278,14 @@ public class LuckyDayService {
                 .build();
     }
 
-    private String createContent(String content, long dtnNo, String imageName) {
-        String[] parts = content.split("\\[|\\]");
+    private String createContent(String userName, String content, long dtnNo, String imageName) {
+        System.out.println(content);
+        String style = "<p>&emsp;&emsp;&emsp;&emsp;";
+        String[] contentStyle = content.split(style);
+        String[] parts = contentStyle[1].split("\\[|\\]");
         String imageBaseUrl = "http://223.130.131.239:28080/images/msg/";
         String url = "<a href=\"https://www.naver.com\">";
-        return "<img src=\""+imageBaseUrl + imageName +"\"/>" + "<br><br>" + parts[0] + url + "[" + parts[1] + "]" + "</a>" + parts[2];
+        return "<img src=\"" + imageBaseUrl + imageName + "\"/>" + "<br><br>" + contentStyle[0] + style + userName + parts[0] + url + "[" + parts[1] + "]" + "</a>" + parts[2];
     }
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, Long cyclNo, int isCurrent) {
