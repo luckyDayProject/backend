@@ -283,7 +283,7 @@ public class LuckyDayService {
         String[] contentStyle = content.split(style);
         String buttonPhrase = "럭키 데이 확인하러 가기 🍀";
         String[] parts = contentStyle[1].split(buttonPhrase);
-        String imageBaseUrl = "http://223.130.131.239:28080/images/msg/";
+        String imageBaseUrl = "https://223.130.131.239/lucky/images/msg/";
         String url = "<a href=\"https://www.naver.com\" style=\"background-color: #FFD700; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
         return contentStyle[0] + "<img src=\"" + imageBaseUrl + imageName + "\" style=\"width: 100%; max-width: 600px; height: auto;\"/>" + userName + style + parts[0] + url + buttonPhrase + "</a>" + parts[1];
     }
