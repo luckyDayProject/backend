@@ -18,7 +18,7 @@ public class OpenApiConfiguration {
 	public OpenAPI openAPI() {
 		Server prodHttpsServer = new Server();
 		prodHttpsServer.setDescription("prod Https Server");
-		prodHttpsServer.setUrl("https://223.130.131.239.nipo.io/lucky");
+		prodHttpsServer.setUrl("https://223.130.131.239.nip.io/lucky");
 
 		SecurityScheme apiKey = new SecurityScheme()
 				.type(SecurityScheme.Type.APIKEY)
