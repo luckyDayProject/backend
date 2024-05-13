@@ -31,7 +31,7 @@ public class MailScheduler {
         // 1. 해당 날짜가 럭키데이인 list 가져오기
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<SendMailDto> mailDto = luckyDayService.getLcDay(today);
-        if(mailDto == null) {
+        if(mailDto.isEmpty()) {
             log.info("No emails to send today.");
             return;
         }

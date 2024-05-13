@@ -422,7 +422,8 @@ public class LuckyDayService {
     }
 
     public List<SendMailDto> getLcDay(LocalDate today) {
-        return lcActivityRepository.getLcDay(today);
+        LocalDate tomorrow = today.plusDays(1);
+        return lcActivityRepository.getLcDay(tomorrow);
     }
 
     public ResponseEntity<ResponseDTO> getLcDayCyclList(String token) {
