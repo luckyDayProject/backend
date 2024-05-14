@@ -20,6 +20,11 @@ public class OpenApiConfiguration {
 		prodHttpsServer.setDescription("prod Https Server");
 		prodHttpsServer.setUrl("https://223.130.131.239.nip.io/lucky");
 
+		Server devHttpsServer = new Server();
+		devHttpsServer.setDescription("dev Http Server");
+		devHttpsServer.setUrl("http://localhost:8080/lucky");
+
+
 		SecurityScheme apiKey = new SecurityScheme()
 				.type(SecurityScheme.Type.APIKEY)
 				.in(SecurityScheme.In.HEADER)
@@ -35,7 +40,7 @@ public class OpenApiConfiguration {
 				.addSecurityItem(securityRequirement);
 
 
-		openAPI.setServers(Arrays.asList(prodHttpsServer));
+		openAPI.setServers(Arrays.asList(prodHttpsServer, devHttpsServer));
 		return openAPI;
 	}
 

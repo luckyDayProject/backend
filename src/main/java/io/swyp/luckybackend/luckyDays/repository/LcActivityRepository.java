@@ -44,7 +44,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "AND a.user.userNo = :userNo " +
             "AND a.cycl.cyclNo = :cyclNo " +
             "AND b.reset = 'N'")
-    List<GetLcDayListDto> getLcDayListByHist(@Param("userNo")long userNo, @Param("cyclNo")long cyclNo, @Param("today")LocalDate today);
+    List<GetLcDayListDto> getLcDayListByHist(@Param("userNo")long userNo, @Param("cyclNo")Long cyclNo, @Param("today")LocalDate today);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayDtlDto(a.dDay, a.activityNm, b.activityInfo, a.review, a.imageName, a.imagePath) " +
             "FROM LcDayDtlEntity a " +
@@ -54,12 +54,21 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayCyclDto(a.startDt, a.endDt, a.period, a.count, a.exptDt)" +
             "FROM LcDayCycleEntity a " +
-            "WHERE a.cyclNo = :cyclNo")
+            "WHERE a.cyclNo = :cyclNo " +
+            "AND a.reset = 'N'")
     GetLcDayCyclDto getLcDayCyclInfo(@Param("cyclNo") int cyclNo);
+
+    @Query("SELECT MAX(cyclNo) " +
+            "FROM LcDayCycleEntity " +
+            "WHERE user.userNo = :userNo " +
+            "AND reset = 'N'")
+    Long findCyclNo(long userNo);
 
     @Modifying
     @Transactional
-    @Query("UPDATE LcDayCycleEntity SET reset = 'Y' WHERE cyclNo = (SELECT MAX(cyclNo) FROM LcDayCycleEntity WHERE user.userNo = :userNo)")
+    @Query("UPDATE LcDayCycleEntity " +
+            "SET reset = 'Y' " +
+            "WHERE cyclNo = (SELECT MAX(cyclNo) FROM LcDayCycleEntity WHERE user.userNo = :userNo)")
     void deleteLcDayCycl(@Param("userNo") long userNo);
 
 
@@ -77,6 +86,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "JOIN a.user b " +
             "WHERE a.dDay = :today")
     List<SendMailDto> getLcDay(LocalDate today);
+
 
 }
 

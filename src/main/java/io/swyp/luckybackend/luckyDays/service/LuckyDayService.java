@@ -2,6 +2,7 @@ package io.swyp.luckybackend.luckyDays.service;
 
 import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
+import io.swyp.luckybackend.common.StatusResCode;
 import io.swyp.luckybackend.luckyDays.domain.*;
 import io.swyp.luckybackend.luckyDays.dto.*;
 import io.swyp.luckybackend.luckyDays.repository.*;
@@ -298,24 +299,46 @@ public class LuckyDayService {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<GetLcDayListDto> lcDayList;
 
-        if (isCurrent == 0) {
-            if (cyclNo != null) {
-                // 이력 조회 (럭키데이 보관함)
-                lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
+        try {
+            if (isCurrent == 0) {
+                if (cyclNo != null) {
+                    // 이력 조회 (럭키데이 보관함)
+                    lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
+
+                    if(lcDayList.isEmpty()) {
+                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(),StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
+                    }
+
+                } else {
+                    // 현재 싸이클 이면서 지난 럭키데이 조회
+                    lcDayList = lcActivityRepository.getPastLcDayList(userNo, today);
+
+                    if(lcDayList.isEmpty()) {
+                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(),StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
+                    }
+
+                }
             } else {
-                // 현재 싸이클 이면서 지난 럭키데이 조회
-                lcDayList = lcActivityRepository.getPastLcDayList(userNo, today);
+                // 현재 싸이클에서 오늘 이후의 럭키데이 조회
+                lcDayList = lcActivityRepository.getLcDayList(userNo, today);
+
+                if(lcDayList.isEmpty()) {
+                    return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(),StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
+                }
+
+                countLcDdays(lcDayList);
             }
-        } else {
-            // 현재 싸이클에서 오늘 이후의 럭키데이 조회
-            lcDayList = lcActivityRepository.getLcDayList(userNo, today);
-            clearFutureLcDays(lcDayList);
+
+            return ResponseDTO.success(lcDayList);
+
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
         }
 
-        return ResponseDTO.success(lcDayList);
     }
 
-    private void clearFutureLcDays(List<GetLcDayListDto> lcDayList) {
+    private void countLcDdays(List<GetLcDayListDto> lcDayList) {
         for (GetLcDayListDto list : lcDayList) {
             if (list.getDDay() > 3) {
                 list.setDate(null);
@@ -326,40 +349,70 @@ public class LuckyDayService {
 
     public ResponseEntity<ResponseDTO> getLcDayDetail(String token, int dtlNo) {
         long userNo = getUserNo(token);
-        GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo);
-        // 클라이언트용 이미지 URL 설정
-        String imageUrl = lcDetail.getImageName() != null ? "/images/" + encodeUrl(lcDetail.getImageName()) : null;
+        try {
+            GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo);
 
-        // 빌더를 사용하여 객체 생성
-        GetLcDayDtlResDto lcDayDtlResDto = GetLcDayDtlResDto.builder()
-                .dDay(lcDetail.getDDay())
-                .actNm(lcDetail.getActNm())
-                .actInfo(lcDetail.getActInfo())
-                .review(lcDetail.getReview())
-                .imageName(lcDetail.getImageName())
-                .imagePath(lcDetail.getImagePath())
-                .imageUrl(imageUrl)
-                .build();
+            if (lcDetail == null) {
+                return ResponseDTO.error(StatusResCode.NOT_EXISTED_DTL_NO.getCode(), StatusResCode.NOT_EXISTED_DTL_NO.getMessage());
+            }
 
-        return ResponseDTO.success(lcDayDtlResDto);
+            // 클라이언트용 이미지 URL 설정
+            String imageUrl = lcDetail.getImageName() != null ? "/images/" + encodeUrl(lcDetail.getImageName()) : null;
+
+            // 빌더를 사용하여 객체 생성
+            GetLcDayDtlResDto lcDayDtlResDto = GetLcDayDtlResDto.builder()
+                    .dDay(lcDetail.getDDay())
+                    .actNm(lcDetail.getActNm())
+                    .actInfo(lcDetail.getActInfo())
+                    .review(lcDetail.getReview())
+                    .imageName(lcDetail.getImageName())
+                    .imagePath(lcDetail.getImagePath())
+                    .imageUrl(imageUrl)
+                    .build();
+
+            return ResponseDTO.success(lcDayDtlResDto);
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+
     }
 
     public ResponseEntity<ResponseDTO> getLcDayCyclInfo(String token, int cyclNo) {
         long userNo = getUserNo(token);
-        GetLcDayCyclDto lcCycl = lcActivityRepository.getLcDayCyclInfo(cyclNo);
-        return ResponseDTO.success(lcCycl);
+        try {
+            GetLcDayCyclDto lcCycl = lcActivityRepository.getLcDayCyclInfo(cyclNo);
+            if(lcCycl == null) {
+                return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
+            }
+            return ResponseDTO.success(lcCycl);
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     @Transactional
     public ResponseEntity<ResponseDTO> deleteLcDayCycl(String token) {
-        /*
-            에러코드 처리
-            1. 이미 리셋처리된 경우
-            2. 생성된 싸이클이 없을 경우
-        */
+
         long userNo = getUserNo(token);
-        lcActivityRepository.deleteLcDayCycl(userNo);
-        return ResponseDTO.success();
+
+        try {
+            // 1. 최근 cyclNo 조회
+            Long cyclNo = lcActivityRepository.findCyclNo(userNo);
+            if (cyclNo == null) {
+                return ResponseDTO.error(StatusResCode.NOT_EXISTED_CYCLE_NO.getCode(), StatusResCode.NOT_EXISTED_CYCLE_NO.getMessage());
+            } else {
+                // 2. delete
+                lcActivityRepository.deleteLcDayCycl(userNo);
+                return ResponseDTO.success();
+            }
+
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+
     }
 
     /*public ResponseEntity<ResponseDTO> insertImage(String token, int dtlNo, MultipartFile image) throws IOException {

@@ -1,7 +1,6 @@
 package io.swyp.luckybackend.common;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +44,11 @@ public class ResponseDTO {
 
     public static ResponseEntity<ResponseDTO> success() {
         ResponseDTO responseBody = new ResponseDTO();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseDTO> error(int code, String message) {
+        ResponseDTO responseBody = new ResponseDTO(String.valueOf(code), message);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
 }
