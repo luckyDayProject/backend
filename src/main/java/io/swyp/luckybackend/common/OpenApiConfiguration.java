@@ -36,10 +36,6 @@ public class OpenApiConfiguration {
 
 
 		openAPI.setServers(Arrays.asList(prodHttpsServer));
-//		return new OpenAPI()
-//				.components(new Components().addSecuritySchemes("api_key", apiKey))
-//				.info(apiInfo())
-//				.addSecurityItem(securityRequirement);
 		return openAPI;
 	}
 

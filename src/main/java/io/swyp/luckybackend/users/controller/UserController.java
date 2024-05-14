@@ -1,7 +1,5 @@
 package io.swyp.luckybackend.users.controller;
 
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import io.swyp.luckybackend.users.service.KakaoService;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.net.http.HttpHeaders;
 
 @RestController
 @RequestMapping("/users")
@@ -33,7 +30,7 @@ public class UserController {
     @GetMapping("/sign-in")
     public void login(HttpServletResponse response) throws Exception {
         log.info("로그인 API 진입");
-        response.sendRedirect("/oauth2/authorization/kakao");
+        response.sendRedirect("/lucky/oauth2/authorization/kakao");
     }
 
     @Operation(

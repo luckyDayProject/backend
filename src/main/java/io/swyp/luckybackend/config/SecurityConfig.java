@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
                 .oauth2Login(oauth2Configurer -> oauth2Configurer
-                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/lucky/oauth2/callback/*"))
                         .userInfoEndpoint(endpoint -> endpoint.userService(oauth2UserService))
                         .successHandler(oAuth2SuccessHandler)
                 );
