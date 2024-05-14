@@ -31,7 +31,8 @@ public class LuckyDayController {
 
     @Operation(summary = "럭키데이 생성 API")
     @PostMapping("")
-    public ResponseEntity<ResponseDTO> createLcDay(HttpServletRequest request, @RequestBody CreateLcDayRequestDto requestDto){
+    public ResponseEntity<ResponseDTO> createLcDay(HttpServletRequest request,
+                                                   @RequestBody CreateLcDayRequestDto requestDto){
         String token = request.getHeader("Authorization");
         return luckyDayService.createLcDay(token, requestDto);
     }

@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/users/sign-in", "/users/sign-out", "/users/test",
-                                "/luckydays/activity", "/api", "/swagger-ui/**", "/v3/**", "/images/**").permitAll()
+                                "/luckydays/activity", "/api", "/swagger-ui/**", "/v3/**", "/images/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
