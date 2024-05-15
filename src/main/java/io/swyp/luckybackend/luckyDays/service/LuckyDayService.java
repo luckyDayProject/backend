@@ -412,48 +412,65 @@ public class LuckyDayService {
             log.error(e.getMessage());
             throw e;
         }
-
     }
 
 
     public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
         Long userNo = getUserNo(token);
+        try {
+            // dtlNo가 현재 user의 것인지확인
+            boolean result = lcDayDtlRepository.getUserNoByDtlNo(requestDto.getDtlNo(), userNo);
+            if(!result) {
+                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+            }
 
-        if(requestDto.getReview() == null && image.isEmpty()) {
-            return ResponseDTO.error(StatusResCode.EMPTY_CONTENT.getCode(), StatusResCode.EMPTY_CONTENT.getMessage());
+            if(requestDto.getReview() == null && image.isEmpty()) {
+                return ResponseDTO.error(StatusResCode.EMPTY_CONTENT.getCode(), StatusResCode.EMPTY_CONTENT.getMessage());
+            }
+
+            if(requestDto.getReview() != null && requestDto.getReview().length() > 100) {
+                return ResponseDTO.error(StatusResCode.EXCEEDED_TEXT_LENGTH.getCode(), StatusResCode.EXCEEDED_TEXT_LENGTH.getMessage());
+            }
+
+            if(!image.isEmpty()) {
+                String imagePath = "/root/lucky/luckyImage";
+                File imageDirectory = new File(imagePath);
+
+                // 디렉토리가 없으면 생성
+                if (!imageDirectory.exists()) {
+                    imageDirectory.mkdirs();
+                }
+
+                UUID uuid = UUID.randomUUID();
+                String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
+                File saveFile = new File(imagePath, imageName);
+
+                image.transferTo(saveFile);
+                imagePath = imagePath + imageName;
+
+                String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
+
+                log.info("imageUrl === ", imageUrl);
+
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
+            } else {
+                String imageName = null;
+                String imagePath = null;
+
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
+            }
+            return ResponseDTO.success();
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
         }
-
-        if(requestDto.getReview() != null && requestDto.getReview().length() > 100) {
-            return ResponseDTO.error(StatusResCode.EXCEEDED_TEXT_LENGTH.getCode(), StatusResCode.EXCEEDED_TEXT_LENGTH.getMessage());
-        }
-        String imagePath = "/root/lucky/luckyImage";
-        File imageDirectory = new File(imagePath);
-
-        // 디렉토리가 없으면 생성
-        if (!imageDirectory.exists()) {
-            imageDirectory.mkdirs();
-        }
-
-        UUID uuid = UUID.randomUUID();
-        String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
-        File saveFile = new File(imagePath, imageName);
-
-        image.transferTo(saveFile);
-        imagePath = imagePath + imageName;
-
-        String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
-
-        log.info("imageUrl === ", imageUrl);
-
-
-        lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath);
-
-        return ResponseDTO.success();
     }
+
 
     private String encodeUrl(String url) {
         return URLEncoder.encode(url, StandardCharsets.UTF_8);
     }
+
 
     public List<SendMailDto> getLcDay(LocalDate today) {
         try {
@@ -486,7 +503,6 @@ public class LuckyDayService {
             log.error(e.getMessage());
             throw e;
         }
-
     }
 
 }

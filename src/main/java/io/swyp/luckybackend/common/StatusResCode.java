@@ -7,6 +7,7 @@ public enum StatusResCode {
     INVALID_TOKEN("1001", "유효하지 않은 토큰입니다."),
     EXCEEDED_NICKNAME_LENGTH("1002", "최대 글자수를 초과하였습니다."),
     NOT_EXISTED_USER("1003", "존재하지 않는 계정입니다."),
+    INVALID_USER("1004", "권한이 없는 유저입니다."),
 
     // 럭키데이 관련 에러 (2000번대)
     EXISTED_LUCKY_CYCLE("2001", "진행중인 럭키데이가 존재합니다."),
@@ -22,7 +23,7 @@ public enum StatusResCode {
     NOT_EXISTED_DTL_NO("2010", "존재하지 않는 럭키데이 번호입니다."),
     EXCEEDED_IMG_SIZE("2011", "이미지 용량이 너무 큽니다."),
     EXCEEDED_TEXT_LENGTH("2012", "최대 글자수를 초과하였습니다."),
-    EMPTY_CONTENT("2013", "이미지 또는 내용을 입력해 주세요"),
+    EMPTY_CONTENT("2013", "이미지 또는 내용을 입력해 주세요."),
     NOT_EXISTED_CYCLE_NO("2014", "생성된 싸이클 번호가 없습니다."),
 
     ;
