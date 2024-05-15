@@ -37,6 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtProvider.create(userNo);
         UserEntity userEntity = userServiceImpl.getUserEntityByUserNo(userNo);
         String nickname = URLEncoder.encode(userEntity.getNickname(), StandardCharsets.UTF_8.name());
-        response.sendRedirect(String.format("%s/%s/%s/%s", redirectUrl, token, expirationTime, nickname));
+//        response.sendRedirect(String.format("%s/%s/%s/%s", redirectUrl, token, expirationTime, nickname));
+        response.sendRedirect(String.format("%s?token=%s&expirationTime=%s&nickname=%s", redirectUrl, token, expirationTime, nickname));
     }
 }
