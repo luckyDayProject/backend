@@ -69,7 +69,7 @@ spring:
 secret-key: ${secret-key}
 kakao-admin-key: ${kakao.admin-key}
 
-redirect-lucky-url: "http://localhost:3000/oauth2/kakao/callback/"
+redirect-lucky-url: "http://localhost:3000/oauth2/kakao/callback"
 logout-redirect-uri: "http://localhost:3000"
 expiration-time: "3600"
 
