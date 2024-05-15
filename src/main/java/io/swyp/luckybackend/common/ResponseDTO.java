@@ -24,7 +24,11 @@ public class ResponseDTO {
         this.resData = resData;
     }
 
-    public ResponseDTO(String databaseError, String databaseError1) {
+
+    public ResponseDTO(String code, String message) {
+        this.code = code;
+        this.message = message;
+        this.resData = null;  // resData는 null로 설정
     }
 
     public static ResponseEntity<ResponseDTO> databaseError(){
@@ -48,7 +52,7 @@ public class ResponseDTO {
     }
 
     public static ResponseEntity<ResponseDTO> error(String code, String message) {
-        ResponseDTO responseBody = new ResponseDTO(String.valueOf(code), message);
+        ResponseDTO responseBody = new ResponseDTO(code, message);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
 

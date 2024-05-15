@@ -72,10 +72,12 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     void deleteLcDayCycl(@Param("userNo") long userNo);
 
 
-    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetCyclListDto(a.cyclNo, a.startDt, a.endDt) " +
+    /*@Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetCyclListDto(a.cyclNo, a.startDt, a.endDt) " +
             "FROM LcDayCycleEntity a " +
-            "WHERE a.user.userNo = :userNo")    // reset 조건 추가, 현재 진행중인 싸이클은 보이지 않게 처리
-    List<GetCyclListDto> getLcDayCyclList(@Param("userNo") long userNo);
+            "WHERE a.user.userNo = :userNo " +
+            "AND a.reset = 'N'" +
+            "ORDER BY a.cyclNo DESC ")    // reset 조건 추가, 현재 진행중인 싸이클은 보이지 않게 처리
+    List<GetCyclListDto> getLcDayCyclList(@Param("userNo") long userNo);*/
 
     @Query("SELECT a.activityName FROM LcActivityEntity a WHERE a.activityNo = :activityNo")
     String findActivityNameByActivityNo(@Param("activityNo") long activityNo);
@@ -86,6 +88,22 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "JOIN a.user b " +
             "WHERE a.dDay = :today")
     List<SendMailDto> getLcDay(@Param("today") LocalDate today);
+
+
+    @Query("SELECT MAX(a.cyclNo) " +
+            "FROM LcDayCycleEntity a " +
+            "WHERE a.user.userNo = :userNo " +
+            "AND a.reset = 'N'")
+    Long findLatestCyclNo(@Param("userNo") long userNo);
+
+    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetCyclListDto(a.cyclNo, a.startDt, a.endDt) " +
+            "FROM LcDayCycleEntity a " +
+            "WHERE a.user.userNo = :userNo " +
+            "AND a.reset = 'N' " +
+            "AND a.cyclNo <> :latestCyclNo " +
+            "ORDER BY a.cyclNo DESC")
+    List<GetCyclListDto> getLcDayCyclList(@Param("userNo") long userNo, @Param("latestCyclNo") Long latestCyclNo);
+
 
 
 }

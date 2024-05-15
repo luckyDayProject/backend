@@ -415,36 +415,17 @@ public class LuckyDayService {
 
     }
 
-    /*public ResponseEntity<ResponseDTO> insertImage(String token, int dtlNo, MultipartFile image) throws IOException {
-        long userNo = getUserNo(token);
-
-        String imagePath = "/root/lucky/luckyImage";
-        File imageDirectory = new File(imagePath);
-
-        // 디렉토리가 없으면 생성
-        if (!imageDirectory.exists()) {
-            imageDirectory.mkdirs();
-        }
-
-        UUID uuid = UUID.randomUUID();
-        String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
-        File saveFile = new File(imagePath, imageName);
-
-        image.transferTo(saveFile);
-        imagePath = imagePath + imageName;
-
-        String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
-
-        lcDayDtlRepository.insertImage(dtlNo, imageName, imagePath);
-
-
-        return ResponseDTO.success(reviewImageDto);
-
-    }*/
 
     public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
         Long userNo = getUserNo(token);
 
+        if(requestDto.getReview() == null && image.isEmpty()) {
+            return ResponseDTO.error(StatusResCode.EMPTY_CONTENT.getCode(), StatusResCode.EMPTY_CONTENT.getMessage());
+        }
+
+        if(requestDto.getReview() != null && requestDto.getReview().length() > 100) {
+            return ResponseDTO.error(StatusResCode.EXCEEDED_TEXT_LENGTH.getCode(), StatusResCode.EXCEEDED_TEXT_LENGTH.getMessage());
+        }
         String imagePath = "/root/lucky/luckyImage";
         File imageDirectory = new File(imagePath);
 
@@ -475,13 +456,37 @@ public class LuckyDayService {
     }
 
     public List<SendMailDto> getLcDay(LocalDate today) {
-        LocalDate tomorrow = today.plusDays(1);
-        return lcActivityRepository.getLcDay(tomorrow);
+        try {
+            LocalDate tomorrow = today.plusDays(1);
+            return lcActivityRepository.getLcDay(tomorrow);
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     public ResponseEntity<ResponseDTO> getLcDayCyclList(String token) {
         long userNo = getUserNo(token);
-        List<GetCyclListDto> cyclList = lcActivityRepository.getLcDayCyclList(userNo);
-        return ResponseDTO.success(cyclList);
+
+        try {
+
+            Long latestCyclNo = lcActivityRepository.findLatestCyclNo(userNo);
+            if (latestCyclNo == null) {
+                return ResponseDTO.error(StatusResCode.NOT_EXISTED_CYCLE_NO.getCode(), StatusResCode.NOT_EXISTED_CYCLE_NO.getMessage());
+            }
+
+            List<GetCyclListDto> cyclList = lcActivityRepository.getLcDayCyclList(userNo, latestCyclNo);
+            if(cyclList.isEmpty()) {
+                return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_CYCLE.getCode(), StatusResCode.NOT_EXISTED_HIST_CYCLE.getMessage());
+            }
+
+            return ResponseDTO.success(cyclList);
+
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+
     }
+
 }
