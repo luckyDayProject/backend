@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+
 public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> {
 
     @Modifying
@@ -15,7 +17,7 @@ public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> 
     @Query("UPDATE LcDayDtlEntity e " +
             "SET e.imageName = :imageName, e.imagePath = :imagePath " +
             "WHERE e.dtlNo = :dtlNo")
-    void insertImage(int dtlNo, String imageName, String imagePath);
+    void insertImage(@Param("dtlNo") int dtlNo, @Param("imageName") String imageName, @Param("imagePath") String imagePath);
 
     @Modifying
     @Transactional
@@ -30,4 +32,11 @@ public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> 
             "WHERE u.dtlNo = :dtlNo " +
             "AND u.user.userNo = :userNo")
     boolean getUserNoByDtlNo(@Param("dtlNo") Long dtlNo, @Param("userNo") Long userNo);
+
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
+            "FROM LcDayDtlEntity a " +
+            "JOIN a.cycl b " +
+            "WHERE a.user.userNo = :userNo AND a.dDay >= :today " +
+            "AND b.reset = 'N'")
+    boolean existsByUserNoAndDDayNotPassed(@Param("userNo") Long userNo, @Param("today") LocalDate today);
 }

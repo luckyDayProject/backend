@@ -24,9 +24,9 @@ spring:
             scope:
               - profile_nickname
               - account_email
-              - birthyear
-              - gender
-              - age_range
+#              - birthyear
+#              - gender
+#              - age_range
 
   datasource:
     driver-class-name: ${db.driver-class-name}

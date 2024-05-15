@@ -1,6 +1,7 @@
 package io.swyp.luckybackend.luckyDays.service;
 
 import io.swyp.luckybackend.common.JwtProvider;
+import io.swyp.luckybackend.common.ResponseCode;
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.common.StatusResCode;
 import io.swyp.luckybackend.luckyDays.domain.*;
@@ -44,6 +45,52 @@ public class LuckyDayService {
     public long getUserNo(String token) {
         return jwtProvider.getUserNo(token.substring(7));
     }
+
+    /**
+     * 럭키데이 생성 유효성 검사
+     * 1. 진행중인 럭키데이가 존재합니다.
+     * 2. 기간 별 허용된 럭키데이 수를 초과합니다.
+     * 3. 럭키데이 수가 선택한 활동 목록을 초과합니다.
+     * 4. 럭키데이 제외 일수가 조건에 맞지 않습니다.
+     * 5. 사용자 입력 내용을 작성해 주세요.
+     */
+    public ResponseEntity<ResponseDTO> createValidationCheck(String token, CreateLcDayRequestDto requestDto) {
+        long userNo = getUserNo(token);
+        boolean isExist = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now());
+        boolean isExceedCntPeriod = isExceedCntPeriod(requestDto);
+        boolean isExceedCntActivity = isExceedCntActivity(requestDto);
+        boolean isInvalidExptDays = isInvalidExptDays(requestDto);
+        boolean isMissingCustomActivity = isMissingCustomActivity(requestDto);
+        if (isExist) {
+            return ResponseDTO.error(StatusResCode.EXISTED_LUCKY_CYCLE.getCode(), StatusResCode.EXISTED_LUCKY_CYCLE.getMessage());
+        } else if (isExceedCntPeriod) {
+            return ResponseDTO.error(StatusResCode.EXCEEDED_CNT_PERIOD.getCode(), StatusResCode.EXCEEDED_CNT_PERIOD.getMessage());
+        } else if (isExceedCntActivity) {
+            return ResponseDTO.error(StatusResCode.EXCEEDED_CNT_ACTIVITY.getCode(), StatusResCode.EXCEEDED_CNT_ACTIVITY.getMessage());
+        } else if (isInvalidExptDays) {
+            return ResponseDTO.error(StatusResCode.INVALID_EXPT_DAYS.getCode(), StatusResCode.INVALID_EXPT_DAYS.getMessage());
+        } else if (isMissingCustomActivity) {
+            return ResponseDTO.error(StatusResCode.MISSING_CUSTOM_ACTIVITY.getCode(), StatusResCode.MISSING_CUSTOM_ACTIVITY.getMessage());
+        }
+        return null;
+    }
+
+    private boolean isExceedCntPeriod(CreateLcDayRequestDto requestDto) {
+        return false;
+    }
+
+    private boolean isExceedCntActivity(CreateLcDayRequestDto requestDto) {
+        return false;
+    }
+
+    private boolean isInvalidExptDays(CreateLcDayRequestDto requestDto) {
+        return false;
+    }
+
+    private boolean isMissingCustomActivity(CreateLcDayRequestDto requestDto) {
+        return false;
+    }
+
 
     public ResponseEntity<ResponseDTO> getActivityList() {
         List<GetActivityListDto> activities = lcActivityRepository.getActivityList();
@@ -305,16 +352,16 @@ public class LuckyDayService {
                     // 이력 조회 (럭키데이 보관함)
                     lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
 
-                    if(lcDayList.isEmpty()) {
-                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(),StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
+                    if (lcDayList.isEmpty()) {
+                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(), StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
                     }
 
                 } else {
                     // 현재 싸이클 이면서 지난 럭키데이 조회
                     lcDayList = lcActivityRepository.getPastLcDayList(userNo, today);
 
-                    if(lcDayList.isEmpty()) {
-                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(),StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
+                    if (lcDayList.isEmpty()) {
+                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(), StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
                     }
 
                 }
@@ -322,8 +369,8 @@ public class LuckyDayService {
                 // 현재 싸이클에서 오늘 이후의 럭키데이 조회
                 lcDayList = lcActivityRepository.getLcDayList(userNo, today);
 
-                if(lcDayList.isEmpty()) {
-                    return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(),StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
+                if (lcDayList.isEmpty()) {
+                    return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
                 }
 
                 countLcDdays(lcDayList);
@@ -382,7 +429,7 @@ public class LuckyDayService {
         long userNo = getUserNo(token);
         try {
             GetLcDayCyclDto lcCycl = lcActivityRepository.getLcDayCyclInfo(cyclNo);
-            if(lcCycl == null) {
+            if (lcCycl == null) {
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
             }
             return ResponseDTO.success(lcCycl);
@@ -420,19 +467,19 @@ public class LuckyDayService {
         try {
             // dtlNo가 현재 user의 것인지확인
             boolean result = lcDayDtlRepository.getUserNoByDtlNo(requestDto.getDtlNo(), userNo);
-            if(!result) {
+            if (!result) {
                 return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
 
-            if(requestDto.getReview() == null && image.isEmpty()) {
+            if (requestDto.getReview() == null && image.isEmpty()) {
                 return ResponseDTO.error(StatusResCode.EMPTY_CONTENT.getCode(), StatusResCode.EMPTY_CONTENT.getMessage());
             }
 
-            if(requestDto.getReview() != null && requestDto.getReview().length() > 100) {
+            if (requestDto.getReview() != null && requestDto.getReview().length() > 100) {
                 return ResponseDTO.error(StatusResCode.EXCEEDED_TEXT_LENGTH.getCode(), StatusResCode.EXCEEDED_TEXT_LENGTH.getMessage());
             }
 
-            if(!image.isEmpty()) {
+            if (!image.isEmpty()) {
                 String imagePath = "/root/lucky/luckyImage";
                 File imageDirectory = new File(imagePath);
 
@@ -493,7 +540,7 @@ public class LuckyDayService {
             }
 
             List<GetCyclListDto> cyclList = lcActivityRepository.getLcDayCyclList(userNo, latestCyclNo);
-            if(cyclList.isEmpty()) {
+            if (cyclList.isEmpty()) {
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_CYCLE.getCode(), StatusResCode.NOT_EXISTED_HIST_CYCLE.getMessage());
             }
 

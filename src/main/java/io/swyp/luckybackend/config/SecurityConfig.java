@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/users/sign-in", "/users/sign-out", "/users/test",
+                        .requestMatchers("/", "/users/sign-in", "/users/sign-out",
                                 "/luckydays/activity", "/api", "/swagger-ui/**", "/v3/**", "/images/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )

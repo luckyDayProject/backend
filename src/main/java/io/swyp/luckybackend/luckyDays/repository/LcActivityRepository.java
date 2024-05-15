@@ -62,7 +62,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "FROM LcDayCycleEntity " +
             "WHERE user.userNo = :userNo " +
             "AND reset = 'N'")
-    Long findCyclNo(long userNo);
+    Long findCyclNo(@Param("userNo") long userNo);
 
     @Modifying
     @Transactional

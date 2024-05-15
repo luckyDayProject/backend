@@ -34,6 +34,10 @@ public class LuckyDayController {
     public ResponseEntity<ResponseDTO> createLcDay(HttpServletRequest request,
                                                    @RequestBody CreateLcDayRequestDto requestDto){
         String token = request.getHeader("Authorization");
+        ResponseEntity<ResponseDTO> res = luckyDayService.createValidationCheck(token, requestDto);
+        if (res != null){
+            return res;
+        }
         return luckyDayService.createLcDay(token, requestDto);
     }
 
