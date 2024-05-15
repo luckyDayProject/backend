@@ -2,6 +2,7 @@ package io.swyp.luckybackend.config;
 
 import io.swyp.luckybackend.common.JwtAuthenticationFilter;
 import io.swyp.luckybackend.common.OAuth2SuccessHandler;
+import io.swyp.luckybackend.common.StatusResCode;
 import io.swyp.luckybackend.users.domain.LuckyOAuth2User;
 import io.swyp.luckybackend.users.service.Oauth2UserServiceImpl;
 import jakarta.servlet.ServletException;
@@ -86,6 +87,6 @@ class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("{\"code\": \"NP\", \"message\": \"No Permission.\"}");
+        response.getWriter().write("{\"code\": \"" + StatusResCode.INVALID_TOKEN.getCode() + "\", \"message\": \"" + StatusResCode.INVALID_TOKEN.getMessage() + "\"}");
     }
 }

@@ -85,7 +85,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "FROM LcAlarmEntity a " +
             "JOIN a.user b " +
             "WHERE a.dDay = :today")
-    List<SendMailDto> getLcDay(LocalDate today);
+    List<SendMailDto> getLcDay(@Param("today") LocalDate today);
 
 
 }

@@ -47,8 +47,13 @@ public class ResponseDTO {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDTO> error(int code, String message) {
+    public static ResponseEntity<ResponseDTO> error(String code, String message) {
         ResponseDTO responseBody = new ResponseDTO(String.valueOf(code), message);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseDTO> invalidToken() {
+        ResponseDTO responseBody = new ResponseDTO(StatusResCode.INVALID_TOKEN.getCode(),StatusResCode.INVALID_TOKEN.getMessage());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
 }
