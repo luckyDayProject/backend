@@ -2,6 +2,7 @@ package io.swyp.luckybackend.config;
 
 import io.swyp.luckybackend.common.JwtAuthenticationFilter;
 import io.swyp.luckybackend.common.OAuth2SuccessHandler;
+import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.common.StatusResCode;
 import io.swyp.luckybackend.users.domain.LuckyOAuth2User;
 import io.swyp.luckybackend.users.service.Oauth2UserServiceImpl;
@@ -69,7 +70,6 @@ public class SecurityConfig {
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-//        config.addAllowedOrigin("http://localhost:3000");
         config.setAllowedOrigins(List.of("http://localhost:3000", "https://223.130.131.239.nip.io"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
@@ -86,7 +86,10 @@ class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("{\"code\": \"" + StatusResCode.INVALID_TOKEN.getCode() + "\", \"message\": \"" + StatusResCode.INVALID_TOKEN.getMessage() + "\"}");
+        response.getWriter().write("{\"code\": \"" + StatusResCode.INVALID_TOKEN.getCode() + "\"," +
+                "\"message\": \"" + StatusResCode.INVALID_TOKEN.getMessage() + "\"," +
+                "\"resData\": " + null + "}");
     }
 }

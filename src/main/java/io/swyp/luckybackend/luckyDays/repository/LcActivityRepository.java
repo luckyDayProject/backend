@@ -50,7 +50,7 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "FROM LcDayDtlEntity a " +
             "JOIN a.activity b " +
             "WHERE a.dtlNo = :dtlNo")
-    GetLcDayDtlDto getLcDayDetail(int dtlNo);
+    GetLcDayDtlDto getLcDayDetail(@Param("dtlNo") int dtlNo);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayCyclDto(a.startDt, a.endDt, a.period, a.count, a.exptDt)" +
             "FROM LcDayCycleEntity a " +

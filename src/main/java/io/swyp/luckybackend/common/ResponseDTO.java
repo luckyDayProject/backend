@@ -56,8 +56,13 @@ public class ResponseDTO {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
 
-    public static ResponseEntity<ResponseDTO> invalidToken() {
-        ResponseDTO responseBody = new ResponseDTO(StatusResCode.INVALID_TOKEN.getCode(),StatusResCode.INVALID_TOKEN.getMessage());
+    public static ResponseEntity<ResponseDTO> exceedNicknameLength() {
+        ResponseDTO responseBody = new ResponseDTO(StatusResCode.EXCEEDED_NICKNAME_LENGTH.getCode(),StatusResCode.EXCEEDED_NICKNAME_LENGTH.getMessage());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseDTO> notExistedUser() {
+        ResponseDTO responseBody = new ResponseDTO(StatusResCode.NOT_EXISTED_USER.getCode(),StatusResCode.NOT_EXISTED_USER.getMessage());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
     }
 }

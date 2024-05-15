@@ -10,4 +10,6 @@ public interface UserService {
     ResponseEntity<ResponseDTO> getUserInfo(String token);
     void modifyUserInfo(String token, UserEntity user);
     long deleteUser(String token);
+
+    boolean isExistUser(String token);
 }

@@ -1,5 +1,6 @@
 package io.swyp.luckybackend.users.controller;
 
+import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import io.swyp.luckybackend.users.service.KakaoService;
@@ -23,6 +24,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
     private final UserService userServiceImpl;
     private final KakaoService kakaoService;
+
+    private final JwtProvider jwtProvider;
+
 
     @Operation(
             summary = "로그인 API"
@@ -48,6 +52,9 @@ public class UserController {
     @PutMapping("")
     public ResponseEntity<ResponseDTO> modifyUserInfo(HttpServletRequest request, @RequestBody ModifyUserRequestDto requestDto) throws Exception {
         log.info("회원 정보 수정 API 진입");
+        if (requestDto.getNickname().length() > 9) {
+            return ResponseDTO.exceedNicknameLength();
+        }
         String token = request.getHeader("Authorization");
         userServiceImpl.modifyUserInfo(token, requestDto.modifyDto2Entity(requestDto.getNickname(), requestDto.getEmail()));
         return ResponseDTO.success("ok");
@@ -71,6 +78,7 @@ public class UserController {
 
     @Value("${kakao-admin-key}")
     private String adminKey;
+
     @Operation(
             summary = "회원 탈퇴 API"
     )
@@ -78,17 +86,9 @@ public class UserController {
     public ResponseEntity<ResponseDTO> withdrawUser(HttpServletRequest request) throws Exception {
         log.info("회원 탈퇴 API 진입");
         String token = request.getHeader("Authorization");
+        boolean isExist = userServiceImpl.isExistUser(token);
+        if (!isExist) return ResponseDTO.notExistedUser();
         long userNo = userServiceImpl.deleteUser(token);
         return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey).block());
     }
-
-
-    @DeleteMapping("/test")
-    public ResponseEntity<ResponseDTO> test(HttpServletRequest request) throws Exception {
-        log.info("TEST API 진입");
-        String token = request.getHeader("Authorization");
-        long userNo = userServiceImpl.deleteUser(token);
-        return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey).block());
-    }
-
 }

@@ -351,8 +351,8 @@ public class LuckyDayService {
         long userNo = getUserNo(token);
         try {
             GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo);
-
             if (lcDetail == null) {
+                System.out.println("null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  ");
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_DTL_NO.getCode(), StatusResCode.NOT_EXISTED_DTL_NO.getMessage());
             }
 

@@ -45,13 +45,13 @@ public class UserEntity {
     @Column(name = "PRF_ICON_NO")
     private int profileIconNo;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcDayCycleEntity> cycles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcAlarmEntity> alarms = new ArrayList<>();
 
 

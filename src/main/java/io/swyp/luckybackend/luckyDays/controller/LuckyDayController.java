@@ -41,13 +41,13 @@ public class LuckyDayController {
     @GetMapping({"/cycl", "/cycl/{cyclNo}"})
     public ResponseEntity<ResponseDTO> getLcDayList(HttpServletRequest request, @PathVariable(required = false) Long cyclNo, @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
         String token = request.getHeader("Authorization");
-
         return luckyDayService.getLcDayList(token, cyclNo, isCurrent);
     }
 
     @Operation(summary = "유저 럭키데이 상세 조회")
     @GetMapping("/{dtlNo}")
     public ResponseEntity<ResponseDTO> getLcDayDetail(HttpServletRequest request, @PathVariable int dtlNo) {
+        log.info("유저 럭키데이 상세 조회");
         String token = request.getHeader("Authorization");
         return luckyDayService.getLcDayDetail(token, dtlNo);
     }

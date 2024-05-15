@@ -46,7 +46,7 @@ public class LcDayCycleEntity {
     @Column(name = "RESET", length = 1, columnDefinition = "CHAR DEFAULT 'N'")
     private String reset;
 
-    @OneToMany(mappedBy = "cycl")
+    @OneToMany(mappedBy = "cycl", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
     @Builder

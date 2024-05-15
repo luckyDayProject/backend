@@ -55,4 +55,10 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userNo);
         return userNo;
     }
+
+    @Override
+    public boolean isExistUser(String token) {
+        long userNo = getUserNo(token);
+        return userRepository.existsById(userNo);
+    }
 }
