@@ -1,7 +1,6 @@
 package io.swyp.luckybackend.luckyDays.service;
 
 import io.swyp.luckybackend.common.JwtProvider;
-import io.swyp.luckybackend.common.ResponseCode;
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.common.StatusResCode;
 import io.swyp.luckybackend.luckyDays.domain.*;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,17 +55,19 @@ public class LuckyDayService {
     public ResponseEntity<ResponseDTO> createValidationCheck(String token, CreateLcDayRequestDto requestDto) {
         long userNo = getUserNo(token);
         boolean isExist = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now());
-        boolean isExceedCntPeriod = isExceedCntPeriod(requestDto);
-        boolean isExceedCntActivity = isExceedCntActivity(requestDto);
-        boolean isInvalidExptDays = isInvalidExptDays(requestDto);
-        boolean isMissingCustomActivity = isMissingCustomActivity(requestDto);
+        boolean chkExceedCntPeriod = chkExceedCntPeriod(requestDto);
+        boolean chkExceedCntActivity = chkExceedCntActivity(requestDto);
+        boolean chkInvalidExptDays = chkInvalidExptDays(requestDto);
+        boolean isMissingCustomActivity = !isMissingCustomActivity(requestDto);
         if (isExist) {
+            System.out.println("isExist: " + true);
             return ResponseDTO.error(StatusResCode.EXISTED_LUCKY_CYCLE.getCode(), StatusResCode.EXISTED_LUCKY_CYCLE.getMessage());
-        } else if (isExceedCntPeriod) {
+        } else if (!chkExceedCntPeriod) {
+            System.out.println("isExceedCntPeriod: " + false);
             return ResponseDTO.error(StatusResCode.EXCEEDED_CNT_PERIOD.getCode(), StatusResCode.EXCEEDED_CNT_PERIOD.getMessage());
-        } else if (isExceedCntActivity) {
+        } else if (!chkExceedCntActivity) {
             return ResponseDTO.error(StatusResCode.EXCEEDED_CNT_ACTIVITY.getCode(), StatusResCode.EXCEEDED_CNT_ACTIVITY.getMessage());
-        } else if (isInvalidExptDays) {
+        } else if (chkInvalidExptDays) {
             return ResponseDTO.error(StatusResCode.INVALID_EXPT_DAYS.getCode(), StatusResCode.INVALID_EXPT_DAYS.getMessage());
         } else if (isMissingCustomActivity) {
             return ResponseDTO.error(StatusResCode.MISSING_CUSTOM_ACTIVITY.getCode(), StatusResCode.MISSING_CUSTOM_ACTIVITY.getMessage());
@@ -75,20 +75,50 @@ public class LuckyDayService {
         return null;
     }
 
-    private boolean isExceedCntPeriod(CreateLcDayRequestDto requestDto) {
+    //2. 기간 별 허용된 럭키데이 수를 초과합니다.
+    private boolean chkExceedCntPeriod(CreateLcDayRequestDto requestDto) {
+        int cnt = requestDto.getCnt();
+        switch (requestDto.getPeriod()) {
+            case 7, 14 -> {
+                if (0 < cnt && cnt <= 2) return true;
+            }
+            case 30 -> {
+                if (0 < cnt && cnt <= 4) return true;
+            }
+            case 60 -> {
+                if (0 < cnt && cnt <= 7) return true;
+            }
+            default -> {
+                return false;
+            }
+        }
         return false;
     }
 
-    private boolean isExceedCntActivity(CreateLcDayRequestDto requestDto) {
+    //3. 럭키데이 수가 선택한 활동 목록을 초과합니다.
+    private boolean chkExceedCntActivity(CreateLcDayRequestDto requestDto) {
+        return requestDto.getActList().size() >= requestDto.getCnt();
+    }
+
+    //4. 럭키데이 제외 일수가 조건에 맞지 않습니다.
+    private boolean chkInvalidExptDays(CreateLcDayRequestDto requestDto) {
+        LocalDate today = LocalDate.now();
+        LocalDate endPeriod = today.plusDays(requestDto.getPeriod());
+        List<LocalDate> excludedDates = requestDto.getExpDTList();
+
+        for (LocalDate date : excludedDates) {
+            if (date.isBefore(today) || date.isAfter(endPeriod)) {
+                return true;
+            }
+        }
         return false;
     }
 
-    private boolean isInvalidExptDays(CreateLcDayRequestDto requestDto) {
-        return false;
-    }
-
+    //5. 사용자 입력 내용을 작성해 주세요.
     private boolean isMissingCustomActivity(CreateLcDayRequestDto requestDto) {
-        return false;
+        return requestDto.getActList().stream()
+                .filter(num -> num == 0)
+                .count() == requestDto.getCustomActList().size();
     }
 
 
@@ -327,14 +357,17 @@ public class LuckyDayService {
     }
 
     private String createContent(String userName, String content, long dtnNo, String imageName) {
-        String style = "님을";
+        String style = "<br><p>님을";
         String[] contentStyle = content.split(style);
         String buttonPhrase = "럭키 데이 확인하러 가기 🍀";
         String[] parts = contentStyle[1].split(buttonPhrase);
         String imageBaseUrl = "https://223.130.131.239.nip.io/lucky/images/msg/";
         String url = "<a href=\"https://www.naver.com\" style=\"background-color: #FFD700; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
-        return contentStyle[0] + "<img src=\"" + imageBaseUrl + imageName + "\" style=\"width: 100%; max-width: 600px; height: auto;\"/>" + userName + style + parts[0] + url + buttonPhrase + "</a>" + parts[1];
+        return contentStyle[0] +
+                "<img src=\"" + imageBaseUrl + imageName + "\" style=\"width: 80%; height: auto; max-width: 600px; display: block; margin: auto;\"/>" +
+                "<br>" + userName + "님을" + parts[0] + url + buttonPhrase + "</a>" + parts[1];
     }
+
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, Long cyclNo, int isCurrent) {
     /*
