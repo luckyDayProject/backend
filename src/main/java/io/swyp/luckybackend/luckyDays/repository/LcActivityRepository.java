@@ -71,8 +71,9 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     @Transactional
     @Query("UPDATE LcDayCycleEntity " +
             "SET reset = 'Y' " +
-            "WHERE cyclNo = (SELECT MAX(cyclNo) FROM LcDayCycleEntity WHERE user.userNo = :userNo)")
-    void deleteLcDayCycl(@Param("userNo") long userNo);
+            "WHERE cyclNo = :latestCyclNo " +
+            "AND user.userNo = :userNo")
+    int deleteLcDayCycl(@Param("userNo") Long userNo, @Param("latestCyclNo") Long latestCyclNo);
 
 
     /*@Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetCyclListDto(a.cyclNo, a.startDt, a.endDt) " +
@@ -89,7 +90,8 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "b.email, b.nickname, a.sj, a.content) " +
             "FROM LcAlarmEntity a " +
             "JOIN a.user b " +
-            "WHERE a.dDay = :today")
+            "WHERE a.dDay = :today " +
+            "AND a.sendStatus != 'DEL'")
     List<SendMailDto> getLcDay(@Param("today") LocalDate today);
 
 
@@ -107,6 +109,14 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "ORDER BY a.cyclNo DESC")
     List<GetCyclListDto> getLcDayCyclList(@Param("userNo") long userNo, @Param("latestCyclNo") Long latestCyclNo);
 
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE LcAlarmEntity a " +
+            "SET a.sendStatus = 'DEL' " +
+            "WHERE a.dtl.dtlNo IN (SELECT d.dtlNo FROM LcDayDtlEntity d WHERE d.cycl.cyclNo = :latestCyclNo) " +
+            "AND a.user.userNo = :userNo")
+    void updateAlarmStatus(@Param("userNo") Long userNo, @Param("latestCyclNo") Long latestCyclNo);
 
 
 }

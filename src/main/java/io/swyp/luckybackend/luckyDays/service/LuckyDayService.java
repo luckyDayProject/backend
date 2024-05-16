@@ -477,16 +477,21 @@ public class LuckyDayService {
     @Transactional
     public ResponseEntity<ResponseDTO> deleteLcDayCycl(String token) {
 
-        long userNo = getUserNo(token);
+        Long userNo = getUserNo(token);
 
         try {
             // 1. 최근 cyclNo 조회
-            Long cyclNo = lcActivityRepository.findCyclNo(userNo);
-            if (cyclNo == null) {
+            Long latestCyclNo = lcActivityRepository.findLatestCyclNo(userNo);
+            if (latestCyclNo == null) {
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_CYCLE_NO.getCode(), StatusResCode.NOT_EXISTED_CYCLE_NO.getMessage());
             } else {
                 // 2. delete
-                lcActivityRepository.deleteLcDayCycl(userNo);
+                int delResult = lcActivityRepository.deleteLcDayCycl(userNo, latestCyclNo);
+
+                // 3. t_alarm status update
+                if (delResult > 0) {
+                    lcActivityRepository.updateAlarmStatus(userNo, latestCyclNo);
+                }
                 return ResponseDTO.success();
             }
 
