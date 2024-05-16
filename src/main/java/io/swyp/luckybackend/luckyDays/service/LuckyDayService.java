@@ -435,6 +435,7 @@ public class LuckyDayService {
                 System.out.println("null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  ");
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_DTL_NO.getCode(), StatusResCode.NOT_EXISTED_DTL_NO.getMessage());
             }
+            String category = lcActivityRepository.findCategoryByActivityNm(lcDetail.getActNm());
 
             // 클라이언트용 이미지 URL 설정
             String imageUrl = lcDetail.getImageName() != null ? "/images/" + encodeUrl(lcDetail.getImageName()) : null;
@@ -448,6 +449,7 @@ public class LuckyDayService {
                     .imageName(lcDetail.getImageName())
                     .imagePath(lcDetail.getImagePath())
                     .imageUrl(imageUrl)
+                    .category(category)
                     .build();
 
             return ResponseDTO.success(lcDayDtlResDto);

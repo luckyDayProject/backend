@@ -25,5 +25,7 @@ public class GetLcDayDtlResDto {
     @Nullable
     private String imageUrl;
 
+    private String category;
+
 
 }
