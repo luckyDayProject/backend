@@ -70,7 +70,7 @@ public class SecurityConfig {
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000", "https://223.130.131.239.nip.io"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "https://223.130.131.239.nip.io", "https://luckyday.swygbro.com"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);
