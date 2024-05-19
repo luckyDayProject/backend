@@ -505,7 +505,8 @@ public class LuckyDayService {
         Long userNo = getUserNo(token);
         try {
             // dtlNo가 현재 user의 것인지확인
-            boolean result = lcDayDtlRepository.getUserNoByDtlNo(requestDto.getDtlNo(), userNo);
+            long dtlNo = requestDto.getDtlNo();
+            boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
             if (!result) {
                 return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
@@ -541,7 +542,16 @@ public class LuckyDayService {
                 lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
             } else {
                 String imageName = null;
-                String imagePath = null;
+                String imagePath = "/root/lucky/luckyImage/review/default/";
+
+                String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
+                switch (category) {
+                    case "특별한 선물" -> imageName = "logo_present.png";
+                    case "맛있는 음식" -> imageName = "logo_food.png";
+                    case "배움과 문화" -> imageName = "logo_culture.png";
+                    case "이동과 탐험" -> imageName = "logo_explore.png";
+                    case "일상 속 소소함" -> imageName = "logo_daily.png";
+                }
 
                 lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
             }

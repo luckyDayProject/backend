@@ -20,11 +20,11 @@ public class LcDayDtlEntity {
     @Column(name = "DTL_NO", nullable = false)
     private Long dtlNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "CYCL_NO", referencedColumnName = "CYCL_NO", nullable = false)
     private LcDayCycleEntity cycl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_NO", referencedColumnName = "USER_NO", nullable = false)
     private UserEntity user;
 
