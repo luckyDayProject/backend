@@ -520,7 +520,7 @@ public class LuckyDayService {
             }
 
             if (!image.isEmpty()) {
-                String imagePath = "/";
+                String imagePath = "/root/lucky/luckyImage/review/";
                 File imageDirectory = new File(imagePath);
 
                 // 디렉토리가 없으면 생성
@@ -539,7 +539,7 @@ public class LuckyDayService {
 
                 log.info("imageUrl === ", imageUrl);
 
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review")[1], userNo);
             } else {
                 String imageName = null;
                 String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
@@ -553,10 +553,10 @@ public class LuckyDayService {
                     case "직접 입력" -> imageName = "logo_daily.png";
                 }
 
-                String imagePath = "/default/" + imageName;
+                String imagePath = "/root/lucky/luckyImage/review/default/" + imageName;
 
 
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review")[1], userNo);
             }
             return ResponseDTO.success();
         } catch (Error e) {
