@@ -16,7 +16,9 @@ import java.util.List;
 @Repository
 public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Long> {
 
-    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetActivityListDto(a.category, a.activityNo, a.keyword) FROM LcActivityEntity a")
+    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetActivityListDto(a.category, a.activityNo, a.keyword)" +
+            " FROM LcActivityEntity a" +
+            " WHERE a.useAt ='Y'")
     List<GetActivityListDto> getActivityList();
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto(a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
