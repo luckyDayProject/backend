@@ -23,7 +23,7 @@ public enum StatusResCode {
     NOT_EXISTED_DTL_NO("2010", "존재하지 않는 럭키데이 번호입니다."),
     EXCEEDED_IMG_SIZE("2011", "이미지 용량이 너무 큽니다."),
     EXCEEDED_TEXT_LENGTH("2012", "최대 글자수를 초과하였습니다."),
-    EMPTY_CONTENT("2013", "이미지 또는 내용을 입력해 주세요."),
+    EMPTY_CONTENT("2013", "내용을 입력해 주세요."),
     NOT_EXISTED_CYCLE_NO("2014", "생성된 싸이클 번호가 없습니다."),
 
     ;

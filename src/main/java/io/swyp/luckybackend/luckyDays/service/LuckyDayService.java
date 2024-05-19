@@ -432,7 +432,6 @@ public class LuckyDayService {
         try {
             GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo);
             if (lcDetail == null) {
-                System.out.println("null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  null  ");
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_DTL_NO.getCode(), StatusResCode.NOT_EXISTED_DTL_NO.getMessage());
             }
             String category = lcActivityRepository.findCategoryByActivityNm(lcDetail.getActNm());
@@ -511,7 +510,7 @@ public class LuckyDayService {
                 return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
 
-            if (requestDto.getReview() == null && image.isEmpty()) {
+            if (requestDto.getReview() == null) {
                 return ResponseDTO.error(StatusResCode.EMPTY_CONTENT.getCode(), StatusResCode.EMPTY_CONTENT.getMessage());
             }
 
