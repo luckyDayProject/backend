@@ -437,7 +437,7 @@ public class LuckyDayService {
             String category = lcActivityRepository.findCategoryByActivityNm(lcDetail.getActNm());
 
             // 클라이언트용 이미지 URL 설정
-            String imageUrl = lcDetail.getImageName() != null ? "/images/" + encodeUrl(lcDetail.getImagePath()) : null;
+            String imageUrl = lcDetail.getImageName() != null ? "/lucky/images/" + encodeUrl(lcDetail.getImagePath()) : null;
 
             // 빌더를 사용하여 객체 생성
             GetLcDayDtlResDto lcDayDtlResDto = GetLcDayDtlResDto.builder()
