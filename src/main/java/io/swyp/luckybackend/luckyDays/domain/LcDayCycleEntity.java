@@ -40,7 +40,7 @@ public class LcDayCycleEntity {
     @Temporal(TemporalType.DATE)
     private Date endDt;
 
-    @Column(name = "EXPT_DT", length = 200)
+    @Column(name = "EXPT_DT", columnDefinition = "TEXT")
     private String exptDt;
 
     @Column(name = "RESET", length = 1, columnDefinition = "CHAR DEFAULT 'N'")
