@@ -12,13 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -37,8 +37,6 @@ public class LuckyDayService {
     private final LcMsgRepository lcMsgRepository;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
-
-    private final MappingJackson2HttpMessageConverter converter;
 
     public long getUserNo(String token) {
         return jwtProvider.getUserNo(token.substring(7));
@@ -139,7 +137,7 @@ public class LuckyDayService {
                 .collect(Collectors.toList());
 
         // '직접 입력' 카테고리 추가
-        List<ActivityDTO> directInputList = List.of(new ActivityDTO(0l, null));
+        List<ActivityDTO> directInputList = List.of(new ActivityDTO(0L, null));
         categoryActivities.add(new CategoryActivitiesDTO(directInputCategoryName, directInputList));
 
         return ResponseDTO.success(categoryActivities);
@@ -437,7 +435,8 @@ public class LuckyDayService {
             String category = lcActivityRepository.findCategoryByActivityNm(lcDetail.getActNm());
 
             // 클라이언트용 이미지 URL 설정
-            String imageUrl = lcDetail.getImageName() != null ? "/lucky/images/" + encodeUrl(lcDetail.getImagePath()) : null;
+            String decodedPath = URLDecoder.decode(lcDetail.getImagePath(), StandardCharsets.UTF_8);
+            String imageUrl = lcDetail.getImageName() != null ? "/lucky/images/" + decodedPath : null;
 
             // 빌더를 사용하여 객체 생성
             GetLcDayDtlResDto lcDayDtlResDto = GetLcDayDtlResDto.builder()
