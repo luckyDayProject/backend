@@ -539,7 +539,7 @@ public class LuckyDayService {
 
                 log.info("imageUrl === ", imageUrl);
 
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review")[1], userNo);
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review/")[1], userNo);
             } else {
                 String imageName = null;
                 String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
@@ -556,7 +556,7 @@ public class LuckyDayService {
                 String imagePath = "/root/lucky/luckyImage/review/default/" + imageName;
 
 
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review")[1], userNo);
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review/")[1], userNo);
             }
             return ResponseDTO.success();
         } catch (Error e) {
