@@ -43,26 +43,26 @@ public class ResponseDTO {
 
     public static ResponseEntity<ResponseDTO> success(Object resData) {
         ResponseDTO responseBody = new ResponseDTO(resData);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDTO> success() {
         ResponseDTO responseBody = new ResponseDTO();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDTO> error(String code, String message) {
         ResponseDTO responseBody = new ResponseDTO(code, message);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDTO> exceedNicknameLength() {
         ResponseDTO responseBody = new ResponseDTO(StatusResCode.EXCEEDED_NICKNAME_LENGTH.getCode(),StatusResCode.EXCEEDED_NICKNAME_LENGTH.getMessage());
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDTO> notExistedUser() {
         ResponseDTO responseBody = new ResponseDTO(StatusResCode.NOT_EXISTED_USER.getCode(),StatusResCode.NOT_EXISTED_USER.getMessage());
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

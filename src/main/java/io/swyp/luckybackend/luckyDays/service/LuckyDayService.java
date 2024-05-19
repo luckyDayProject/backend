@@ -515,7 +515,7 @@ public class LuckyDayService {
                 return ResponseDTO.error(StatusResCode.EMPTY_CONTENT.getCode(), StatusResCode.EMPTY_CONTENT.getMessage());
             }
 
-            if (requestDto.getReview() != null && requestDto.getReview().length() > 100) {
+            if (requestDto.getReview().length() > 100) {
                 return ResponseDTO.error(StatusResCode.EXCEEDED_TEXT_LENGTH.getCode(), StatusResCode.EXCEEDED_TEXT_LENGTH.getMessage());
             }
 
