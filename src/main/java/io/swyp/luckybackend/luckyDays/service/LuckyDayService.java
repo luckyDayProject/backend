@@ -437,7 +437,7 @@ public class LuckyDayService {
             String category = lcActivityRepository.findCategoryByActivityNm(lcDetail.getActNm());
 
             // 클라이언트용 이미지 URL 설정
-            String imageUrl = lcDetail.getImageName() != null ? "/images/" + encodeUrl(lcDetail.getImageName()) : null;
+            String imageUrl = lcDetail.getImageName() != null ? "/images/" + encodeUrl(lcDetail.getImagePath()) : null;
 
             // 빌더를 사용하여 객체 생성
             GetLcDayDtlResDto lcDayDtlResDto = GetLcDayDtlResDto.builder()
@@ -520,7 +520,7 @@ public class LuckyDayService {
             }
 
             if (!image.isEmpty()) {
-                String imagePath = "/root/lucky/luckyImage";
+                String imagePath = "/";
                 File imageDirectory = new File(imagePath);
 
                 // 디렉토리가 없으면 생성
@@ -542,16 +542,19 @@ public class LuckyDayService {
                 lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
             } else {
                 String imageName = null;
-                String imagePath = "/root/lucky/luckyImage/review/default/";
-
                 String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
+
                 switch (category) {
                     case "특별한 선물" -> imageName = "logo_present.png";
                     case "맛있는 음식" -> imageName = "logo_food.png";
                     case "배움과 문화" -> imageName = "logo_culture.png";
                     case "이동과 탐험" -> imageName = "logo_explore.png";
                     case "일상 속 소소함" -> imageName = "logo_daily.png";
+                    case "직접 입력" -> imageName = "logo_daily.png";
                 }
+
+                String imagePath = "/default/" + imageName;
+
 
                 lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath, userNo);
             }
