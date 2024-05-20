@@ -1,6 +1,5 @@
 spring:
-  profiles:
-    active: prod
+  profiles: prod
 
 redirect-lucky-url: "https://luckyday.swygbro.com/oauth2/kakao/callback"
 logout-redirect-uri: "https://luckyday.swygbro.com"

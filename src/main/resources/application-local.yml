@@ -1,6 +1,5 @@
 spring:
-  profiles:
-    active: local
+  profiles: local
 
 redirect-lucky-url: "http://localhost:3000/oauth2/kakao/callback"
 logout-redirect-uri: "http://localhost:3000"
