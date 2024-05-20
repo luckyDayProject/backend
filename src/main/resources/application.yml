@@ -69,10 +69,7 @@ spring:
 secret-key: ${secret-key}
 kakao-admin-key: ${kakao.admin-key}
 
-#redirect-lucky-url: "https://luckyday.swygbro.com/oauth2/kakao/callback"
-#logout-redirect-uri: "https://luckyday.swygbro.com"
-redirect-lucky-url: "http://localhost:3000/oauth2/kakao/callback"
-logout-redirect-uri: "http://localhost:3000"
+
 expiration-time: "86400"
 
 springdoc:
@@ -89,3 +86,19 @@ springdoc:
 #  paths-to-match:
 #    - /**
 #    - /test/**
+
+---
+spring:
+  profiles:
+    active: prod
+
+redirect-lucky-url: "https://luckyday.swygbro.com/oauth2/kakao/callback"
+logout-redirect-uri: "https://luckyday.swygbro.com"
+
+---
+spring:
+  profiles:
+    active: local
+
+redirect-lucky-url: "http://localhost:3000/oauth2/kakao/callback"
+logout-redirect-uri: "http://localhost:3000"
