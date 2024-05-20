@@ -102,3 +102,4 @@ spring:
 
 redirect-lucky-url: "http://localhost:3000/oauth2/kakao/callback"
 logout-redirect-uri: "http://localhost:3000"
+---
