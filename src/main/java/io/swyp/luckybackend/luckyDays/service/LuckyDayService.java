@@ -436,7 +436,7 @@ public class LuckyDayService {
 
             // 클라이언트용 이미지 URL 설정
             String decodedPath = URLDecoder.decode(lcDetail.getImagePath() != null ? lcDetail.getImagePath() : "", StandardCharsets.UTF_8);
-            String imageUrl = lcDetail.getImageName() != null ? "/lucky/images/" + decodedPath : null;
+            String imageUrl = lcDetail.getImageName() != null ? "/images/" + decodedPath : null;
 
             // 빌더를 사용하여 객체 생성
             GetLcDayDtlResDto lcDayDtlResDto = GetLcDayDtlResDto.builder()
@@ -518,7 +518,7 @@ public class LuckyDayService {
                 return ResponseDTO.error(StatusResCode.EXCEEDED_TEXT_LENGTH.getCode(), StatusResCode.EXCEEDED_TEXT_LENGTH.getMessage());
             }
 
-            if (!image.isEmpty()) {
+            if (image != null) {
                 String imagePath = "/root/lucky/luckyImage/review/";
                 File imageDirectory = new File(imagePath);
 

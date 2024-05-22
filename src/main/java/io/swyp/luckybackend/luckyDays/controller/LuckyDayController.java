@@ -79,7 +79,6 @@ public class LuckyDayController {
                                                     @RequestPart(required = false, name = "image") MultipartFile image) throws IOException {
         String token = request.getHeader("Authorization");
         return luckyDayService.insertReview(token, requestDto, image);
-
     }
 
     @Operation(summary = "유저 럭키데이 싸이클 리스트")
