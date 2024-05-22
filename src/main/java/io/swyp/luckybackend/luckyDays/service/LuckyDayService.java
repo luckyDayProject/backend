@@ -434,6 +434,23 @@ public class LuckyDayService {
             }
             String category = lcActivityRepository.findCategoryByActivityNm(lcDetail.getActNm());
 
+//            String imageUrl = "";
+//            String decodedPath;
+//            if (lcDetail.getImagePath() != null) {
+//                String[] urlParts = lcDetail.getImagePath().split("/");
+//                boolean isDefault = urlParts[0].equals("default");
+//
+//                if (isDefault) {
+//                    System.out.println(true);
+//                    decodedPath = URLDecoder.decode(lcDetail.getImagePath(), StandardCharsets.UTF_8);
+//                } else {
+//                    System.out.println(false);
+//                    decodedPath = lcDetail.getImagePath();
+//                }
+//                imageUrl = lcDetail.getImageName() != null ? "/images/" + decodedPath : null;
+//            }
+//
+//
             // 클라이언트용 이미지 URL 설정
             String decodedPath = URLDecoder.decode(lcDetail.getImagePath() != null ? lcDetail.getImagePath() : "", StandardCharsets.UTF_8);
             String imageUrl = lcDetail.getImageName() != null ? "/images/" + decodedPath : null;
@@ -527,14 +544,28 @@ public class LuckyDayService {
                     imageDirectory.mkdirs();
                 }
 
+//                UUID uuid = UUID.randomUUID();
+//                String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
+//                imageName = imageName.replaceAll("\\s", "");
+//                File saveFile = new File(imagePath, imageName);
+//
+//                image.transferTo(saveFile);
+//                imagePath = imagePath + imageName;
+//
+//                String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
+//
+//                log.info("imageUrl === ", imageUrl);
+
                 UUID uuid = UUID.randomUUID();
-                String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
+                String imageName = uuid + "_" + image.getOriginalFilename();
+                System.out.println(image.getOriginalFilename());
+                imageName = imageName.replaceAll("\\s", "");
                 File saveFile = new File(imagePath, imageName);
 
                 image.transferTo(saveFile);
                 imagePath = imagePath + imageName;
 
-                String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
+                String imageUrl = "/images/" + imageName; // 클라이언트용 이미지 URL 설정
 
                 log.info("imageUrl === ", imageUrl);
 
