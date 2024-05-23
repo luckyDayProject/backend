@@ -63,12 +63,6 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "AND a.reset = 'N'")
     GetLcDayCyclDto getLcDayCyclInfo(@Param("cyclNo") int cyclNo);
 
-    @Query("SELECT MAX(cyclNo) " +
-            "FROM LcDayCycleEntity " +
-            "WHERE user.userNo = :userNo " +
-            "AND reset = 'N'")
-    Long findCyclNo(@Param("userNo") long userNo);
-
     @Modifying
     @Transactional
     @Query("UPDATE LcDayCycleEntity " +

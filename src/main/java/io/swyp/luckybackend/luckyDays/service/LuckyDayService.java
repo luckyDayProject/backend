@@ -70,6 +70,7 @@ public class LuckyDayService {
         } else if (isMissingCustomActivity) {
             return ResponseDTO.error(StatusResCode.MISSING_CUSTOM_ACTIVITY.getCode(), StatusResCode.MISSING_CUSTOM_ACTIVITY.getMessage());
         }
+
         return null;
     }
 
@@ -208,7 +209,12 @@ public class LuckyDayService {
                     .dDay(lcDayDtl.getDDay()).build());
         }
 
-        return ResponseDTO.success("생성완료");
+        LcDayCycleEntity latestCycle = lcDayCycleRepository.findTopByUserAndResetOrderByCyclNoDesc(user, "N");
+
+        if (latestCycle != null) {
+            latestCycle.changeYArchive();
+        }
+            return ResponseDTO.success("생성완료");
     }
 
     /* 1. 날짜 랜덤 선택
@@ -334,7 +340,8 @@ public class LuckyDayService {
      *        유저번호(토큰에서 추출), 활동 번호(2. 활동 선택에서 나온 활동), 활동명(직접 입력때문에 활동목록에 있더라도 입력)
      *        회고록, 이미지명, 럭키데이 날짜(1. 날짜 랜덤 선택에서 나온 날짜), 럭키데이 순서(화면에 뿌려질 랜덤값)
      * */
-    private LcDayDtlEntity LcDayDtl(UserEntity user, CreateLcDayRequestDto requestDto, LcDayCycleEntity lcDayCycle, LocalDate date, ActDTO4Create actDTO4Create, Integer dtlOrder) {
+    private LcDayDtlEntity LcDayDtl(UserEntity user, CreateLcDayRequestDto requestDto, LcDayCycleEntity
+            lcDayCycle, LocalDate date, ActDTO4Create actDTO4Create, Integer dtlOrder) {
         LcActivityEntity lcActivityEntity;
 
         if (actDTO4Create.getActNo() == 0) {
@@ -517,7 +524,8 @@ public class LuckyDayService {
     }
 
 
-    public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
+    public ResponseEntity<ResponseDTO> insertReview(String token, ReviewReqDto requestDto, MultipartFile image) throws
+            IOException {
         Long userNo = getUserNo(token);
         try {
             // dtlNo가 현재 user의 것인지확인

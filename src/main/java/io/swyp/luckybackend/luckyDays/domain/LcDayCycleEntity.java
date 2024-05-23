@@ -46,6 +46,9 @@ public class LcDayCycleEntity {
     @Column(name = "RESET", length = 1, columnDefinition = "CHAR DEFAULT 'N'")
     private String reset;
 
+    @Column(name = "ARCHIVE", length = 1, columnDefinition = "CHAR DEFAULT 'N'")
+    private String archive;
+
     @OneToMany(mappedBy = "cycl", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
@@ -58,6 +61,10 @@ public class LcDayCycleEntity {
         this.endDt = endDt;
         this.exptDt = exptDt;
         this.reset = reset;
+    }
+
+    public void changeYArchive(){
+        this.archive = "Y";
     }
 
     @Override
