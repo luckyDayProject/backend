@@ -36,7 +36,8 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "WHERE a.dDay < :today " +
             "AND a.user.userNo = :userNo " +
             "AND a.cycl.cyclNo = (SELECT MAX(c.cycl.cyclNo) FROM LcDayDtlEntity c WHERE c.user.userNo = :userNo) " + // today가 endDate보다 전에 있는 조건을 추가
-            "AND b.reset = 'N'")
+            "AND b.reset = 'N' " +
+            "AND a.cycl.archive = 'N'")
     List<GetLcDayListDto> getPastLcDayList(@Param("userNo")long userNo, @Param("today")LocalDate today);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto( a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
@@ -101,9 +102,9 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "FROM LcDayCycleEntity a " +
             "WHERE a.user.userNo = :userNo " +
             "AND a.reset = 'N' " +
-            "AND a.cyclNo <> :latestCyclNo " +
+            "AND a.archive = 'Y' " +
             "ORDER BY a.cyclNo DESC")
-    List<GetCyclListDto> getLcDayCyclList(@Param("userNo") long userNo, @Param("latestCyclNo") Long latestCyclNo);
+    List<GetCyclListDto> getLcDayCyclList(@Param("userNo") long userNo);
 
 
     @Modifying

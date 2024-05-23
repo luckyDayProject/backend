@@ -629,7 +629,7 @@ public class LuckyDayService {
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_CYCLE_NO.getCode(), StatusResCode.NOT_EXISTED_CYCLE_NO.getMessage());
             }
 
-            List<GetCyclListDto> cyclList = lcActivityRepository.getLcDayCyclList(userNo, latestCyclNo);
+            List<GetCyclListDto> cyclList = lcActivityRepository.getLcDayCyclList(userNo);
             if (cyclList.isEmpty()) {
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_CYCLE.getCode(), StatusResCode.NOT_EXISTED_HIST_CYCLE.getMessage());
             }
