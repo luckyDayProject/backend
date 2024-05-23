@@ -1,6 +1,7 @@
 package io.swyp.luckybackend.common;
 
 import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
+import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
 import io.swyp.luckybackend.users.domain.CustomOAuth2User;
 import io.swyp.luckybackend.users.domain.UserEntity;
 import io.swyp.luckybackend.users.service.UserService;
@@ -25,7 +26,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtProvider jwtProvider;
     private final UserService userServiceImpl;
 
-    private final LcActivityRepository lcActivityRepository;
+    private final LcDayDtlRepository lcDayDtlRepository;
     @Value("${redirect-lucky-url}")
     String redirectUrl;
 
@@ -42,7 +43,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         UserEntity userEntity = userServiceImpl.getUserEntityByUserNo(userNo);
         String nickname = URLEncoder.encode(userEntity.getNickname(), StandardCharsets.UTF_8.name());
         String email = URLEncoder.encode(userEntity.getEmail(), StandardCharsets.UTF_8.name());
-        int isExistLcDay = lcActivityRepository.getLcDayList(userNo, LocalDate.now()).size() != 0 ? 1: 0;
+        int isExistLcDay = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now()) ? 1: 0;
 //        response.sendRedirect(String.format("%s/%s/%s/%s", redirectUrl, token, expirationTime, nickname));
         response.sendRedirect(String.format("%s?token=%s&expirationTime=%s&nickname=%s&email=%s&isExistLcDay=%s", redirectUrl, token, expirationTime, nickname, email, isExistLcDay));
     }
