@@ -187,6 +187,11 @@ public class LuckyDayService {
         }
         List<ActDTO4Create> actList = pickAct(requestDto);
         UserEntity user = userRepository.findByUserNo(userNo);
+        LcDayCycleEntity latestCycle = lcDayCycleRepository.findTopByUserAndResetOrderByCyclNoDesc(user, "N");
+
+        if (latestCycle != null) {
+            latestCycle.changeYArchive();
+        }
         LcDayCycleEntity lcDayCycle = createLcDayCycle(user, requestDto);
         lcDayCycleRepository.save(lcDayCycle);
         List<Integer> dtlOrders = createDtlOrder(cnt);
@@ -209,11 +214,7 @@ public class LuckyDayService {
                     .dDay(lcDayDtl.getDDay()).build());
         }
 
-        LcDayCycleEntity latestCycle = lcDayCycleRepository.findTopByUserAndResetOrderByCyclNoDesc(user, "N");
 
-        if (latestCycle != null) {
-            latestCycle.changeYArchive();
-        }
             return ResponseDTO.success("생성완료");
     }
 
