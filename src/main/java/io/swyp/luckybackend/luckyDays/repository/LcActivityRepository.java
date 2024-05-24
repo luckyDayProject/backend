@@ -30,15 +30,16 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
             "AND b.reset = 'N'")
     List<GetLcDayListDto> getLcDayList(@Param("userNo")long userNo, @Param("today")LocalDate today);
 
+
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto(a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
             "FROM LcDayDtlEntity a " +
             "JOIN a.cycl b " +
             "WHERE a.dDay < :today " +
             "AND a.user.userNo = :userNo " +
-            "AND a.cycl.cyclNo = (SELECT MAX(c.cycl.cyclNo) FROM LcDayDtlEntity c WHERE c.user.userNo = :userNo) " + // today가 endDate보다 전에 있는 조건을 추가
-            "AND b.reset = 'N' " +
+            "AND a.cycl.cyclNo = (SELECT MAX(c.cyclNo) FROM LcDayCycleEntity c WHERE c.user.userNo = :userNo AND c.reset = 'N') " +
             "AND a.cycl.archive = 'N'")
     List<GetLcDayListDto> getPastLcDayList(@Param("userNo")long userNo, @Param("today")LocalDate today);
+
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto( a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
             "FROM LcDayDtlEntity a " +
