@@ -442,23 +442,6 @@ public class LuckyDayService {
             }
             String category = lcActivityRepository.findCategoryByActivityNm(lcDetail.getActNm());
 
-//            String imageUrl = "";
-//            String decodedPath;
-//            if (lcDetail.getImagePath() != null) {
-//                String[] urlParts = lcDetail.getImagePath().split("/");
-//                boolean isDefault = urlParts[0].equals("default");
-//
-//                if (isDefault) {
-//                    System.out.println(true);
-//                    decodedPath = URLDecoder.decode(lcDetail.getImagePath(), StandardCharsets.UTF_8);
-//                } else {
-//                    System.out.println(false);
-//                    decodedPath = lcDetail.getImagePath();
-//                }
-//                imageUrl = lcDetail.getImageName() != null ? "/images/" + decodedPath : null;
-//            }
-//
-//
             // 클라이언트용 이미지 URL 설정
             String decodedPath = URLDecoder.decode(lcDetail.getImagePath() != null ? lcDetail.getImagePath() : "", StandardCharsets.UTF_8);
             String imageUrl = lcDetail.getImageName() != null ? "/images/" + decodedPath : null;
@@ -578,7 +561,7 @@ public class LuckyDayService {
 
                 log.info("imageUrl === ", imageUrl);
 
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review/")[1], userNo);
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/")[1], userNo);
             } else {
                 String imageName = null;
                 String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
@@ -595,7 +578,7 @@ public class LuckyDayService {
                 String imagePath = "/root/lucky/luckyImage/review/default/" + imageName;
 
 
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/review/")[1], userNo);
+                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/")[1], userNo);
             }
             return ResponseDTO.success();
         } catch (Error e) {
