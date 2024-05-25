@@ -1,6 +1,5 @@
 package io.swyp.luckybackend.users.controller;
 
-import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import io.swyp.luckybackend.users.service.KakaoService;
@@ -24,8 +23,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
     private final UserService userServiceImpl;
     private final KakaoService kakaoService;
-
-    private final JwtProvider jwtProvider;
 
 
     @Operation(
@@ -91,4 +88,5 @@ public class UserController {
         long userNo = userServiceImpl.deleteUser(token);
         return ResponseDTO.success(kakaoService.unlinkUser(userNo, adminKey).block());
     }
+
 }

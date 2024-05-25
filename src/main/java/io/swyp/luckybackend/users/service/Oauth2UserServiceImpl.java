@@ -47,7 +47,7 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
                     .map(g -> g.equals("male") ? 'M' : 'F')
                     .orElse('U'); // 'U'는 Unknown의 의미
 //            System.out.println((Map<String, Object>) kakaoAccount.get("profile").get(""));
-            int profileIconNo = (int) (Math.random() * 5) + 1;
+            int profileIconNo = (int) (Math.random() * 6) + 1;
             String birthYearStr = (String) kakaoAccount.get("birthyear");
             int birthYear = Optional.ofNullable(birthYearStr)
                     .map(Integer::parseInt)

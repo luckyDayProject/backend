@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface LcDayCycleRepository extends JpaRepository<LcDayCycleEntity, Long> {
-    boolean existsByUser(UserEntity byUserNo);
-
     boolean existsByUserUserNo(long userNo);
 
     @Query("SELECT MAX(cyclNo) " +

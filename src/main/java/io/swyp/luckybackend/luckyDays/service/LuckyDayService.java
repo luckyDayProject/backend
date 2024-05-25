@@ -368,7 +368,7 @@ public class LuckyDayService {
         String buttonPhrase = "럭키 데이 확인하러 가기 🍀";
         String[] parts = contentStyle[1].split(buttonPhrase);
         String imageBaseUrl = "https://223.130.131.239.nip.io/lucky/images/msg/";
-        String url = "<a href=\"https://luckyday.swygbro.com\" style=\"background-color: #FFD700; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
+        String url = "<a href=\"https://luckyday.swygbro.com/luckyboard\" style=\"background-color: #FFD700; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
         return contentStyle[0] +
                 "<img src=\"" + imageBaseUrl + imageName + "\" style=\"width: 80%; height: auto; max-width: 600px; display: block; margin: auto;\"/>" +
                 "<br>" + userName + "님을" + parts[0] + url + buttonPhrase + "</a>" + parts[1];
