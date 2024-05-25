@@ -321,7 +321,6 @@ public class LuckyDayService {
                 .startDt(java.sql.Date.valueOf(LocalDate.now()))
                 .endDt(java.sql.Date.valueOf(LocalDate.now().plusDays(requestDto.getPeriod() - 1)))
                 .exptDt(exptDt.substring(1, exptDt.length() - 1))
-                .reset("N")
                 .build();
     }
 

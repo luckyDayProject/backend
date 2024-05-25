@@ -44,16 +44,17 @@ public class LcDayCycleEntity {
     private String exptDt;
 
     @Column(name = "RESET", length = 1, columnDefinition = "CHAR DEFAULT 'N'")
-    private String reset;
+    private String reset = "N";
+
 
     @Column(name = "ARCHIVE", length = 1, columnDefinition = "CHAR DEFAULT 'N'")
-    private String archive;
+    private String archive = "N";
 
     @OneToMany(mappedBy = "cycl", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcDayDtlEntity> dtls = new ArrayList<>();
 
     @Builder
-    public LcDayCycleEntity(UserEntity user, Integer count, Integer period, Date startDt, Date endDt, String exptDt, String reset) {
+    public LcDayCycleEntity(UserEntity user, Integer count, Integer period, Date startDt, Date endDt, String exptDt, String reset, String archive) {
         this.user = user;
         this.count = count;
         this.period = period;
@@ -61,6 +62,7 @@ public class LcDayCycleEntity {
         this.endDt = endDt;
         this.exptDt = exptDt;
         this.reset = reset;
+        this.archive = archive;
     }
 
     public void changeYArchive(){
