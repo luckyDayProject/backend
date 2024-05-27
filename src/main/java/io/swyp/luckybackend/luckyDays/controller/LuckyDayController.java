@@ -6,7 +6,6 @@ import io.swyp.luckybackend.common.ResponseDTO;
 import io.swyp.luckybackend.luckyDays.dto.CreateLcDayRequestDto;
 import io.swyp.luckybackend.luckyDays.dto.ReviewReqDto;
 import io.swyp.luckybackend.luckyDays.service.LuckyDayService;
-import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,4 @@
 package io.swyp.luckybackend.users.service;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swyp.luckybackend.users.domain.CustomOAuth2User;
 import io.swyp.luckybackend.users.domain.UserEntity;
 import io.swyp.luckybackend.users.repository.UserRepository;

@@ -1,11 +1,8 @@
 package io.swyp.luckybackend.users.dto;
 
-import io.swyp.luckybackend.common.ResponseCode;
 import io.swyp.luckybackend.common.ResponseDTO;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 @Getter
 public class SignInResponseDto {

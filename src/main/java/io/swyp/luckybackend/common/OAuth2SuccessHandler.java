@@ -1,6 +1,5 @@
 package io.swyp.luckybackend.common;
 
-import io.swyp.luckybackend.luckyDays.repository.LcActivityRepository;
 import io.swyp.luckybackend.luckyDays.repository.LcDayCycleRepository;
 import io.swyp.luckybackend.luckyDays.repository.LcDayDtlRepository;
 import io.swyp.luckybackend.users.domain.CustomOAuth2User;

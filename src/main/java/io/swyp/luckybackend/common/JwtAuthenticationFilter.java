@@ -1,6 +1,5 @@
 package io.swyp.luckybackend.common;
 
-import io.swyp.luckybackend.users.domain.UserEntity;
 import io.swyp.luckybackend.users.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
