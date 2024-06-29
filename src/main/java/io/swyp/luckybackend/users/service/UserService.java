@@ -13,5 +13,5 @@ public interface UserService {
 
     boolean isExistUser(String token);
 
-    int getUserIsExp(String token);
+    int getUserIsExp(long userNo);
 }

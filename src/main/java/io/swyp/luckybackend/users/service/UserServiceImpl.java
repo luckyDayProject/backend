@@ -64,8 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getUserIsExp(String token) {
-        long userNo = getUserNo(token);
+    public int getUserIsExp(long userNo) {
         return userRepository.findIsExpByUserNo(userNo);
     }
 }
