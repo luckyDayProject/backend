@@ -17,8 +17,8 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
 
     @Override
-    public UserEntity getUserEntityByUserNo(long userNo) {
-        return userRepository.findByUserNo(userNo);
+    public UserEntity getUserEntityByOauthId(String oauthId) {
+        return userRepository.findByOauthId(oauthId);
     }
 
     @Override

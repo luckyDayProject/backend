@@ -41,8 +41,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                         Authentication authentication) throws IOException, ServletException {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         long userNo = oAuth2User.getUserNo();
-        String token = jwtProvider.create(userNo);
-        UserEntity userEntity = userServiceImpl.getUserEntityByUserNo(userNo);
+        UserEntity userEntity = userServiceImpl.getUserEntityByOauthId(Long.toString(userNo));
+        String token = jwtProvider.create(userEntity.getUserNo());
         String nickname = URLEncoder.encode(userEntity.getNickname(), StandardCharsets.UTF_8.name());
         String email = URLEncoder.encode(userEntity.getEmail(), StandardCharsets.UTF_8.name());
         int isExistLcDay = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now()) ? 1 : 0;
