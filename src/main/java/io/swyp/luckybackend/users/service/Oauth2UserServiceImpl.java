@@ -53,6 +53,7 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
                     .orElse(-1); // 미동의 -1 적재
             Map<String, String> profile = (Map<String, String>) kakaoAccount.get("profile");
             String nickname = profile.get("nickname");
+            System.out.println(oauthId);
             userEntity = UserEntity.builder()
                     .oauthId(oauthId)
                     .ageGroup(ageGroup)
