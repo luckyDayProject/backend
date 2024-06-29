@@ -18,5 +18,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     String findOauthIdByUserNo(@Param("userNo") Long userNo);
 
     @Query("SELECT u.isExp FROM UserEntity u WHERE u.userNo = :userNo")
-    int findIsExpByUserNo(@Param("userNo")long userNo);
+    int findIsExpByUserNo(@Param("userNo") Long userNo);
 }
