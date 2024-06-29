@@ -46,7 +46,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String nickname = URLEncoder.encode(userEntity.getNickname(), StandardCharsets.UTF_8.name());
         String email = URLEncoder.encode(userEntity.getEmail(), StandardCharsets.UTF_8.name());
         int isExistLcDay = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now()) ? 1 : 0;
-        int isExp = userServiceImpl.getUserIsExp(token);
+        int isExp = lcDayCycleRepository.existsByUserUserNo(userNo) ? 1 : 0;
 //        response.sendRedirect(String.format("%s/%s/%s/%s", redirectUrl, token, expirationTime, nickname));
         response.sendRedirect(String.format("%s?token=%s&expirationTime=%s&nickname=%s&email=%s&isExistLcDay=%s&isExp=%s&prfNo=%s",
                 redirectUrl, token, expirationTime, nickname, email, isExistLcDay, isExp, userEntity.getProfileIconNo()));
