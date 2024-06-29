@@ -62,6 +62,7 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
                     .gender(gender)
                     .nickname(nickname)
                     .profileIconNo(profileIconNo)
+                    .isExp(0)
                     .build();
         }
 //

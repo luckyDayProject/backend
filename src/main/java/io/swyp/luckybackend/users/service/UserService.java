@@ -12,4 +12,6 @@ public interface UserService {
     long deleteUser(String token);
 
     boolean isExistUser(String token);
+
+    int getUserIsExp(String token);
 }

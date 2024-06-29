@@ -56,6 +56,9 @@ public class UserEntity {
     @CreationTimestamp
     private Date regDate;
 
+    @Column(name = "IS_EXP")
+    private int isExp;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcDayCycleEntity> cycles = new ArrayList<>();
@@ -68,7 +71,7 @@ public class UserEntity {
 
 
     @Builder
-    public UserEntity(String oauthId, String nickname, String email, char gender, int ageGroup, int birthYear, int profileIconNo) {
+    public UserEntity(String oauthId, String nickname, String email, char gender, int ageGroup, int birthYear, int profileIconNo, int isExp) {
         this.oauthId = oauthId;
         this.nickname = nickname;
         this.email = email;
@@ -76,6 +79,7 @@ public class UserEntity {
         this.ageGroup = ageGroup;
         this.birthYear = birthYear;
         this.profileIconNo = profileIconNo;
+        this.isExp = isExp;
     }
 
 

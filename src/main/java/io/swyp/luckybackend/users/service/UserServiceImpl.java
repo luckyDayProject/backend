@@ -62,4 +62,10 @@ public class UserServiceImpl implements UserService {
         long userNo = getUserNo(token);
         return userRepository.existsById(userNo);
     }
+
+    @Override
+    public int getUserIsExp(String token) {
+        long userNo = getUserNo(token);
+        return userRepository.findIsExpByUserNo(userNo);
+    }
 }
