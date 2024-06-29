@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByUserNo(Long userNo);
+
+    boolean existsByOauthId(String oauthId);
 }

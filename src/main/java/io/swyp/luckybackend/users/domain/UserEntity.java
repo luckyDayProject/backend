@@ -21,8 +21,12 @@ import java.util.List;
 public class UserEntity {
 
     @Id
+    @GeneratedValue
     @Column(name = "USER_NO")
     private Long userNo;
+
+    @Column(name = "OAUTH_ID")
+    private String oauthId;
 
     @Column(name = "NICKNAME")
     private String nickname;
@@ -56,8 +60,8 @@ public class UserEntity {
 
 
     @Builder
-    public UserEntity(Long userNo, String nickname, String email, char gender, int ageGroup, int birthYear, int profileIconNo) {
-        this.userNo = userNo;
+    public UserEntity(String oauthId, String nickname, String email, char gender, int ageGroup, int birthYear, int profileIconNo) {
+        this.oauthId = oauthId;
         this.nickname = nickname;
         this.email = email;
         this.gender = gender;

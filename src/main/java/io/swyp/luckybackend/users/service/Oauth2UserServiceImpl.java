@@ -28,13 +28,13 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
         }
 
         UserEntity userEntity = null;
-        long userNo = 0l;
+        String oauthId = "";
         String email = "";
 
         if (oauthClientName.equals("kakao")){
-            userNo = (long) oAuth2User.getAttributes().get("id");
-            boolean isExist = userRepository.existsById(userNo);
-            if (isExist) return new CustomOAuth2User(userNo);
+            oauthId = (String) oAuth2User.getAttributes().get("id");
+            boolean isExist = userRepository.existsByOauthId(oauthId);
+            if (isExist) return new CustomOAuth2User(Long.parseLong(oauthId));
             Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
             email = (String) kakaoAccount.get("email");
             String ageRange = (String) kakaoAccount.get("age_range");
@@ -54,7 +54,7 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
             Map<String, String> profile = (Map<String, String>) kakaoAccount.get("profile");
             String nickname = profile.get("nickname");
             userEntity = UserEntity.builder()
-                    .userNo(userNo)
+                    .oauthId(oauthId)
                     .ageGroup(ageGroup)
                     .birthYear(birthYear)
                     .email(email)
@@ -81,6 +81,6 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
         userRepository.save(userEntity);
 
 
-        return new CustomOAuth2User(userNo);
+        return new CustomOAuth2User(Long.parseLong(oauthId));
     }
 }
