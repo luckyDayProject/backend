@@ -32,7 +32,7 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
         String email = "";
 
         if (oauthClientName.equals("kakao")){
-            oauthId = (String) oAuth2User.getAttributes().get("id");
+            oauthId = oAuth2User.getAttributes().get("id").toString();
             boolean isExist = userRepository.existsByOauthId(oauthId);
             if (isExist) return new CustomOAuth2User(Long.parseLong(oauthId));
             Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
