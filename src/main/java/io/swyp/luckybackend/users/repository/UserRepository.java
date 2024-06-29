@@ -2,6 +2,8 @@ package io.swyp.luckybackend.users.repository;
 
 import io.swyp.luckybackend.users.domain.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -12,5 +14,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity findByOauthId(String oauthId);
 
-    String findOauthIdByUserNo(Long userNo);
+    @Query("SELECT u.oauthId FROM UserEntity u WHERE u.userNo = :userNo")
+    String findOauthIdByUserNo(@Param("userNo") Long userNo);
 }
