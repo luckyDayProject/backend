@@ -1,6 +1,7 @@
 package io.swyp.luckybackend.users.controller;
 
 import io.swyp.luckybackend.common.ResponseDTO;
+import io.swyp.luckybackend.users.domain.UserEntity;
 import io.swyp.luckybackend.users.dto.ModifyUserRequestDto;
 import io.swyp.luckybackend.users.service.KakaoService;
 import io.swyp.luckybackend.users.service.UserService;

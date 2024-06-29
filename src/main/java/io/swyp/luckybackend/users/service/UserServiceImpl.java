@@ -52,8 +52,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public long deleteUser(String token) {
         long userNo = getUserNo(token);
+        String oauthId = userRepository.findOauthIdByUserNo(userNo);
         userRepository.deleteById(userNo);
-        return userNo;
+        return Long.parseLong(oauthId);
     }
 
     @Override

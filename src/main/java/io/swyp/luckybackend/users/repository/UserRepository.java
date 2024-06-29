@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByOauthId(String oauthId);
 
     UserEntity findByOauthId(String oauthId);
+
+    String findOauthIdByUserNo(Long userNo);
 }
