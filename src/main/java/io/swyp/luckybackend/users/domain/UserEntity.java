@@ -9,8 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -48,6 +50,12 @@ public class UserEntity {
 
     @Column(name = "PRF_ICON_NO")
     private int profileIconNo;
+
+    @Column(name = "REG_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date regDate;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcDayCycleEntity> cycles = new ArrayList<>();
