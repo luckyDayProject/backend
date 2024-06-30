@@ -93,11 +93,9 @@ public class LuckyDayController {
     @Operation(summary = "럭키데이 회고록 삭제")
     @DeleteMapping(value = "/review", consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO> deleteReview(HttpServletRequest request,
-                                                    @Parameter(description = "Review data", required = true)
-                                                    @RequestPart(name = "reviewReqDto") ReviewReqDto requestDto,
-                                                    @RequestPart(required = false, name = "image") MultipartFile image) throws IOException {
+                                                    @RequestParam(name="dtlNo") Long dtlNo) throws IOException {
         String token = request.getHeader("Authorization");
-        return luckyDayService.deleteReview(token, requestDto, image);
+        return luckyDayService.deleteReview(token, dtlNo);
     }
 
     @Operation(summary = "유저 럭키데이 싸이클 리스트")

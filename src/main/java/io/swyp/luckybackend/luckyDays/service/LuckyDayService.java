@@ -654,32 +654,33 @@ public class LuckyDayService {
 
     }
 
-    public ResponseEntity<ResponseDTO> deleteReview(String token, ReviewReqDto requestDto, MultipartFile image) throws IOException {
+    public ResponseEntity<ResponseDTO> deleteReview(String token, Long dtlNo) throws IOException {
         Long userNo = getUserNo(token);
-        // dtlNo가 현재 user의 것인지확인
-        long dtlNo = requestDto.getDtlNo();
-        boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
-        if (!result) {
-            return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
-        }
-
-        // 기존 리뷰 및 이미지 path select
-        CheckImgAndReviewDto checkImgAndReviewDto = lcDayDtlRepository.findByDtlNo(dtlNo);
-
-        if(!checkImgAndReviewDto.getImagePath().contains("default")) {
-            log.info("커스텀 경로 이미지");
-            File oldFile = new File("/root/lucky/luckyImage/" + checkImgAndReviewDto.getImagePath());
-            if (oldFile.exists()) {
-                oldFile.delete();
+        try {
+            // dtlNo가 현재 user의 것 인지 확인
+            boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
+            if (!result) {
+                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
+
+            // 기존 리뷰 및 이미지 path select
+            CheckImgAndReviewDto checkImgAndReviewDto = lcDayDtlRepository.findByDtlNo(dtlNo);
+
+            if(!checkImgAndReviewDto.getImagePath().contains("default")) {
+                log.info("커스텀 경로 이미지");
+                File oldFile = new File("/root/lucky/luckyImage/" + checkImgAndReviewDto.getImagePath());
+                if (oldFile.exists()) {
+                    oldFile.delete();
+                }
+            }
+
+            lcDayDtlRepository.updateReview(dtlNo, null, null, null, userNo);
+
+            return ResponseDTO.success();
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
         }
-
-        Map<String, String> settingImage = settingDefaultImages(dtlNo);
-        lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
-
-
-
-        return null;
     }
 
 
