@@ -569,7 +569,7 @@ public class LuckyDayService {
             }
         }
 
-        UUID uuid = UUID.randomUUID();
+        String uuid = userNo + "_" + requestDto.getDtlNo();
         String imageName = uuid + "_" + image.getOriginalFilename();
         System.out.println(image.getOriginalFilename());
         imageName = imageName.replaceAll("\\s", "");
