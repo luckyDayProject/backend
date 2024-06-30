@@ -1,7 +1,7 @@
 package io.swyp.luckybackend.luckyDays.repository;
 
 import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
-import io.swyp.luckybackend.luckyDays.dto.ReviewReqDto;
+import io.swyp.luckybackend.luckyDays.dto.CheckImgAndReviewDto;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,7 +25,8 @@ public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> 
             "SET e.review = :review, e.imageName = :imageName, e.imagePath = :imagePath " +
             "WHERE e.dtlNo = :dtlNo " +
             "AND e.user.userNo = :userNo")
-    void insertReview(@Param("dtlNo") Long dtlNo, @Param("review") String review, @Param("imageName") String imageName, @Param("imagePath") String imagePath, @Param("userNo") Long userNo);
+    void updateReview(@Param("dtlNo") Long dtlNo, @Param("review") String review, @Param("imageName") String imageName, @Param("imagePath") String imagePath, @Param("userNo") Long userNo);
+
 
     @Query("SELECT COUNT(u) > 0 " +
             "FROM LcDayDtlEntity u " +
@@ -43,4 +44,6 @@ public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> 
     @Query("SELECT a.category FROM LcDayDtlEntity d JOIN d.activity a WHERE d.dtlNo = :dtlNo")
     String findCategoryByDtlNo(@Param("dtlNo") Long dtlNo);
 
+
+    CheckImgAndReviewDto findByDtlNo(@Param("dtlNo") Long dtlNo);
 }

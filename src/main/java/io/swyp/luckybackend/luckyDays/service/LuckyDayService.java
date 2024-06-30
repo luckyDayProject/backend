@@ -529,40 +529,8 @@ public class LuckyDayService {
             }
 
             if (image != null) {
-                String imagePath = "/root/lucky/luckyImage/review/";
-                File imageDirectory = new File(imagePath);
-
-                // 디렉토리가 없으면 생성
-                if (!imageDirectory.exists()) {
-                    imageDirectory.mkdirs();
-                }
-
-//                UUID uuid = UUID.randomUUID();
-//                String imageName = uuid + "_" + encodeUrl(image.getOriginalFilename());
-//                imageName = imageName.replaceAll("\\s", "");
-//                File saveFile = new File(imagePath, imageName);
-//
-//                image.transferTo(saveFile);
-//                imagePath = imagePath + imageName;
-//
-//                String imageUrl = "/images/" + encodeUrl(imageName); // 클라이언트용 이미지 URL 설정
-//
-//                log.info("imageUrl === ", imageUrl);
-
-                UUID uuid = UUID.randomUUID();
-                String imageName = uuid + "_" + image.getOriginalFilename();
-                System.out.println(image.getOriginalFilename());
-                imageName = imageName.replaceAll("\\s", "");
-                File saveFile = new File(imagePath, imageName);
-
-                image.transferTo(saveFile);
-                imagePath = imagePath + imageName;
-
-                String imageUrl = "/images/" + imageName; // 클라이언트용 이미지 URL 설정
-
-                log.info("imageUrl === ", imageUrl);
-
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/")[1], userNo);
+                Map<String, String> settingImage = settingImages(requestDto, image, userNo);
+                lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
             } else {
                 String imageName = null;
                 String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
@@ -579,13 +547,100 @@ public class LuckyDayService {
                 String imagePath = "/root/lucky/luckyImage/review/default/" + imageName;
 
 
-                lcDayDtlRepository.insertReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/")[1], userNo);
+                lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/")[1], userNo);
             }
             return ResponseDTO.success();
         } catch (Error e) {
             log.error(e.getMessage());
             throw e;
         }
+    }
+
+    private Map<String, String> settingImages(ReviewReqDto requestDto, MultipartFile image, Long userNo) throws IOException {
+        Map<String, String> result = new HashMap<>();
+        String imagePath = "/root/lucky/luckyImage/review/";
+        File imageDirectory = new File(imagePath);
+
+        // 디렉토리가 없으면 생성
+        if (!imageDirectory.exists()) {
+            boolean dirCreated = imageDirectory.mkdirs();
+            if (!dirCreated) {
+                throw new IOException("Failed to create directory: " + imageDirectory.getAbsolutePath());
+            }
+        }
+
+        UUID uuid = UUID.randomUUID();
+        String imageName = uuid + "_" + image.getOriginalFilename();
+        System.out.println(image.getOriginalFilename());
+        imageName = imageName.replaceAll("\\s", "");
+        File saveFile = new File(imagePath, imageName);
+
+        image.transferTo(saveFile);
+        imagePath = imagePath + imageName;
+
+        String imageUrl = "/images/" + imageName; // 클라이언트용 이미지 URL 설정
+
+        log.info("imageUrl === ", imageUrl);
+        result.put("imagePath", imagePath);
+        result.put("imageName", imageName);
+
+        return result;
+
+
+    }
+
+
+    public ResponseEntity<ResponseDTO> updateReview(String token, ReviewReqDto requestDto, MultipartFile image) {
+        Long userNo = getUserNo(token);
+        try {
+            // dtlNo가 현재 user의 것인지확인
+            long dtlNo = requestDto.getDtlNo();
+            boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
+            if (!result) {
+                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+            }
+            // 기존 리뷰 및 이미지 path select
+            CheckImgAndReviewDto checkImgAndReviewDto = lcDayDtlRepository.findByDtlNo(dtlNo);
+            System.out.println("checkImgAndReviewDto ==== " +  checkImgAndReviewDto.getReview());
+            System.out.println("checkImgAndReviewDto ==== " +  checkImgAndReviewDto.getImageName());
+            System.out.println("checkImgAndReviewDto ==== " +  checkImgAndReviewDto.getImagePath());
+            // review/default/logo_culture.png
+            // review/cd8d17b3-7b99-4e71-ab01-b4f9db007971_blob
+
+            /*
+            1. db에서 select한 이미지 경로가 default일 경우 (유저가 등록한 이미지가 없을 경우)
+                기존대로 처리
+            2. db에서 select한 이미지 경로가 review일 경우 (유저가 등록한 이미지가 이미 있을 경우)
+                기존 등록했던 이미지 삭제처리 및 새로운 이미지 등록은 기존대로 처리
+
+            */
+
+            // 기존 이미지가 default 이미지가 아닌 경우 삭제
+            if(!checkImgAndReviewDto.getImagePath().contains("default")) {
+                log.info("커스텀 경로 이미지");
+                File oldFile = new File("/root/lucky/luckyImage/" + checkImgAndReviewDto.getImagePath());
+                if (oldFile.exists()) {
+                    oldFile.delete();
+                }
+            }
+
+            // 새 이미지 저장
+            if(image != null && !image.isEmpty()) {
+                Map<String, String> settingImage = settingImages(requestDto, image, userNo);
+                lcDayDtlRepository.updateReview(dtlNo, requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
+            } else {
+                lcDayDtlRepository.updateReview(dtlNo, requestDto.getReview(), checkImgAndReviewDto.getImageName(), checkImgAndReviewDto.getImagePath(), userNo);
+            }
+
+
+            return ResponseDTO.success();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Error e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+
     }
 
 

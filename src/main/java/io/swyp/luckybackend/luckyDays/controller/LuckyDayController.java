@@ -80,6 +80,16 @@ public class LuckyDayController {
         return luckyDayService.insertReview(token, requestDto, image);
     }
 
+    @Operation(summary = "럭키데이 회고록 수정")
+    @PutMapping(value = "/review", consumes = {"multipart/form-data"})
+    public ResponseEntity<ResponseDTO> updateReview(HttpServletRequest request,
+                                                    @Parameter(description = "Review data", required = true)
+                                                    @RequestPart(name = "reviewReqDto") ReviewReqDto requestDto,
+                                                    @RequestPart(required = false, name = "image") MultipartFile image) throws IOException {
+        String token = request.getHeader("Authorization");
+        return luckyDayService.updateReview(token, requestDto, image);
+    }
+
     @Operation(summary = "유저 럭키데이 싸이클 리스트")
     @GetMapping(value = "/cycl/list")
     public ResponseEntity<ResponseDTO> getLcDayCyclList(HttpServletRequest request) {
