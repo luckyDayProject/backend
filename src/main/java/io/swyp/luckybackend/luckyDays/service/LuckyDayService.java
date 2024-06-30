@@ -535,7 +535,7 @@ public class LuckyDayService {
             }
             // default 이미지 처리
             else {
-                Map<String, String> settingImage = settingDefaultImages(userNo);
+                Map<String, String> settingImage = settingDefaultImages(dtlNo);
                 lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
             }
             return ResponseDTO.success();
@@ -639,7 +639,7 @@ public class LuckyDayService {
                 Map<String, String> settingImage = settingImages(requestDto, image, userNo);
                 lcDayDtlRepository.updateReview(dtlNo, requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
             } else {
-                Map<String, String> settingImage = settingDefaultImages(userNo);
+                Map<String, String> settingImage = settingDefaultImages(dtlNo);
                 lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
             }
 
