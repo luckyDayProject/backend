@@ -528,26 +528,15 @@ public class LuckyDayService {
                 return ResponseDTO.error(StatusResCode.EXCEEDED_TEXT_LENGTH.getCode(), StatusResCode.EXCEEDED_TEXT_LENGTH.getMessage());
             }
 
+            // 첨부 이미지 처리
             if (image != null) {
                 Map<String, String> settingImage = settingImages(requestDto, image, userNo);
                 lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
-            } else {
-                String imageName = null;
-                String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
-
-                switch (category) {
-                    case "특별한 선물" -> imageName = "logo_present.png";
-                    case "맛있는 음식" -> imageName = "logo_food.png";
-                    case "배움과 문화" -> imageName = "logo_culture.png";
-                    case "이동과 탐험" -> imageName = "logo_explore.png";
-                    case "일상 속 소소함" -> imageName = "logo_daily.png";
-                    case "직접 입력" -> imageName = "logo_daily.png";
-                }
-
-                String imagePath = "/root/lucky/luckyImage/review/default/" + imageName;
-
-
-                lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), imageName, imagePath.split("/root/lucky/luckyImage/")[1], userNo);
+            }
+            // default 이미지 처리
+            else {
+                Map<String, String> settingImage = settingDefaultImages(userNo);
+                lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
             }
             return ResponseDTO.success();
         } catch (Error e) {
@@ -589,6 +578,26 @@ public class LuckyDayService {
 
     }
 
+    private Map<String, String> settingDefaultImages(Long dtlNo) throws IOException {
+        Map<String, String> result = new HashMap<>();
+        String imageName = null;
+        String category = lcDayDtlRepository.findCategoryByDtlNo(dtlNo);
+
+        switch (category) {
+            case "특별한 선물" -> imageName = "logo_present.png";
+            case "맛있는 음식" -> imageName = "logo_food.png";
+            case "배움과 문화" -> imageName = "logo_culture.png";
+            case "이동과 탐험" -> imageName = "logo_explore.png";
+            case "일상 속 소소함" -> imageName = "logo_daily.png";
+            case "직접 입력" -> imageName = "logo_daily.png";
+        }
+
+        String imagePath = "/root/lucky/luckyImage/review/default/" + imageName;
+        result.put("imageName", imageName);
+        result.put("imagePath", imagePath);
+        return result;
+    }
+
 
     public ResponseEntity<ResponseDTO> updateReview(String token, ReviewReqDto requestDto, MultipartFile image) {
         Long userNo = getUserNo(token);
@@ -615,7 +624,8 @@ public class LuckyDayService {
 
             */
 
-            // 기존 이미지가 default 이미지가 아닌 경우 삭제
+            // 기존 이미지가 default 이미지가 아닌 경우 처리
+            // todo: 1. 기존 이미지명과 수정 이미지 명이 같을 경우에는 파일 삭제하지 않고 바뀐것만 업데이트
             if(!checkImgAndReviewDto.getImagePath().contains("default")) {
                 log.info("커스텀 경로 이미지");
                 File oldFile = new File("/root/lucky/luckyImage/" + checkImgAndReviewDto.getImagePath());
@@ -629,7 +639,8 @@ public class LuckyDayService {
                 Map<String, String> settingImage = settingImages(requestDto, image, userNo);
                 lcDayDtlRepository.updateReview(dtlNo, requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
             } else {
-                lcDayDtlRepository.updateReview(dtlNo, requestDto.getReview(), checkImgAndReviewDto.getImageName(), checkImgAndReviewDto.getImagePath(), userNo);
+                Map<String, String> settingImage = settingDefaultImages(userNo);
+                lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
             }
 
 
@@ -641,6 +652,10 @@ public class LuckyDayService {
             throw e;
         }
 
+    }
+
+    public ResponseEntity<ResponseDTO> deleteReview(String token, ReviewReqDto requestDto, MultipartFile image) {
+        return null;
     }
 
 
@@ -681,5 +696,4 @@ public class LuckyDayService {
             throw e;
         }
     }
-
 }
