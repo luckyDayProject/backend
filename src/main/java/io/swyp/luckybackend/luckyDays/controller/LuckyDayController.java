@@ -42,7 +42,8 @@ public class LuckyDayController {
 
     @Operation(summary = "유저 럭키데이 목록 조회")
     @GetMapping({"/cycl", "/cycl/{cyclNo}"})
-    public ResponseEntity<ResponseDTO> getLcDayList(HttpServletRequest request, @PathVariable(required = false) Long cyclNo, @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
+    public ResponseEntity<ResponseDTO> getLcDayList(HttpServletRequest request, @PathVariable(required = false) Long cyclNo,
+                                                    @RequestParam(name = "isCurrent", required = false, defaultValue = "1") int isCurrent) {
         String token = request.getHeader("Authorization");
         return luckyDayService.getLcDayList(token, cyclNo, isCurrent);
     }
@@ -91,7 +92,7 @@ public class LuckyDayController {
     }
 
     @Operation(summary = "럭키데이 회고록 삭제")
-    @DeleteMapping(value = "/review", consumes = {"multipart/form-data"})
+    @DeleteMapping(value = "/review")
     public ResponseEntity<ResponseDTO> deleteReview(HttpServletRequest request,
                                                     @RequestParam(name="dtlNo") Long dtlNo) throws IOException {
         String token = request.getHeader("Authorization");
