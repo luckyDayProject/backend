@@ -1,5 +1,6 @@
 package io.swyp.luckybackend.users.domain;
 
+import io.swyp.luckybackend.articles.domain.LcArticleEntity;
 import io.swyp.luckybackend.luckyDays.domain.*;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
