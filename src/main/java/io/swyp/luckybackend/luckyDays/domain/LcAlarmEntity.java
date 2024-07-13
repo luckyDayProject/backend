@@ -70,6 +70,5 @@ public class LcAlarmEntity {
         this.sendYn = sendYn;
         this.sendStatus = sendStatus;
         this.dDay = dDay;
-
     }
 }

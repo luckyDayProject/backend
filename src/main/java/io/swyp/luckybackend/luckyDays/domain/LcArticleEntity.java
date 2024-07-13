@@ -2,6 +2,7 @@ package io.swyp.luckybackend.luckyDays.domain;
 
 import io.swyp.luckybackend.users.domain.UserEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,5 +42,12 @@ public class LcArticleEntity {
     @UpdateTimestamp
     private Date updDate;
 
-
+    @Builder
+    public LcArticleEntity(String category, String subject, String content, UserEntity user, int view_cnt) {
+        this.category = category;
+        this.subject = subject;
+        this.content = content;
+        this.user = user;
+        this.view_cnt = view_cnt;
+    }
 }
