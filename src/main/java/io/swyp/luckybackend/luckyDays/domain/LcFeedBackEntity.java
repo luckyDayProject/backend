@@ -2,6 +2,8 @@ package io.swyp.luckybackend.luckyDays.domain;
 
 import io.swyp.luckybackend.users.domain.UserEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,4 +32,10 @@ public class LcFeedBackEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date regDate;
+
+    @Builder
+    public LcFeedBackEntity(UserEntity user, String content) {
+        this.user = user;
+        this.content = content;
+    }
 }
