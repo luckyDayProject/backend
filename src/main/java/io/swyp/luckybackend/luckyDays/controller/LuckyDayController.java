@@ -37,7 +37,7 @@ public class LuckyDayController {
         if (res != null){
             return res;
         }
-        return luckyDayService.createLcDay(token, requestDto);
+        return luckyDayService.createLcDay(luckyDayService.getUserNo(token), requestDto);
     }
 
     @Operation(summary = "유저 럭키데이 목록 조회")

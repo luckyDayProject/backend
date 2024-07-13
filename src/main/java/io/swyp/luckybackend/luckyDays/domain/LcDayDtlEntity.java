@@ -67,4 +67,20 @@ public class LcDayDtlEntity {
         this.dDay = dDay;
         this.dtlOrder = dtlOrder;
     }
+
+    @Override
+    public String toString() {
+        return "LcDayDtlEntity{" +
+                "dtlNo=" + dtlNo +
+                ", cyclNo=" + cycl.getCyclNo() +
+                ", userNo=" + user.getUserNo() +
+                ", activityNo=" + activity.getActivityNo() +
+                ", review='" + review + '\'' +
+                ", imageName='" + imageName + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                ", dDay=" + dDay +
+                ", dtlOrder=" + dtlOrder +
+                ", alarm=" + alarm +
+                '}';
+    }
 }

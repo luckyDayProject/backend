@@ -1,4 +1,6 @@
 package io.swyp.luckybackend.users.service;
+import io.swyp.luckybackend.luckyDays.dto.CreateLcDayRequestDto;
+import io.swyp.luckybackend.luckyDays.service.LuckyDayService;
 import io.swyp.luckybackend.users.domain.CustomOAuth2User;
 import io.swyp.luckybackend.users.domain.UserEntity;
 import io.swyp.luckybackend.users.repository.UserRepository;
@@ -8,6 +10,9 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,6 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
+    private final LuckyDayService luckyDayService;
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -81,7 +88,9 @@ public class Oauth2UserServiceImpl extends DefaultOAuth2UserService {
 //        }
 
         userRepository.save(userEntity);
+        long userNo = userEntity.getUserNo();
 
+        luckyDayService.createLcDay(userNo);
 
         return new CustomOAuth2User(Long.parseLong(oauthId));
     }

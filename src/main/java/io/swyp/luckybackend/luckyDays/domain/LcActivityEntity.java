@@ -10,6 +10,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "LC_ACTIVITY")
 public class LcActivityEntity {
+    @Override
+    public String toString() {
+        return "LcActivityEntity{" +
+                "activityNo=" + activityNo +
+                ", keyword='" + keyword + '\'' +
+                '}';
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ACTIVITY_NO", nullable = false)

@@ -53,6 +53,9 @@ public class LuckyDayService {
     public ResponseEntity<ResponseDTO> createValidationCheck(String token, CreateLcDayRequestDto requestDto) {
         long userNo = getUserNo(token);
         boolean isExist = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now());
+//        isExist = 0,isExp = 1 만들수 있어야함
+//        isExp = 0이면 isExist가 뭐든 만들수 있어야함.
+//        isExist = 1, isExp = 1일때만 못만듬.
         boolean chkExceedCntPeriod = chkExceedCntPeriod(requestDto);
         boolean chkExceedCntActivity = chkExceedCntActivity(requestDto);
         boolean chkInvalidExptDays = chkInvalidExptDays(requestDto);
@@ -171,7 +174,7 @@ public class LuckyDayService {
      *        회고록, 이미지명, 럭키데이 날짜(1. 날짜 랜덤 선택에서 나온 날짜), 럭키데이 순서(화면에 뿌려질 랜덤값)
      * */
     @Transactional
-    public ResponseEntity<ResponseDTO> createLcDay(String token, CreateLcDayRequestDto requestDto) {
+    public ResponseEntity<ResponseDTO> createLcDay(long userNo, CreateLcDayRequestDto requestDto) {
         /*
             에러코드 처리
             1. 이미 생성된 싸이클이 있을경우 (이미 싸이클이 있으면 생성 버튼을 누를수가 없는데 굳이 처리를 해야하나?)
@@ -179,7 +182,6 @@ public class LuckyDayService {
             3. 0(직접입력)을 선택하였으나 직접입력을 하지 않았을 경우
         */
         System.out.println("럭키데이 생성중");
-        long userNo = getUserNo(token);
         int cnt = requestDto.getCnt();
         List<LocalDate> dateList = pickDate(requestDto);
         for (LocalDate date : dateList) {
@@ -216,6 +218,39 @@ public class LuckyDayService {
 
 
             return ResponseDTO.success("생성완료");
+    }
+
+//    회원가입 시 최초 럭키데이 생성 로직
+//    1. lc_day_cycle 테이블에 count = 1, (start_dt, enc_dt) = 가입 당일, period = 1, expt_dt = null,
+    @Transactional
+    public void createLcDay(long userNo){
+        int period = 1;
+        int cnt = 1;
+        int actNo = 58;
+        UserEntity user = userRepository.findByUserNo(userNo);
+
+        CreateLcDayRequestDto requestDto = CreateLcDayRequestDto.builder()
+                .actList(List.of(actNo))
+                .period(period)
+                .expDTList(List.of())
+                .customActList(List.of())
+                .cnt(cnt)
+                .build();
+
+        LcDayCycleEntity lcDayCycle = createLcDayCycle(user, requestDto);
+        lcDayCycleRepository.save(lcDayCycle);
+
+        ActDTO4Create act = ActDTO4Create.builder()
+                .actNo((long) actNo)
+                .activityName(lcActivityRepository.findActivityNameByActivityNo(actNo)).build();
+
+
+        LcDayDtlEntity lcDayDtl = LcDayDtl(user, requestDto, lcDayCycle, LocalDate.now(), act, 0);
+        System.out.println("==========================================================");
+        System.out.println(lcDayDtl.toString());
+        System.out.println("==========================================================");
+        assert lcDayDtl != null;
+        lcDayDtlRepository.save(lcDayDtl);
     }
 
     /* 1. 날짜 랜덤 선택
