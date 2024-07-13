@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ActivityDTO {
+public class ActivityDto {
     private Long actNo;
     private String keyword;
 }

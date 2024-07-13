@@ -1,4 +1,4 @@
-package io.swyp.luckybackend.luckyDays.domain;
+package io.swyp.luckybackend.articles.domain;
 
 import io.swyp.luckybackend.users.domain.UserEntity;
 import jakarta.persistence.*;
@@ -43,11 +43,10 @@ public class LcArticleEntity {
     private Date updDate;
 
     @Builder
-    public LcArticleEntity(String category, String subject, String content, UserEntity user, int view_cnt) {
+    public LcArticleEntity(String category, String subject, String content, UserEntity user) {
         this.category = category;
         this.subject = subject;
         this.content = content;
         this.user = user;
-        this.view_cnt = view_cnt;
     }
 }

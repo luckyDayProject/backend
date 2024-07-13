@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryActivitiesDTO {
+public class CategoryActivitiesDto {
     private String category;
-    private List<ActivityDTO> actList;
+    private List<ActivityDto> actList;
 }

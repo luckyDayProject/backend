@@ -132,23 +132,23 @@ public class LuckyDayService {
         String directInputCategoryName = "직접 입력";
 
         // 결과를 원하는 JSON 형식으로 변환
-        List<CategoryActivitiesDTO> categoryActivities = groupedActivities.entrySet().stream()
+        List<CategoryActivitiesDto> categoryActivities = groupedActivities.entrySet().stream()
                 .filter(entry -> !entry.getKey().equals(directInputCategoryName))
-                .map(entry -> new CategoryActivitiesDTO(entry.getKey(), mapActivities(entry.getValue())))
+                .map(entry -> new CategoryActivitiesDto(entry.getKey(), mapActivities(entry.getValue())))
                 .collect(Collectors.toList());
 
         // '직접 입력' 카테고리 추가
-        List<ActivityDTO> directInputList = List.of(new ActivityDTO(0L, null));
-        categoryActivities.add(new CategoryActivitiesDTO(directInputCategoryName, directInputList));
+        List<ActivityDto> directInputList = List.of(new ActivityDto(0L, null));
+        categoryActivities.add(new CategoryActivitiesDto(directInputCategoryName, directInputList));
 
         return ResponseDTO.success(categoryActivities);
 
     }
 
 
-    private List<ActivityDTO> mapActivities(List<GetActivityListDto> activities) {
+    private List<ActivityDto> mapActivities(List<GetActivityListDto> activities) {
         return activities.stream()
-                .map(a -> new ActivityDTO(a.getActivityNo(), a.getKeyword()))
+                .map(a -> new ActivityDto(a.getActivityNo(), a.getKeyword()))
                 .collect(Collectors.toList());
     }
 

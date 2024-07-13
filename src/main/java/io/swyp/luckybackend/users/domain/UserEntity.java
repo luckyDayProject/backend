@@ -1,7 +1,7 @@
 package io.swyp.luckybackend.users.domain;
 
 import io.swyp.luckybackend.luckyDays.domain.LcAlarmEntity;
-import io.swyp.luckybackend.luckyDays.domain.LcArticleEntity;
+import io.swyp.luckybackend.articles.domain.LcArticleEntity;
 import io.swyp.luckybackend.luckyDays.domain.LcDayCycleEntity;
 import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
 import jakarta.annotation.Nullable;
