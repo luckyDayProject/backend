@@ -1,6 +1,7 @@
 package io.swyp.luckybackend.users.domain;
 
 import io.swyp.luckybackend.luckyDays.domain.LcAlarmEntity;
+import io.swyp.luckybackend.luckyDays.domain.LcArticleEntity;
 import io.swyp.luckybackend.luckyDays.domain.LcDayCycleEntity;
 import io.swyp.luckybackend.luckyDays.domain.LcDayDtlEntity;
 import jakarta.annotation.Nullable;
@@ -68,6 +69,9 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LcAlarmEntity> alarms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LcArticleEntity> articles = new ArrayList<>();
 
 
     @Builder
