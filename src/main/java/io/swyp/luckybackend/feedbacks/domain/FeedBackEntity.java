@@ -1,8 +1,7 @@
-package io.swyp.luckybackend.luckyDays.domain;
+package io.swyp.luckybackend.feedbacks.domain;
 
 import io.swyp.luckybackend.users.domain.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "LC_FEEDBACK")
-public class LcFeedBackEntity {
+public class FeedBackEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FEEDBACK_NO", nullable = false)
@@ -34,7 +33,7 @@ public class LcFeedBackEntity {
     private Date regDate;
 
     @Builder
-    public LcFeedBackEntity(UserEntity user, String content) {
+    public FeedBackEntity(UserEntity user, String content) {
         this.user = user;
         this.content = content;
     }

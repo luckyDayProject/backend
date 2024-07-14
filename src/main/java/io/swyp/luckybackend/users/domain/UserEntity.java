@@ -1,5 +1,6 @@
 package io.swyp.luckybackend.users.domain;
 
+import io.swyp.luckybackend.feedbacks.domain.FeedBackEntity;
 import io.swyp.luckybackend.articles.domain.LcArticleEntity;
 import io.swyp.luckybackend.luckyDays.domain.*;
 import jakarta.annotation.Nullable;
@@ -72,7 +73,7 @@ public class UserEntity {
     private List<LcArticleEntity> articles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LcFeedBackEntity> feedbacks = new ArrayList<>();
+    private List<FeedBackEntity> feedbacks = new ArrayList<>();
 
 
     @Builder
