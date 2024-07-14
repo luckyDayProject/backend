@@ -2,6 +2,8 @@ package io.swyp.luckybackend.articles.service;
 
 import io.swyp.luckybackend.articles.domain.LcArticleEntity;
 import io.swyp.luckybackend.articles.dto.CreateArticleDto;
+import io.swyp.luckybackend.articles.dto.ModifyArticleDto;
+import io.swyp.luckybackend.articles.dto.ReadArticleDto;
 import io.swyp.luckybackend.articles.repository.ArticleRepository;
 import io.swyp.luckybackend.common.JwtProvider;
 import io.swyp.luckybackend.common.ResponseDTO;
@@ -31,6 +33,31 @@ public class ArticleService {
 //        }
         LcArticleEntity article = requestDto.articleDto2entity(user);
         articleRepository.save(article);
+        return ResponseDTO.success();
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseDTO> readArticle(long articleNo) {
+        LcArticleEntity article = articleRepository.findByArticleNo(articleNo);
+        ReadArticleDto readArticleDto = ReadArticleDto.builder()
+                .articleNo(article.getArticleNo())
+                .subject(article.getSubject())
+                .content(article.getContent())
+                .build();
+        return ResponseDTO.success(readArticleDto);
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseDTO> modifyArticle(String token, ModifyArticleDto requestDto) {
+        long userNo = getUserNo(token);
+        UserEntity user = userRepository.findByUserNo(userNo);
+        return ResponseDTO.success();
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseDTO> deleteArticle(String token, long articleNo) {
+        long userNo = getUserNo(token);
+        UserEntity user = userRepository.findByUserNo(userNo);
         return ResponseDTO.success();
     }
 
