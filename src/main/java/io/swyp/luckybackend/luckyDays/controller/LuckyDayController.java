@@ -91,7 +91,7 @@ public class LuckyDayController {
     }
 
     @Operation(summary = "럭키데이 회고록 삭제")
-    @DeleteMapping(value = "/review", consumes = {"multipart/form-data"})
+    @DeleteMapping(value = "/review")
     public ResponseEntity<ResponseDTO> deleteReview(HttpServletRequest request,
                                                     @RequestParam(name="dtlNo") Long dtlNo) throws IOException {
         String token = request.getHeader("Authorization");
