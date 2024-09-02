@@ -85,12 +85,12 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     String findActivityNameByActivityNo(@Param("activityNo") long activityNo);
 
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.SendMailDto(" +
-            "b.email, b.nickname, a.sj, a.content) " +
+            "b.email, b.nickname, a.sj, a.content, a.sendYn, a.alarmNo) " +
             "FROM LcAlarmEntity a " +
             "JOIN a.user b " +
             "WHERE a.dDay = :today " +
             "AND (a.sendStatus != 'DEL' " +
-                "OR a.sendStatus is Null) ")
+            "OR a.sendStatus is Null) ")
     List<SendMailDto> getLcDay(@Param("today") LocalDate today);
 
 

@@ -15,4 +15,6 @@ public class SendMailDto {
 //    private String from;
     private String subject;
     private String content;
+    private char sendYn;
+    private Long alarmNo;
 }

@@ -33,7 +33,7 @@ public class LuckyDayService {
     private final LcActivityRepository lcActivityRepository;
     private final LcDayDtlRepository lcDayDtlRepository;
     private final LcDayCycleRepository lcDayCycleRepository;
-    private final LCAlarmRepository lcAlarmRepository;
+    private final LcAlarmRepository lcAlarmRepository;
     private final LcMsgRepository lcMsgRepository;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
