@@ -32,7 +32,9 @@ public class EmailSendService {
                 mailHelper.setText(mailDto.getContent(), true); // 'getContent' 메서드를 사용하여 각 dto의 내용을 설정
 
                 mailSender.send(mail); // 메일 전송
-                lcAlarmRepository.updateSendYn(mailDto.getAlarmNo());
+                if(mailDto.getAlarmNo() != null) {
+                    lcAlarmRepository.updateSendYn(mailDto.getAlarmNo());
+                }
 
                 // 메일 객체를 재생성하거나, 기존 메일 객체를 재사용하기 전에 초기화 필요
                 mail = mailSender.createMimeMessage();
