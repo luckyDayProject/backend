@@ -367,13 +367,26 @@ public class LuckyDayService {
         String style = "<br><p>님을";
         String[] contentStyle = content.split(style);
         String buttonPhrase = "럭키 데이 확인하러 가기 🍀";
-        String[] parts = contentStyle[1].split(buttonPhrase);
+        String surveyPhrase = "만족도 설문 조사 하러가기 🧡";
+
+        // 이미지 URL과 버튼 URL 생성
         String imageBaseUrl = "https://223.130.131.239.nip.io/lucky/images/msg/";
         String url = "<a href=\"https://luckyday.swygbro.com/luckyboard\" style=\"background-color: #FFD700; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
+
+        // 설문 조사 링크 생성
+        String surveyUrl = "<a href=\"https://forms.gle/MHfgRjUnT1vWrtDs9\" style=\"background-color: #D3D3D3; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
+
+
+        // 템플릿의 두 번째 부분 처리
+        String[] parts = contentStyle[1].split(buttonPhrase);
+        String[] secondPart = parts[1].split(surveyPhrase);
+
         return contentStyle[0] +
                 "<img src=\"" + imageBaseUrl + imageName + "\" style=\"width: 80%; height: auto; max-width: 600px; display: block; margin: auto;\"/>" +
-                "<br>" + userName + "님을" + parts[0] + url + buttonPhrase + "</a>" + parts[1];
+                "<br>" + userName + "님을" + parts[0] + url + buttonPhrase + "</a>" +
+                secondPart[0] + surveyUrl + surveyPhrase + "</a>" + secondPart[1];
     }
+
 
 
     public ResponseEntity<ResponseDTO> getLcDayList(String token, Long cyclNo, int isCurrent) {
