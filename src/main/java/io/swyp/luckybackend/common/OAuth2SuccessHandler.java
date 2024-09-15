@@ -8,6 +8,7 @@ import io.swyp.luckybackend.users.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     String expirationTime;
 
     @Override
+    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
@@ -46,8 +48,17 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String nickname = URLEncoder.encode(userEntity.getNickname(), StandardCharsets.UTF_8.name());
         String email = URLEncoder.encode(userEntity.getEmail(), StandardCharsets.UTF_8.name());
         int isExistLcDay = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now()) ? 1 : 0;
-//        int isExp = lcDayCycleRepository.existsByUserUserNo(userNo) ? 1 : 0;
-        int isExp = userServiceImpl.getUserIsExp(userEntity.getUserNo());
+        int isExp = 0;
+        if (userServiceImpl.getUserIsExp(userEntity.getUserNo()) == 1) {
+            isExp = 1;
+        } else {
+            if (lcDayCycleRepository.existsByUserUserNo(userNo)) {
+                isExp = 1;
+                userEntity.changeIsExp();
+            }
+        }
+
+
 //        response.sendRedirect(String.format("%s/%s/%s/%s", redirectUrl, token, expirationTime, nickname));
         response.sendRedirect(String.format("%s?token=%s&expirationTime=%s&nickname=%s&email=%s&isExistLcDay=%s&isExp=%s&prfNo=%s",
                 redirectUrl, token, expirationTime, nickname, email, isExistLcDay, isExp, userEntity.getProfileIconNo()));

@@ -96,4 +96,5 @@ public class UserEntity {
     public void changeEmail(String email) {
         this.email = email;
     }
+    public void changeIsExp() {this.isExp = 1;}
 }
