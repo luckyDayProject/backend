@@ -49,7 +49,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String email = URLEncoder.encode(userEntity.getEmail(), StandardCharsets.UTF_8.name());
         int isExistLcDay = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now()) ? 1 : 0;
         int isExp = 0;
-        if (userServiceImpl.getUserIsExp(userEntity.getUserNo()) == 1) {
+        if (userEntity.getIsExp() == 1) {
             isExp = 1;
         } else {
             if (lcDayCycleRepository.existsByUserUserNo(userNo)) {
