@@ -52,7 +52,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         if (userEntity.getIsExp() == 1) {
             isExp = 1;
         } else {
-            if (lcDayCycleRepository.existsByUserUserNo(userNo)) {
+            if (lcDayCycleRepository.existsByUserUserNo(userEntity.getUserNo())) {
                 isExp = 1;
                 userEntity.changeIsExp();
             }

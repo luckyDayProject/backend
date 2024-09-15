@@ -24,17 +24,17 @@ public class LuckyDayController {
 
     @Operation(summary = "활동 목록 조회")
     @GetMapping("/activity")
-    public ResponseEntity<ResponseDTO> activityList(){
+    public ResponseEntity<ResponseDTO> activityList() {
         return luckyDayService.getActivityList();
     }
 
     @Operation(summary = "럭키데이 생성 API")
     @PostMapping("")
     public ResponseEntity<ResponseDTO> createLcDay(HttpServletRequest request,
-                                                   @RequestBody CreateLcDayRequestDto requestDto){
+                                                   @RequestBody CreateLcDayRequestDto requestDto) {
         String token = request.getHeader("Authorization");
         ResponseEntity<ResponseDTO> res = luckyDayService.createValidationCheck(token, requestDto);
-        if (res != null){
+        if (res != null) {
             return res;
         }
         return luckyDayService.createLcDay(token, requestDto);
@@ -93,7 +93,7 @@ public class LuckyDayController {
     @Operation(summary = "럭키데이 회고록 삭제")
     @DeleteMapping(value = "/review")
     public ResponseEntity<ResponseDTO> deleteReview(HttpServletRequest request,
-                                                    @RequestParam(name="dtlNo") Long dtlNo) throws IOException {
+                                                    @RequestParam(name = "dtlNo") Long dtlNo) throws IOException {
         String token = request.getHeader("Authorization");
         return luckyDayService.deleteReview(token, dtlNo);
     }
@@ -104,5 +104,4 @@ public class LuckyDayController {
         String token = request.getHeader("Authorization");
         return luckyDayService.getLcDayCyclList(token);
     }
-
 }
