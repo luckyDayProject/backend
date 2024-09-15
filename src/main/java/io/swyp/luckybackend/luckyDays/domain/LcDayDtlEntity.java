@@ -34,8 +34,7 @@ public class LcDayDtlEntity {
     @Column(name = "ACTIVITY_NM", length = 50)
     private String activityNm;
 
-    @Lob
-    @Column(name = "REVIEW")
+    @Column(name = "REVIEW", length = 200)
     private String review;
 
     @Column(name = "IMAGE_NAME", length = 200)

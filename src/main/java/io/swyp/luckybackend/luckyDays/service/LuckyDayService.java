@@ -611,7 +611,7 @@ public class LuckyDayService {
         return result;
     }
 
-
+    @Transactional
     public ResponseEntity<ResponseDTO> updateReview(String token, ReviewReqDto requestDto, MultipartFile image) {
         Long userNo = getUserNo(token);
         try {
@@ -639,21 +639,27 @@ public class LuckyDayService {
 
             // 기존 이미지가 default 이미지가 아닌 경우 처리
             // todo: 1. 기존 이미지명과 수정 이미지 명이 같을 경우에는 파일 삭제하지 않고 바뀐것만 업데이트
-            if(!checkImgAndReviewDto.getImagePath().contains("default")) {
-                log.info("커스텀 경로 이미지");
-                File oldFile = new File("/root/lucky/luckyImage/" + checkImgAndReviewDto.getImagePath());
-                if (oldFile.exists()) {
-                    oldFile.delete();
-                }
-            }
+//            if(!checkImgAndReviewDto.getImagePath().contains("default")) {
+//                log.info("커스텀 경로 이미지");
+//                File oldFile = new File("/root/lucky/luckyImage/" + checkImgAndReviewDto.getImagePath());
+//                if (oldFile.exists()) {
+//                    oldFile.delete();
+//                }
+//            }
 
             // 새 이미지 저장
             if(image != null && !image.isEmpty()) {
                 Map<String, String> settingImage = settingImages(requestDto, image, userNo);
                 lcDayDtlRepository.updateReview(dtlNo, requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
-            } else {
-                Map<String, String> settingImage = settingDefaultImages(dtlNo);
-                lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
+            }
+            else {
+                if (requestDto.getImageDelete() == 1){
+                    Map<String, String> settingImage = settingDefaultImages(dtlNo);
+                    lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), settingImage.get("imageName"), settingImage.get("imagePath").split("/root/lucky/luckyImage/")[1], userNo);
+                }
+                else {
+                    lcDayDtlRepository.updateReview(requestDto.getDtlNo(), requestDto.getReview(), checkImgAndReviewDto.getImageName(), checkImgAndReviewDto.getImagePath(), userNo);
+                }
             }
 
 

@@ -13,6 +13,8 @@ public class ReviewReqDto {
     private Long dtlNo;
     @Nullable
     private String review;
+    @Nullable
+    private Integer imageDelete;
 }
 
 
