@@ -2,7 +2,6 @@ package io.swyp.luckybackend.luckyDays.repository;
 
 import io.swyp.luckybackend.luckyDays.domain.LcActivityEntity;
 import io.swyp.luckybackend.luckyDays.dto.*;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -41,7 +40,9 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     List<GetLcDayListDto> getPastLcDayList(@Param("userNo")long userNo, @Param("today")LocalDate today);
 
 
-    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto( a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder) " +
+    @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayListDto( " +
+            "a.dtlNo, a.cycl.cyclNo, FUNCTION('DATEDIFF', a.dDay, :today), a.dDay, a.dtlOrder, " +
+            "CASE WHEN a.review IS NOT NULL THEN 1 ELSE 0 END) " +
             "FROM LcDayDtlEntity a " +
             "JOIN a.cycl b " +
             "WHERE a.dDay < :today " +

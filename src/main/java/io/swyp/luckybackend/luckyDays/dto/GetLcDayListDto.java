@@ -21,10 +21,20 @@ public class GetLcDayListDto {
     @Nullable
     private LocalDate date;
     private int order;
+    @Nullable
+    private int reviewCheck;
+
+    public GetLcDayListDto(long dtlNo, long cyclNo, Integer dDay, LocalDate date, int order) {
+        this.dtlNo = dtlNo;
+        this.cyclNo = cyclNo;
+        this.dDay = dDay;
+        this.date = date;
+        this.order = order;
+    }
 
     public String getDate() {
         if (date != null)
-        return formatIsoDate(date.toString());
+            return formatIsoDate(date.toString());
         return null;
     }
 
