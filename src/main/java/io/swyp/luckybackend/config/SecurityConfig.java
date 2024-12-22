@@ -82,7 +82,7 @@ class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("{\"code\": \"" + StatusResCode.INVALID_TOKEN.getCode() + "\"," +
                 "\"message\": \"" + StatusResCode.INVALID_TOKEN.getMessage() + "\"," +
                 "\"resData\": " + null + "}");
