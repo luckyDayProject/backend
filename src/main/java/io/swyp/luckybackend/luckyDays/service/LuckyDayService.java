@@ -370,7 +370,7 @@ public class LuckyDayService {
         String surveyPhrase = "만족도 설문 조사 하러가기 🧡";
 
         // 이미지 URL과 버튼 URL 생성
-        String imageBaseUrl = "https://223.130.131.239.nip.io/lucky/images/msg/";
+        String imageBaseUrl = "https://114.207.175.4.nip.io/lucky/images/msg/";
         String url = "<a href=\"https://luckyday.swygbro.com/luckyboard\" style=\"background-color: #FFD700; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;\">";
 
         // 설문 조사 링크 생성
