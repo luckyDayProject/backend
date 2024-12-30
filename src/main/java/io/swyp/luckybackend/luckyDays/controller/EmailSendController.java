@@ -18,6 +18,6 @@ public class EmailSendController {
     @GetMapping("/luckydays/sendEmail")
     public String sendEmail() throws MessagingException {
         mailScheduler.scheduleSignupTask();
-        return "Email sent successfully!";
+        return "Email sent successfully!!";
     }
 }
