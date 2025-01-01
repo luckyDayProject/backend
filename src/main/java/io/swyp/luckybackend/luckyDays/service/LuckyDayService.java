@@ -418,15 +418,16 @@ public class LuckyDayService {
                 } else {
                     // 현재 싸이클 이면서 지난 럭키데이 조회
                     lcDayList = lcActivityRepository.getPastLcDayList(userNo, today);
+                    System.out.println("lcDayList === " + lcDayList);
+
+                    if (lcDayList.isEmpty()) {
+                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(), StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
+                    }
 
                     // cyclNo 현재 user의 것인지확인
                     boolean result = lcDayDtlRepository.getUserNoByCyclNo(lcDayList.get(0).getCyclNo(), userNo);
                     if (!result) {
                         return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
-                    }
-
-                    if (lcDayList.isEmpty()) {
-                        return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(), StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
                     }
 
                 }
