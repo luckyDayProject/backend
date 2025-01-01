@@ -396,11 +396,6 @@ public class LuckyDayService {
         2. 현재 싸이클에 아직 지난 럭키데이가 없을 경우 에러 처리
     */
         long userNo = getUserNo(token);
-        // cyclNo 현재 user의 것인지확인
-        boolean result = lcDayDtlRepository.getUserNoByCyclNo(cyclNo, userNo);
-        if (!result) {
-            return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
-        }
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<GetLcDayListDto> lcDayList;
@@ -427,6 +422,12 @@ public class LuckyDayService {
             } else {
                 // 현재 싸이클에서 오늘 이후의 럭키데이 조회
                 lcDayList = lcActivityRepository.getLcDayList(userNo, today);
+                System.out.println("lcDayList ==== " + lcDayList);
+                // cyclNo 현재 user의 것인지확인
+                boolean result = lcDayDtlRepository.getUserNoByCyclNo(lcDayList.get(0).getCyclNo(), userNo);
+                if (!result) {
+                    return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                }
 
                 if (lcDayList.isEmpty()) {
                     return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
