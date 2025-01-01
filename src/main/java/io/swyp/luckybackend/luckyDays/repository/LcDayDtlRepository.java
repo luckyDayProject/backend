@@ -36,6 +36,12 @@ public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> 
             "AND u.user.userNo = :userNo")
     boolean getUserNoByDtlNo(@Param("dtlNo") Long dtlNo, @Param("userNo") Long userNo);
 
+    @Query("SELECT COUNT(u) > 0 " +
+            "FROM LcDayDtlEntity u " +
+            "WHERE u.cycl.cyclNo = :cyclNo " +
+            "AND u.user.userNo = :userNo")
+    boolean getUserNoByCyclNo(@Param("cyclNo") Long cyclNo, @Param("userNo") Long userNo);
+
     @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
             "FROM LcDayDtlEntity a " +
             "JOIN a.cycl b " +
