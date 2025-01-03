@@ -406,7 +406,7 @@ public class LuckyDayService {
                     // cyclNo 현재 user의 것인지확인
                     boolean result = lcDayDtlRepository.getUserNoByCyclNo(cyclNo, userNo);
                     if (!result) {
-                        return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                        return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
                     }
                     // 이력 조회 (럭키데이 보관함)
                     lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
@@ -427,7 +427,7 @@ public class LuckyDayService {
                     // cyclNo 현재 user의 것인지확인
                     boolean result = lcDayDtlRepository.getUserNoByCyclNo(lcDayList.get(0).getCyclNo(), userNo);
                     if (!result) {
-                        return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                        return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
                     }
 
                 }
@@ -438,7 +438,7 @@ public class LuckyDayService {
                 // cyclNo 현재 user의 것인지확인
                 boolean result = lcDayDtlRepository.getUserNoByCyclNo(lcDayList.get(0).getCyclNo(), userNo);
                 if (!result) {
-                    return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                    return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
                 }
 
                 if (lcDayList.isEmpty()) {
@@ -473,7 +473,7 @@ public class LuckyDayService {
             // dtlNo가 현재 user의 것인지확인
             boolean result = lcDayDtlRepository.getUserNoByDtlNo((long) dtlNo, userNo);
             if (!result) {
-                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
             GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo, userNo);
             if (lcDetail == null) {
@@ -511,7 +511,7 @@ public class LuckyDayService {
             // cyclNo 현재 user의 것인지확인
             boolean result = lcDayDtlRepository.getUserNoByCyclNo((long)cyclNo, userNo);
             if (!result) {
-                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
             GetLcDayCyclDto lcCycl = lcActivityRepository.getLcDayCyclInfo(cyclNo, userNo);
             if (lcCycl == null) {
@@ -560,7 +560,7 @@ public class LuckyDayService {
             long dtlNo = requestDto.getDtlNo();
             boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
             if (!result) {
-                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
 
             if (requestDto.getReview() == null) {
@@ -649,7 +649,7 @@ public class LuckyDayService {
             long dtlNo = requestDto.getDtlNo();
             boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
             if (!result) {
-                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
             // 기존 리뷰 및 이미지 path select
             CheckImgAndReviewDto checkImgAndReviewDto = lcDayDtlRepository.findByDtlNo(dtlNo);
