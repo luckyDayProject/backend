@@ -17,7 +17,7 @@ public class OpenApiConfiguration {
 	public OpenAPI openAPI() {
 		Server prodHttpsServer = new Server();
 		prodHttpsServer.setDescription("prod Https Server");
-		prodHttpsServer.setUrl("https://114.207.175.4.nip.io/lucky");
+		prodHttpsServer.setUrl("https://175.117.82.131.nip.io/lucky");
 
 		Server devHttpsServer = new Server();
 		devHttpsServer.setDescription("dev Http Server");
