@@ -396,12 +396,18 @@ public class LuckyDayService {
         2. 현재 싸이클에 아직 지난 럭키데이가 없을 경우 에러 처리
     */
         long userNo = getUserNo(token);
+
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<GetLcDayListDto> lcDayList;
 
         try {
             if (isCurrent == 0) {
                 if (cyclNo != null) {
+                    // cyclNo 현재 user의 것인지확인
+                    boolean result = lcDayDtlRepository.getUserNoByCyclNo(cyclNo, userNo);
+                    if (!result) {
+                        return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                    }
                     // 이력 조회 (럭키데이 보관함)
                     lcDayList = lcActivityRepository.getLcDayListByHist(userNo, cyclNo, today);
 
@@ -412,15 +418,28 @@ public class LuckyDayService {
                 } else {
                     // 현재 싸이클 이면서 지난 럭키데이 조회
                     lcDayList = lcActivityRepository.getPastLcDayList(userNo, today);
+                    System.out.println("lcDayList === " + lcDayList);
 
                     if (lcDayList.isEmpty()) {
                         return ResponseDTO.error(StatusResCode.NOT_EXISTED_HIST_LDay.getCode(), StatusResCode.NOT_EXISTED_HIST_LDay.getMessage());
+                    }
+
+                    // cyclNo 현재 user의 것인지확인
+                    boolean result = lcDayDtlRepository.getUserNoByCyclNo(lcDayList.get(0).getCyclNo(), userNo);
+                    if (!result) {
+                        return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
                     }
 
                 }
             } else {
                 // 현재 싸이클에서 오늘 이후의 럭키데이 조회
                 lcDayList = lcActivityRepository.getLcDayList(userNo, today);
+                System.out.println("lcDayList ==== " + lcDayList);
+                // cyclNo 현재 user의 것인지확인
+                boolean result = lcDayDtlRepository.getUserNoByCyclNo(lcDayList.get(0).getCyclNo(), userNo);
+                if (!result) {
+                    return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                }
 
                 if (lcDayList.isEmpty()) {
                     return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
@@ -449,8 +468,14 @@ public class LuckyDayService {
 
     public ResponseEntity<ResponseDTO> getLcDayDetail(String token, int dtlNo) {
         long userNo = getUserNo(token);
+
         try {
-            GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo);
+            // dtlNo가 현재 user의 것인지확인
+            boolean result = lcDayDtlRepository.getUserNoByDtlNo((long) dtlNo, userNo);
+            if (!result) {
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+            }
+            GetLcDayDtlDto lcDetail = lcActivityRepository.getLcDayDetail(dtlNo, userNo);
             if (lcDetail == null) {
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_DTL_NO.getCode(), StatusResCode.NOT_EXISTED_DTL_NO.getMessage());
             }
@@ -483,7 +508,12 @@ public class LuckyDayService {
     public ResponseEntity<ResponseDTO> getLcDayCyclInfo(String token, int cyclNo) {
         long userNo = getUserNo(token);
         try {
-            GetLcDayCyclDto lcCycl = lcActivityRepository.getLcDayCyclInfo(cyclNo);
+            // cyclNo 현재 user의 것인지확인
+            boolean result = lcDayDtlRepository.getUserNoByCyclNo((long)cyclNo, userNo);
+            if (!result) {
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+            }
+            GetLcDayCyclDto lcCycl = lcActivityRepository.getLcDayCyclInfo(cyclNo, userNo);
             if (lcCycl == null) {
                 return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
             }
@@ -530,7 +560,7 @@ public class LuckyDayService {
             long dtlNo = requestDto.getDtlNo();
             boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
             if (!result) {
-                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
 
             if (requestDto.getReview() == null) {
@@ -619,7 +649,7 @@ public class LuckyDayService {
             long dtlNo = requestDto.getDtlNo();
             boolean result = lcDayDtlRepository.getUserNoByDtlNo(dtlNo, userNo);
             if (!result) {
-                return ResponseDTO.error(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
+                return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
             }
             // 기존 리뷰 및 이미지 path select
             CheckImgAndReviewDto checkImgAndReviewDto = lcDayDtlRepository.findByDtlNo(dtlNo);

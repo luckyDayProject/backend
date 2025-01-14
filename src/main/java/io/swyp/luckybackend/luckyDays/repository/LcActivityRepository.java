@@ -54,8 +54,9 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayDtlDto(a.dDay, a.activityNm, b.activityInfo, a.review, a.imageName, a.imagePath) " +
             "FROM LcDayDtlEntity a " +
             "JOIN a.activity b " +
-            "WHERE a.dtlNo = :dtlNo")
-    GetLcDayDtlDto getLcDayDetail(@Param("dtlNo") int dtlNo);
+            "WHERE a.dtlNo = :dtlNo " +
+            "AND a.user.userNo = :userNo")
+    GetLcDayDtlDto getLcDayDetail(@Param("dtlNo") int dtlNo, @Param("userNo")long userNo);
 
     @Query("SELECT a.category FROM LcActivityEntity a WHERE a.activityName = :activityNm")
     String findCategoryByActivityNm(@Param("activityNm") String activityNm);
@@ -63,8 +64,9 @@ public interface LcActivityRepository extends JpaRepository<LcActivityEntity, Lo
     @Query("SELECT new io.swyp.luckybackend.luckyDays.dto.GetLcDayCyclDto(a.startDt, a.endDt, a.period, a.count, a.exptDt)" +
             "FROM LcDayCycleEntity a " +
             "WHERE a.cyclNo = :cyclNo " +
+            "AND a.user.userNo = :userNo " +
             "AND a.reset = 'N'")
-    GetLcDayCyclDto getLcDayCyclInfo(@Param("cyclNo") int cyclNo);
+    GetLcDayCyclDto getLcDayCyclInfo(@Param("cyclNo") int cyclNo, @Param("userNo")long userNo);
 
     @Modifying
     @Transactional

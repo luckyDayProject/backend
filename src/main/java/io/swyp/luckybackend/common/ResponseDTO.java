@@ -41,6 +41,11 @@ public class ResponseDTO {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
 
+    public static ResponseEntity<ResponseDTO> userValidationFail(String code, String message){
+        ResponseDTO responseBody = new ResponseDTO(code, message);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseBody);
+    }
+
     public static ResponseEntity<ResponseDTO> success(Object resData) {
         ResponseDTO responseBody = new ResponseDTO(resData);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
