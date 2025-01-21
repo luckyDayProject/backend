@@ -70,7 +70,7 @@ secret-key: ${secret-key}
 kakao-admin-key: ${kakao.admin-key}
 
 
-expiration-time: "86400"
+expiration-time: "259200"
 
 springdoc:
 #  api-docs:
