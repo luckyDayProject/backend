@@ -436,14 +436,14 @@ public class LuckyDayService {
                 lcDayList = lcActivityRepository.getLcDayList(userNo, today);
                 System.out.println("lcDayList ==== " + lcDayList);
                 // cyclNo 현재 user의 것인지확인
+                if (lcDayList.isEmpty()) {
+                    return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
+                }
                 boolean result = lcDayDtlRepository.getUserNoByCyclNo(lcDayList.get(0).getCyclNo(), userNo);
                 if (!result) {
                     return ResponseDTO.userValidationFail(StatusResCode.INVALID_USER.getCode(), StatusResCode.INVALID_USER.getMessage());
                 }
 
-                if (lcDayList.isEmpty()) {
-                    return ResponseDTO.error(StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getCode(), StatusResCode.NOT_EXISTED_CURRENT_CYCLE.getMessage());
-                }
 
                 countLcDdays(lcDayList);
             }
