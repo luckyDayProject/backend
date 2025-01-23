@@ -49,6 +49,13 @@ public interface LcDayDtlRepository extends JpaRepository<LcDayDtlEntity, Long> 
             "AND b.reset = 'N'")
     boolean existsByUserNoAndDDayNotPassed(@Param("userNo") Long userNo, @Param("today") LocalDate today);
 
+    @Query("SELECT COUNT(a) " +
+            "FROM LcDayDtlEntity a " +
+            "JOIN a.cycl b " +
+            "WHERE a.user.userNo = :userNo AND a.dDay >= :today " +
+            "AND b.reset = 'N'")
+    int existsByUserNoAndDDayNotPassed2(@Param("userNo") Long userNo, @Param("today") LocalDate today);
+
     @Query("SELECT a.category FROM LcDayDtlEntity d JOIN d.activity a WHERE d.dtlNo = :dtlNo")
     String findCategoryByDtlNo(@Param("dtlNo") Long dtlNo);
 
