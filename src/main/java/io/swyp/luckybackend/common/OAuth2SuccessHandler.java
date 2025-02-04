@@ -48,7 +48,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String nickname = URLEncoder.encode(userEntity.getNickname(), StandardCharsets.UTF_8.name());
         String email = URLEncoder.encode(userEntity.getEmail(), StandardCharsets.UTF_8.name());
         int isExistLcDay = lcDayDtlRepository.existsByUserNoAndDDayNotPassed(userNo, LocalDate.now()) ? 1 : 0;
-//        int isExistLcDay2 = lcDayDtlRepository.existsByUserNoAndDDayNotPassed2(userNo, '2025-01-23');
+        int isExistLcDay2 = lcDayDtlRepository.existsByUserNoAndDDayNotPassed2(userNo,  LocalDate.now());
         System.out.println("LocalDate.now() ======= " + LocalDate.now());
         System.out.println("isExistLcDay ======= " + isExistLcDay);
         System.out.println("isExistLcDay No ======= " + isExistLcDay2);
